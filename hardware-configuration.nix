@@ -28,6 +28,11 @@
       fsType = "ext4";
     };
 
+  fileSystems."/docker" =
+    { device = "/dev/disk/by-uuid/3c19e3d5-271c-4779-8e87-96778d3da7b5";
+      fsType = "ext4";
+    };
+
   fileSystems."/nix" =
     { device = "/dev/disk/by-uuid/110d4527-a772-4bac-b345-6826cf3a7e3c";
       fsType = "ext4";
