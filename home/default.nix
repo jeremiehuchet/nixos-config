@@ -2,7 +2,7 @@
 
 let
   lockCmd =
-    "${pkgs.i3lock-blur}/bin/i3lock --nofork --fuzzy --show-failed-attempts --ignore-empty-password --once";
+    "${pkgs.i3lock}/bin/i3lock --nofork --show-failed-attempts --ignore-empty-password --color 202020";
 in {
   imports = [ ../custom-pkgs ];
 
@@ -35,9 +35,12 @@ in {
         ws8 = ''"8 "'';
         ws9 = ''"9 "'';
         ws0 = ''"0 "'';
+        resize =
+          "Resize [ ← shrink width, → grow width, ↑ shrink height, ↓ grow height]";
+        screenshot =
+          "Screenshot [S for selection, W for active window] Add Control modifier to save a file";
         systemControl =
           "System Control [S for shutdown, R for restart, E for logout, L for lock]";
-        screenshot = "Screenshot [W for window, S for select]";
       in {
         focus.followMouse = false;
         fonts = [ "NotoSansMono 8" ];
@@ -48,8 +51,8 @@ in {
           "${mod}+Shift+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass --last-used";
           "${mod}+Tab" = "exec rofi -show window";
           "${mod}+l" = "exec ${lockCmd}";
+          "${mod}+r" = ''mode "${resize}"'';
           "${mod}+Shift+e" = ''mode "${systemControl}"'';
-          "${mod}+twosuperior" = ''mode "${screenshot}"'';
           "${mod}+s" = "layout stacking";
           "${mod}+z" = "layout tabbed";
           "${mod}+e" = "layout toggle split";
@@ -73,6 +76,7 @@ in {
           "${mod}+Shift+8" = "move container to workspace ${ws8}";
           "${mod}+Shift+9" = "move container to workspace ${ws9}";
           "${mod}+Shift+0" = "move container to workspace ${ws0}";
+          Print = ''mode "${screenshot}"'';
           # Pulse Audio controls
           XF86AudioRaiseVolume =
             "exec --no-startup-id amixer -q sset Master 5%+";
@@ -81,15 +85,32 @@ in {
           XF86AudioMute = "exec --no-startup-id amixer -q sset Master toggle";
           XF86AudioMicMute =
             "exec --no-startup-id amixer -q sset Capture toggle";
-          XF86MonBrightnessUp = "exec --no-startup-id ${pkgs.xorg.xbacklight}/bin/xbacklight -inc 5";
-          XF86MonBrightnessDown = "exec --no-startup-id ${pkgs.xorg.xbacklight}/bin/xbacklight -dec 5";
+          # screen backlight
+          XF86MonBrightnessUp =
+            "exec --no-startup-id ${pkgs.xorg.xbacklight}/bin/xbacklight -inc 5";
+          XF86MonBrightnessDown =
+            "exec --no-startup-id ${pkgs.xorg.xbacklight}/bin/xbacklight -dec 5";
         };
         modes = {
+          "${resize}" = {
+            Left = "resize shrink width 10 px or 10 ppt";
+            Right = "resize grow width 10 px or 10 ppt";
+            Up = "resize shrink height 10 px or 10 ppt";
+            Down = "resize grow height 10 px or 10 ppt";
+            Escape = "mode default";
+          };
           "${screenshot}" = {
+            # take a screenshot of the active [W]indow or given [S]election
+            # the result is available in clipboard
             w =
-              "exec ${pkgs.maim}/bin/maim -i $(${pkgs.xdotool}/bin/xdotool getactivewindow) --window ; mode default";
+              "exec --no-startup-id ${pkgs.maim}/bin/maim -i $(${pkgs.xdotool}/bin/xdotool getactivewindow) | ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png ; mode default";
             "--release s" =
               "exec --no-startup-id ${pkgs.maim}/bin/maim -s | ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png ; mode default";
+            # using Control modifier, the result is saved into ~/Pictures/maim-<date>.png
+            "Control+w" =
+              "exec --no-startup-id ${pkgs.maim}/bin/maim -i $(${pkgs.xdotool}/bin/xdotool getactivewindow) ~/Pictures/$(date +%Y-%m-%d_%H-%M-%S) ; mode default";
+            "--release Control+s" =
+              "exec --no-startup-id ${pkgs.maim}/bin/maim -s ~/Pictures/$(date +%Y-%m-%d_%H-%M-%S) ; mode default";
             Escape = "mode default";
           };
           "${systemControl}" = {
@@ -170,10 +191,12 @@ in {
     gnupg
     jetbrains.idea-community
     nixfmt
+    mplayer
     pass
     rofi-pass
     slack
     terminator
+    vagrant
   ];
 
   programs.firefox.enable = true;
@@ -185,7 +208,7 @@ in {
     name = "Jeremie";
     userChrome = "#TabsToolbar { visibility: collapse !important; }";
     settings = {
-      "browser.startup.homepage" = "https://duckduckgo.com";
+      "browser.startup.homepage" = "about:blank";
       "browser.search.region" = "FR";
       "browser.search.isUS" = false;
       "distribution.searchplugins.defaultLocale" = "fr-FR";
@@ -255,6 +278,7 @@ in {
     oh-my-zsh.enable = true;
     oh-my-zsh.theme = "agnoster";
     oh-my-zsh.plugins = [
+      "ansible"
       "colored-man-pages"
       "colorize"
       "git"
@@ -269,11 +293,18 @@ in {
       "systemd"
       "vagrant"
     ];
-    plugins = [{
-      name = "zsh-syntax-highlighting";
-      file = "share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
-      src = pkgs.zsh-syntax-highlighting;
-    }];
+    plugins = [
+      {
+        name = "zsh-syntax-highlighting";
+        file = "share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
+        src = pkgs.zsh-syntax-highlighting;
+      }
+      {
+        name = "zsh-nix-shell";
+        file = "nix-shell.plugin.zsh";
+        src = pkgs.zsh-nix-shell;
+      }
+    ];
   };
 
 }

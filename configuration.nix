@@ -118,6 +118,7 @@
     htop
     kdeFrameworks.breeze-icons
     lm_sensors
+    pretty-nixos-rebuild
     tree
     vim
   ];

@@ -15,10 +15,6 @@ speed_up = true
 speed_down = true
 hide_missing = true
 
-#[[block]]
-#block = "bluetooth"
-#mac = "60:F2:62:15:55:DF"
-
 [[block]]
 block = "disk_space"
 path = "/"
@@ -41,13 +37,23 @@ alert = 5.0
 
 [[block]]
 block = "disk_space"
+path = "/var/lib/docker"
+alias = "docker"
+info_type = "available"
+unit = "GB"
+interval = 60
+warning = 3.0
+alert = 1.0
+
+[[block]]
+block = "disk_space"
 path = "/nix"
 alias = "nix"
 info_type = "available"
 unit = "GB"
 interval = 60
-warning = 5.0
-alert = 2.0
+warning = 7.0
+alert = 3.0
 
 [[block]]
 block = "temperature"
