@@ -63,13 +63,6 @@ format = "{max}°C"
 chip = "*-isa-*"
 
 [[block]]
-block = "nvidia_gpu"
-label = "GT 1030"
-show_memory = false
-show_clocks = true
-interval = 1
-
-[[block]]
 block = "cpu"
 interval = 1
 
@@ -86,11 +79,6 @@ format_swap = "{SUp}%"
 
 [[block]]
 block = "sound"
-
-[[block]]
-block = "xrandr"
-icons = true
-interval = 10
 
 [[block]]
 block = "battery"

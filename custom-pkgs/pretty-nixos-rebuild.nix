@@ -2,11 +2,13 @@
 
 pkgs.writeScriptBin "nixos" ''
   #!${pkgs.bash}/bin/bash -e
-  sudo -s echo -n ""
+
+  [[ "$1" == "rebuild" ]] || exit 1
+  shift
+
   PARAMS=""
   UPGRADE=0
-  [[ "$1" == ""rebuild ]] || exit 1
-  shift
+
   while (( "$#" )); do
     case "$1" in
       --upgrade)
@@ -19,7 +21,10 @@ pkgs.writeScriptBin "nixos" ''
         ;;
     esac
   done
+
+  cat - <<EOF | sudo -s
   [[ $UPGRADE -gt 0 ]] && nix-channel --update
   nix build '(with import <nixpkgs/nixos> { }; system)'
-  sudo nixos-rebuild $PARAMS
+  nixos-rebuild $PARAMS
+  EOF
 ''

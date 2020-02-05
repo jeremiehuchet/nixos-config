@@ -14,7 +14,10 @@ in {
 
   xsession = {
     enable = true;
-    initExtra = "${pkgs.xorg.xrandr}/bin/xrandr --dpi 192";
+    initExtra = ''
+      ${pkgs.xorg.xrandr}/bin/xrandr --dpi 192 --output DP-2 --primary
+      ${pkgs.xorg.xbacklight}/bin/xbacklight -set $(cat ~/.config/i3/backlight.state)
+    '';
     pointerCursor = {
       package = pkgs.vanilla-dmz;
       name = "Vanilla-DMZ";
@@ -35,18 +38,22 @@ in {
         ws8 = ''"8 "'';
         ws9 = ''"9 "'';
         ws0 = ''"0 "'';
+        output =
+          "Output [E for external, L for laptop only, C for centered, (← → ↑ ↓) for position, Shift+(↑ ↓) for zoom]";
         resize =
           "Resize [ ← shrink width, → grow width, ↑ shrink height, ↓ grow height]";
         screenshot =
-          "Screenshot [S for selection, W for active window] Add Control modifier to save a file";
+          "Screenshot [S for selection, W for active window] use Control modifier to save a file";
         systemControl =
           "System Control [S for shutdown, R for restart, E for logout, L for lock]";
       in {
         focus.followMouse = false;
         fonts = [ "NotoSansMono 8" ];
+        floating.criteria = [{ class = "SimpleScreenRecorder"; }];
         modifier = "${mod}";
         keybindings = lib.mkOptionDefault {
           "${mod}+d" = "exec ${pkgs.rofi}/bin/rofi -show run";
+          "${mod}+o" = ''mode "${output}"'';
           "${mod}+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass";
           "${mod}+Shift+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass --last-used";
           "${mod}+Tab" = "exec rofi -show window";
@@ -66,6 +73,7 @@ in {
           "${mod}+7" = "workspace ${ws7}";
           "${mod}+8" = "workspace ${ws8}";
           "${mod}+9" = "workspace ${ws9}";
+          "${mod}+0" = "workspace ${ws0}";
           "${mod}+Shift+1" = "move container to workspace ${ws1}";
           "${mod}+Shift+2" = "move container to workspace ${ws2}";
           "${mod}+Shift+3" = "move container to workspace ${ws3}";
@@ -87,17 +95,47 @@ in {
             "exec --no-startup-id amixer -q sset Capture toggle";
           # screen backlight
           XF86MonBrightnessUp =
-            "exec --no-startup-id ${pkgs.xorg.xbacklight}/bin/xbacklight -inc 5";
+            "exec --no-startup-id ${pkgs.xorg.xbacklight}/bin/xbacklight -inc 5 && ${pkgs.xorg.xbacklight}/bin/xbacklight -get > ~/.config/i3/backlight.state";
           XF86MonBrightnessDown =
-            "exec --no-startup-id ${pkgs.xorg.xbacklight}/bin/xbacklight -dec 5";
+            "exec --no-startup-id ${pkgs.xorg.xbacklight}/bin/xbacklight -dec 5 && ${pkgs.xorg.xbacklight}/bin/xbacklight -get > ~/.config/i3/backlight.state";
         };
         modes = {
+          "${output}" = {
+            l = "exec ${pkgs.pyrandr}/bin/pyrandr --laptop-only ; mode default";
+            e =
+              "exec ${pkgs.pyrandr}/bin/pyrandr --external-only ; mode default";
+            c = "exec ${pkgs.pyrandr}/bin/pyrandr --position center-of-laptop";
+            Left = "exec ${pkgs.pyrandr}/bin/pyrandr --position left-of-laptop";
+            Right =
+              "exec ${pkgs.pyrandr}/bin/pyrandr --position right-of-laptop";
+            Up = "exec ${pkgs.pyrandr}/bin/pyrandr --position above-laptop";
+            Down = "exec ${pkgs.pyrandr}/bin/pyrandr --position below-laptop";
+            Prior = "exec ${pkgs.pyrandr}/bin/pyrandr --zoom 30";
+            Next = "exec ${pkgs.pyrandr}/bin/pyrandr --zoom -30";
+            "Control+Left" = "move workspace to output left";
+            "Control+Right" = "move workspace to output right";
+            "Control+Up" = "move workspace to output top";
+            "Control+Down" = "move workspace to output bottom";
+            "1" = "workspace ${ws1}";
+            "2" = "workspace ${ws2}";
+            "3" = "workspace ${ws3}";
+            "4" = "workspace ${ws4}";
+            "5" = "workspace ${ws5}";
+            "6" = "workspace ${ws6}";
+            "7" = "workspace ${ws7}";
+            "8" = "workspace ${ws8}";
+            "9" = "workspace ${ws9}";
+            "0" = "workspace ${ws0}";
+            Escape = "mode default";
+            "${mod}+o" = "mode default";
+          };
           "${resize}" = {
             Left = "resize shrink width 10 px or 10 ppt";
             Right = "resize grow width 10 px or 10 ppt";
             Up = "resize shrink height 10 px or 10 ppt";
             Down = "resize grow height 10 px or 10 ppt";
             Escape = "mode default";
+            "${mod}+r" = "mode default";
           };
           "${screenshot}" = {
             # take a screenshot of the active [W]indow or given [S]election
@@ -108,10 +146,11 @@ in {
               "exec --no-startup-id ${pkgs.maim}/bin/maim -s | ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png ; mode default";
             # using Control modifier, the result is saved into ~/Pictures/maim-<date>.png
             "Control+w" =
-              "exec --no-startup-id ${pkgs.maim}/bin/maim -i $(${pkgs.xdotool}/bin/xdotool getactivewindow) ~/Pictures/$(date +%Y-%m-%d_%H-%M-%S) ; mode default";
+              "exec --no-startup-id ${pkgs.maim}/bin/maim -i $(${pkgs.xdotool}/bin/xdotool getactivewindow) ~/Pictures/maim-$(date +%Y-%m-%d_%H-%M-%S).png ; mode default";
             "--release Control+s" =
-              "exec --no-startup-id ${pkgs.maim}/bin/maim -s ~/Pictures/$(date +%Y-%m-%d_%H-%M-%S) ; mode default";
+              "exec --no-startup-id ${pkgs.maim}/bin/maim -s ~/Pictures/maim-$(date +%Y-%m-%d_%H-%M-%S).png ; mode default";
             Escape = "mode default";
+            Print = "mode default";
           };
           "${systemControl}" = {
             e = "exec i3-msg exit; mode default";
@@ -119,6 +158,7 @@ in {
             s = "exec poweroff; mode default";
             l = "exec ${lockCmd}; mode default";
             Escape = "mode default";
+            "${mod}+Shift+e" = "mode default";
           };
         };
         bars = [{
@@ -193,7 +233,9 @@ in {
     nixfmt
     mplayer
     pass
+    pyrandr
     rofi-pass
+    simplescreenrecorder
     slack
     terminator
     vagrant

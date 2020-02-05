@@ -115,6 +115,7 @@
   environment.systemPackages = with pkgs; [
     dfc
     git
+    hicolor-icon-theme
     htop
     kdeFrameworks.breeze-icons
     lm_sensors
