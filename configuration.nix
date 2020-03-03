@@ -12,16 +12,25 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.supportedFilesystems = [ "nfs" ];
 
   services.autofs = {
     enable = true;
-    autoMaster = ''
-      /mas nas:/mnt/HD/HD_a2
+    autoMaster = let
+      nasMapConf = pkgs.writeText "nas-auto" ''
+        films  -rw,soft,intr nas:/mnt/md1/films
+        music  -rw,soft,intr nas:/mnt/md1/music
+        series -rw,soft,intr nas:/mnt/md1/series
+      '';
+    in ''
+      /nas file:${nasMapConf} --timeout 30
     '';
   };
 
   networking.hostName = "tv";
-  #networking.wireless.enable = true;
+  networking.enableIPv6 = false;
+  networking.wireless.enable = true;
+  networking.wireless.networks."L'internet de J".psk = (import ./secrets.nix).wireless.psk;
   networking.interfaces.enp1s0.useDHCP = true;
   networking.interfaces.wlp2s0.useDHCP = true;
 
@@ -38,9 +47,29 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [
-    git google-chrome htop kodi nfs-utils terminator vim
-  ];
+  nixpkgs.config.packageOverrides = pkgs: rec {
+    bazarr = pkgs.callPackage ./bazarr.nix { };
+  };
+
+  programs.vim.defaultEditor = true;
+
+  environment = {
+    systemPackages = with pkgs; [
+      acpitool
+      bazarr
+      dmenu
+      dunst
+      gnupg
+      lm_sensors
+      mplayer
+      ncdu
+      dfc
+      udiskie
+      tree
+      pass
+      git google-chrome htop kodi nfs-utils terminator
+    ];
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -52,6 +81,10 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="usb", DRIVERS=="usbhid", ATTR{../power/wakeup}="enabled"
+  '';
+
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
@@ -62,6 +95,9 @@
   # services.printing.enable = true;
 
   # Enable sound.
+  # boot.extraModprobeConfig = ''
+  #   options snd_hda_intel enable=3
+  # ''
   sound.enable = true;
   sound.extraConfig = ''
     pcm.analog {
@@ -80,6 +116,47 @@
     }
   '';
   # hardware.pulseaudio.enable = true;
+
+  fonts = {
+    fonts = with pkgs; [
+      nerdfonts
+      noto-fonts
+      emojione
+    ];
+    fontconfig.defaultFonts = {
+      monospace =  [ "Noto Sans Mono Light" ];
+      sansSerif = [ "Noto Sans" ];
+      serif =  [ "Noto Serif" ];
+    };
+  };
+
+  services.logind = {
+    lidSwitch = "ignore";
+    lidSwitchDocked = "ignore";
+    lidSwitchExternalPower = "ignore";
+    extraConfig = ''
+      IdleAction=suspend
+      IdleActionSec=60
+    '';
+  };
+
+  services.transmission = {
+    enable = true;
+    user = "guest";
+    group = "users";
+    settings = {
+      download-dir = "/home/guest/torrent/finished";
+      incomplete-dir = "/home/guest/torrent/incomplete";
+      incomplete-dir-enabled = true;
+    };
+  };
+
+  services.sonarr = {
+    enable = true;
+    user = "guest";
+    group = "users";
+    dataDir = "/home/guest/sonarr";
+  };
 
   # Enable the X11 windowing system.
   services.xserver = {
@@ -103,6 +180,35 @@
 
   users.users.guest = {
     isNormalUser = true;
+  };
+
+  users.users.git = {
+    isNormalUser = true;
+    openssh.authorizedKeys.keyFiles = [ ./id_rsa_laptop.pub ./id_rsa_oneplus.pub ./id_rsa_tv.pub ];
+  };
+
+  systemd.user.services."dunst" = {
+    enable = true;
+    description = "dunst for X11 notifications";
+    wantedBy = [ "default.target" ];
+    serviceConfig.Restart = "always";
+    serviceConfig.RestartSec = 2;
+    serviceConfig.ExecStart = "${pkgs.dunst}/bin/dunst";
+  };
+
+  systemd.user.services."udiskie" = {
+    enable = true;
+    description = "udiskie to automount removable media";
+    wantedBy = [ "default.target" ];
+    path = with pkgs; [
+      gnome3.defaultIconTheme
+      gnome3.gnome_themes_standard
+      udiskie
+    ];
+    environment.XDG_DATA_DIRS="${pkgs.gnome3.defaultIconTheme}/share:${pkgs.gnome3.gnome_themes_standard}/share";
+    serviceConfig.Restart = "always";
+    serviceConfig.RestartSec = 2;
+    serviceConfig.ExecStart = "${pkgs.udiskie}/bin/udiskie -a -t -n -F ";
   };
 
   # This value determines the NixOS release with which your system is to be
