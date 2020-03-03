@@ -24,7 +24,7 @@ pkgs.writeScriptBin "nixos" ''
 
   cat - <<EOF | sudo -s
   [[ $UPGRADE -gt 0 ]] && nix-channel --update
-  nix build '(with import <nixpkgs/nixos> { }; system)'
+  nix build --no-link '(with import <nixpkgs/nixos> { }; system)'
   nixos-rebuild $PARAMS
   EOF
 ''

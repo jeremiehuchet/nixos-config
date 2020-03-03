@@ -10,13 +10,27 @@ in {
 
   home.keyboard.layout = "fr";
 
-  xresources.properties = { "Xft.dpi" = 192; };
+  xresources.properties = {
+    "Xft.dpi" = 192;
+    "Xft.autohint" = 0;
+    "Xft.lcdfilter" = "lcddefault";
+    "Xft.hintstyle" = "hintfull";
+    "Xft.hinting" = 1;
+    "Xft.antialias" = 1;
+    "Xft.rgba" = "rgb";
+  };
 
   xsession = {
     enable = true;
     initExtra = ''
       ${pkgs.xorg.xrandr}/bin/xrandr --dpi 192 --output DP-2 --primary
       ${pkgs.xorg.xbacklight}/bin/xbacklight -set $(cat ~/.config/i3/backlight.state)
+      ${pkgs.xorg.xhost}/bin/xhost si:localuser:root
+    '';
+    profileExtra = ''
+      export GDK_SCALE=2
+      export GDK_DPI_SCALE=0.5
+      export QT_AUTO_SCREEN_SCALE_FACTOR=1
     '';
     pointerCursor = {
       package = pkgs.vanilla-dmz;
@@ -37,7 +51,7 @@ in {
         ws7 = ''"7 "'';
         ws8 = ''"8 "'';
         ws9 = ''"9 "'';
-        ws0 = ''"0 "'';
+        ws0 = ''"10 "'';
         output =
           "Output [E for external, L for laptop only, C for centered, (← → ↑ ↓) for position, Shift+(↑ ↓) for zoom]";
         resize =
@@ -52,6 +66,8 @@ in {
         floating.criteria = [{ class = "SimpleScreenRecorder"; }];
         modifier = "${mod}";
         keybindings = lib.mkOptionDefault {
+          "${mod}+Return" =
+            "exec ${pkgs.terminator}/bin/terminator --working-directory $(${pkgs.xcwd}/bin/xcwd)";
           "${mod}+d" = "exec ${pkgs.rofi}/bin/rofi -show run";
           "${mod}+o" = ''mode "${output}"'';
           "${mod}+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass";
@@ -180,7 +196,7 @@ in {
       settings = {
         global = {
           follow = "mouse";
-          geometry = "600x5-30+50";
+          geometry = "900x10-30+50";
           padding = 8;
           horizontal_padding = 8;
           frame_width = 2;
@@ -190,7 +206,7 @@ in {
           font = "Noto Sans Mono 12";
           icon_position = "left";
           max_icon_size = 32;
-          browser = "${pkgs.firefox}/bin/firefox";
+          browser = "${pkgs.google-chrome}/bin/google-chrome-stable";
         };
         urgency_low = {
           background = "#222222";
@@ -219,19 +235,26 @@ in {
       enable = true;
       lockCmd = "${lockCmd}";
     };
-    xsuspender.enable = true;
+    xsuspender = {
+      enable = true;
+      rules."slack".matchWmClassContains = "Slack";
+      rules."chrome".matchWmClassContains = "Google-chrome";
+    };
   };
 
   nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
+    docker-compose
     dolphin
     gimp
     google-chrome
     gnupg
     jetbrains.idea-community
-    nixfmt
+    libreoffice
     mplayer
+    nixfmt
+    now-cli
     pass
     pyrandr
     rofi-pass
@@ -240,25 +263,6 @@ in {
     terminator
     vagrant
   ];
-
-  programs.firefox.enable = true;
-  programs.firefox.extensions = [
-
-  ];
-  programs.firefox.profiles.jeremie = {
-    id = 0;
-    name = "Jeremie";
-    userChrome = "#TabsToolbar { visibility: collapse !important; }";
-    settings = {
-      "browser.startup.homepage" = "about:blank";
-      "browser.search.region" = "FR";
-      "browser.search.isUS" = false;
-      "distribution.searchplugins.defaultLocale" = "fr-FR";
-      "general.useragent.locale" = "fr-FR";
-      "browser.bookmarks.showMobileBookmarks" = true;
-      "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-    };
-  };
 
   programs.git = {
     enable = true;
@@ -340,11 +344,6 @@ in {
         name = "zsh-syntax-highlighting";
         file = "share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
         src = pkgs.zsh-syntax-highlighting;
-      }
-      {
-        name = "zsh-nix-shell";
-        file = "nix-shell.plugin.zsh";
-        src = pkgs.zsh-nix-shell;
       }
     ];
   };

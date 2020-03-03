@@ -23,6 +23,7 @@
   boot.loader.systemd-boot.configurationLimit = 20;
   boot.loader.systemd-boot.consoleMode = "max";
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.supportedFilesystems = [ "btrfs" ];
   #  boot.kernel.sysctl = {
   #    "kernel.nmi_watchdog" = 0;
   #    "vm.dirty_writeback_centisecs" = 6000;
@@ -30,9 +31,6 @@
   boot.extraModprobeConfig = ''
     # oled backlight
     options i915 enable_dpcd_backlight=1
-    # wifi power management
-    options iwlmvm power_scheme=3
-    options iwlwifi power_save=1
     # audio power management
     options snd_hda_intel power_save=1
   '';
@@ -46,7 +44,8 @@
 
   fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
   fileSystems."/home".options = [ "noatime" "nodiratime" "discard" ];
-  fileSystems."/docker".options = [ "noatime" "nodiratime" "discard" ];
+  fileSystems."/var/lib/docker".options = [ "noatime" "nodiratime" "discard" ];
+  fileSystems."/var/lib/machines".options = [ "noatime" "nodiratime" "discard" ];
   fileSystems."/nix".options = [ "noatime" "nodiratime" "discard" ];
 
   powerManagement.powertop.enable = true;
@@ -77,20 +76,32 @@
   ];
 
   services.udev.extraRules = ''
+    # network cards
     SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="60:f2:62:15:55:db", NAME="wireless"
     SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:0e:c6:fe:5a:0c", NAME="aukey-ethernet"
+    SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="42:14:92:61:c6:70c", NAME="oneplus-usb"
+
+    # critical battery level action
+    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-3]", RUN+="${pkgs.systemd}/bin/systemctl suspend"
+    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[4-9]|10", RUN+="${pkgs.battery-alert}/bin/battery-alert $attr{capacity}"
+    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="2[0-9]|30", RUN+="${pkgs.battery-alert}/bin/battery-alert $attr{capacity}"
+
+    # Happlink (formerly Plug-Up) Security KEY
+    KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2581", ATTRS{idProduct}=="f1d0", TAG+="uaccess", GROUP="plugdev", MODE="0660"
   '';
 
   networking.hostName = "laptop";
   networking.enableIPv6 = false;
   networking.networkmanager.enable = true;
-  networking.networkmanager.wifi.powersave = true;
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   security.sudo.extraConfig = "Defaults timestamp_timeout=10";
+  security.pam.services.sudo.fprintAuth = true;
+  services.fprintd.enable = true;
+  services.fprintd.package = pkgs.fprintd-thinkpad;
 
   i18n = {
     consoleFont = "latarcyrheb-sun32";
@@ -101,11 +112,11 @@
   time.timeZone = "Europe/Paris";
 
   fonts = {
-    enableFontDir = true;
     enableDefaultFonts = true;
     enableGhostscriptFonts = true;
     fontconfig.dpi = 192;
-    fonts = with pkgs; [ fira-code nerdfonts ];
+    fontconfig.defaultFonts.emoji = [ "EmojiOne Color" ];
+    fonts = with pkgs; [ emojione fira-code nerdfonts ];
   };
 
   nixpkgs.config.allowUnfree = true;
@@ -113,12 +124,17 @@
   environment.pathsToLink = [ "/share/zsh" ];
 
   environment.systemPackages = with pkgs; [
+    any-nix-shell
+    btrfs-progs
     dfc
     git
+    jq
     hicolor-icon-theme
     htop
     kdeFrameworks.breeze-icons
+    libu2f-host
     lm_sensors
+    p7zip
     pretty-nixos-rebuild
     tree
     vim
@@ -131,10 +147,17 @@
   programs.light.enable = true;
   programs.vim.defaultEditor = true;
   programs.zsh.enable = true;
+  programs.zsh.promptInit = "any-nix-shell zsh --info-right | source /dev/stdin";
 
   services.kmscon.enable = true;
+  services.kmscon.extraConfig = ''
+    xkb-layout=fr
+    xkb-variant=fr
+  '';
   services.openssh.enable = true;
   services.printing.enable = true;
+  services.printing.drivers = [ pkgs.hplip ];
+  services.printing.startWhenNeeded = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -158,6 +181,7 @@
     enable = true;
     layout = "fr";
     dpi = 192;
+    #videoDrivers = [ "intel" ];
     videoDrivers = [ "nvidia" ];
     libinput = {
       enable = true;
@@ -179,7 +203,8 @@
 
   users.users.jeremie = {
     isNormalUser = true;
-    extraGroups = [ "docker" "networkmanager" "vboxusers" "video" "wheel" ];
+    extraGroups =
+      [ "docker" "lp" "networkmanager" "vboxusers" "video" "wheel" ];
     shell = pkgs.zsh;
   };
 
@@ -189,7 +214,12 @@
   nix.autoOptimiseStore = true;
   nix.gc.automatic = true;
 
+  system.activationScripts = {
+    shebangFix = ''
+      ln -fs ${pkgs.bash}/bin/bash /bin/bash
+    '';
+  };
+
   system.stateVersion = "19.09";
 
 }
-
