@@ -9,7 +9,7 @@
     <home-manager/nixos>
     <nixos-hardware/lenovo/thinkpad/x1-extreme/gen2>
     ./hardware-configuration.nix
-    ./custom-pkgs
+    ../../custom-pkgs
   ];
 
   hardware.nvidia.modesetting.enable = true;
@@ -209,7 +209,7 @@
   };
 
   home-manager.useUserPackages = true;
-  home-manager.users.jeremie = import ./home;
+  home-manager.users.jeremie = import ../../home;
 
   nix.autoOptimiseStore = true;
   nix.gc.automatic = true;
