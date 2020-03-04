@@ -16,9 +16,9 @@ pkgs.writeScriptBin "battery-alert" ''
   fi
 
   if [ $1 -le 10 ] ; then
-    ALERT_CMD="$XOSD_LARGE --colour=red --pos=bottom --barmode=percentage --percentage=$1 -T 'CRITICAL BATTERY LEVEL'"
+    ALERT_CMD="$XOSD_LARGE --colour=red --pos=bottom --barmode=percentage --percentage=$1 -T \"CRITICAL BATTERY LEVEL\""
   elif [ $1 -le 30 ] ; then
-    ALERT_CMD="$XOSD_LARGE --colour=yellow --pos=bottom --barmode=percentage --percentage=$1 -T 'LOW BATTERY'"
+    ALERT_CMD="$XOSD_LARGE --colour=yellow --pos=bottom --barmode=percentage --percentage=$1 -T \"LOW BATTERY\""
   else
     ALERT_CMD="$XOSD_LARGE --colour=green --pos=bottom --barmode=percentage --percentage=$1"
   fi

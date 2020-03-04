@@ -83,8 +83,8 @@
 
     # critical battery level action
     SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-3]", RUN+="${pkgs.systemd}/bin/systemctl suspend"
-    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[4-9]|10", RUN+="${pkgs.battery-alert}/bin/battery-alert $attr{capacity}"
-    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="2[0-9]|30", RUN+="${pkgs.battery-alert}/bin/battery-alert $attr{capacity}"
+    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[4-10]", RUN+="${pkgs.battery-alert}/bin/battery-alert $attr{capacity}"
+    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[11-30]", RUN+="${pkgs.battery-alert}/bin/battery-alert $attr{capacity}"
 
     # Happlink (formerly Plug-Up) Security KEY
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2581", ATTRS{idProduct}=="f1d0", TAG+="uaccess", GROUP="plugdev", MODE="0660"
