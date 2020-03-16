@@ -229,6 +229,7 @@ in {
     };
     gpg-agent.enable = true;
     gpg-agent.enableScDaemon = false;
+    gpg-agent.pinentryFlavor = "qt";
     udiskie.enable = true;
     network-manager-applet.enable = true;
     screen-locker = {
@@ -348,4 +349,5 @@ in {
     ];
   };
 
+  home.stateVersion = "20.03";
 }

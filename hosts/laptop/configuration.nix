@@ -6,10 +6,10 @@
 
 {
   imports = [
-    <home-manager/nixos>
     <nixos-hardware/lenovo/thinkpad/x1-extreme/gen2>
     ./hardware-configuration.nix
     ../../custom-pkgs
+    ../../home-manager/nixos
   ];
 
   hardware.nvidia.modesetting.enable = true;
@@ -17,7 +17,6 @@
   hardware.nvidia.optimus_prime.intelBusId = "PCI:0:2:0";
   hardware.nvidia.optimus_prime.nvidiaBusId = "PCI:1:0:0";
 
-  boot.earlyVconsoleSetup = true;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.configurationLimit = 20;
@@ -35,12 +34,11 @@
     options snd_hda_intel power_save=1
   '';
   boot.cleanTmpDir = true;
-  boot.initrd.luks.devices = [{
-    name = "pv-enc-opened";
+  boot.initrd.luks.devices.pv-enc-opened = {
     device = "/dev/nvme0n1p2";
     preLVM = true;
     allowDiscards = true;
-  }];
+  };
 
   fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
   fileSystems."/home".options = [ "noatime" "nodiratime" "discard" ];
@@ -93,6 +91,12 @@
   networking.hostName = "laptop";
   networking.enableIPv6 = false;
   networking.networkmanager.enable = true;
+  networking.extraHosts = ''
+    192.168.10.12 printer.oberthur.local
+    127.0.1.1 ansible
+    127.0.1.1 medium
+    127.0.1.1 small
+  '';
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -103,12 +107,13 @@
   services.fprintd.enable = true;
   services.fprintd.package = pkgs.fprintd-thinkpad;
 
-  i18n = {
-    consoleFont = "latarcyrheb-sun32";
-    consoleKeyMap = "fr";
-    defaultLocale = "en_US.UTF-8";
+  console = {
+    earlySetup = true;
+    font = "latarcyrheb-sun32";
+    keyMap = "fr";    
   };
 
+  i18n.defaultLocale = "en_US.UTF-8";
   time.timeZone = "Europe/Paris";
 
   fonts = {
@@ -171,10 +176,7 @@
   hardware.pulseaudio.extraModules = [ pkgs.pulseaudio-modules-bt ];
   hardware.bluetooth.enable = true;
   hardware.bluetooth.package = pkgs.bluezFull;
-  hardware.bluetooth.extraConfig = ''
-    [General]
-    Enable=Source,Sink,Media,Socket
-  '';
+  hardware.bluetooth.config.General.Enable = "Source,Sink,Media,Socket";
   services.blueman.enable = true;
 
   services.xserver = {
@@ -191,15 +193,22 @@
       '';
       tappingDragLock = false;
     };
-    displayManager.auto = {
-      enable = true;
-      user = "jeremie";
+    displayManager = {
+      defaultSession = "none+i3";
+      lightdm = {
+        enable = true;
+        autoLogin = {
+          enable = true;
+          user = "jeremie";
+        };
+      };
     };
+    windowManager.i3.enable = true;
   };
 
   virtualisation.docker.enable = true;
-  virtualisation.virtualbox.host.enable = true;
-  virtualisation.virtualbox.host.enableExtensionPack = true;
+  #virtualisation.virtualbox.host.enable = true;
+  #virtualisation.virtualbox.host.enableExtensionPack = true;
 
   users.users.jeremie = {
     isNormalUser = true;
@@ -220,6 +229,6 @@
     '';
   };
 
-  system.stateVersion = "19.09";
+  system.stateVersion = "20.03";
 
 }
