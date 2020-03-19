@@ -36,10 +36,10 @@
   networking.interfaces.wlp2s0.useDHCP = true;
 
   # Select internationalisation properties.
-  i18n = {
-    consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "fr";
-    defaultLocale = "fr_FR.UTF-8";
+  i18n.defaultLocale = "fr_FR.UTF-8";
+  console = {
+    font = "Lat2-Terminus16";
+    keyMap = "fr";
   };
 
   # Set your time zone.
@@ -177,16 +177,20 @@
     libinput.enable = true;
     dpi = 140;
 
-    desktopManager.default = "none";
-    windowManager = {
-      default = "i3";
-      i3 = {
+    displayManager = {
+      defaultSession = "none+i3";
+      lightdm = {
         enable = true;
-        package = pkgs.i3-gaps;
+        autoLogin = {
+          enable = true;
+          user = "guest";
+        };
       };
     };
-    displayManager.auto.enable = true;
-    displayManager.auto.user = "guest";
+    windowManager.i3 = {
+      enable = true;
+      package = pkgs.i3-gaps;
+    };
   };
 
   users.users.guest = {
