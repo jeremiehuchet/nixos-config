@@ -78,7 +78,6 @@ in {
           "${mod}+o" = ''mode "${output}"'';
           "${mod}+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass";
           "${mod}+Shift+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass --last-used";
-          "${mod}+t" = "exec ${pkgs.rofi-translate}/bin/rofi_trans";
           "${mod}+Tab" = "exec rofi -show window";
           "${mod}+l" = "exec ${lockCmd}";
           "${mod}+r" = ''mode "${resize}"'';
