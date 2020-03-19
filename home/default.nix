@@ -1,6 +1,7 @@
 { pkgs, lib, ... }:
 
 let
+  unstable = import <nixos-unstable> { };
   lockCmd =
     "${pkgs.i3lock}/bin/i3lock --nofork --show-failed-attempts --ignore-empty-password --color 202020";
 in {
@@ -41,7 +42,6 @@ in {
     windowManager.i3 = {
       enable = true;
       config = let
-        mod = "Mod1";
         mod = "Mod4";
         ws1 = ''"1 "'';
         ws2 = ''"2 "'';
@@ -64,15 +64,20 @@ in {
       in {
         focus.followMouse = false;
         fonts = [ "Fira Code Retina 9" ];
-        floating.criteria = [{ class = "SimpleScreenRecorder"; }];
+        floating.criteria = [
+          { class = "SimpleScreenRecorder"; }
+          { instance = "sun-awt-X11-XDialogPeer"; }
+        ];
         modifier = "${mod}";
         keybindings = lib.mkOptionDefault {
           "${mod}+Return" =
             "exec ${pkgs.terminator}/bin/terminator --working-directory $(${pkgs.xcwd}/bin/xcwd)";
           "${mod}+d" = "exec ${pkgs.rofi}/bin/rofi -show run";
+          "${mod}+i" = "exec ${pkgs.rofimoji}/bin/rofimoji";
           "${mod}+o" = ''mode "${output}"'';
           "${mod}+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass";
           "${mod}+Shift+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass --last-used";
+          "${mod}+t" = "exec ${pkgs.rofi-translate}/bin/rofi_trans";
           "${mod}+Tab" = "exec rofi -show window";
           "${mod}+l" = "exec ${lockCmd}";
           "${mod}+r" = ''mode "${resize}"'';
@@ -239,14 +244,15 @@ in {
     };
     xsuspender = {
       enable = true;
-      rules."slack".matchWmClassContains = "Slack";
-      rules."chrome".matchWmClassContains = "Google-chrome";
+      rules."intellij".matchWmClassContains = "jetbrains-idea-ce";
+      rules."slack".matchWmClassContains = "slack";
     };
   };
 
   nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
+    unstable.android-studio
     docker-compose
     dolphin
     gimp
@@ -259,12 +265,14 @@ in {
     now-cli
     pass
     pyrandr
-    rofi-pass
     simplescreenrecorder
     slack
+    teams
     terminator
     vagrant
   ];
+
+  programs.broot.enable = true;
 
   programs.git = {
     enable = true;
@@ -298,7 +306,7 @@ in {
   programs.vscode = {
     enable = true;
     userSettings = {
-      "update.channel" = "none";
+      "update.mode" = "none";
       "editor.fontFamily" =
         "'Fira Code Retina', 'Noto Color Emoji', 'Font Awesome 5 Brands', 'Font Awesome 5 Free'";
       # font weight : 300 → light, 400 → regular, 500 → medium, 600 → bold
@@ -306,6 +314,8 @@ in {
       "editor.fontLigatures" = true;
       "files.autoSave" = "onFocusChange";
       "[nix]"."editor.tabSize" = 2;
+      "java.home" = "${pkgs.jdk11}";
+      "local-history.path" = "~/.config/Code/local-history";
     };
   };
 
