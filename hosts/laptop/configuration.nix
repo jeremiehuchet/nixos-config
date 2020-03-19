@@ -112,11 +112,17 @@
   time.timeZone = "Europe/Paris";
 
   fonts = {
-    enableDefaultFonts = true;
+    enableDefaultFonts = false;
     enableGhostscriptFonts = true;
     fontconfig.dpi = 192;
-    fontconfig.defaultFonts.emoji = [ "EmojiOne Color" ];
-    fonts = with pkgs; [ emojione fira-code nerdfonts ];
+    fontconfig.defaultFonts = {
+      emoji =
+        [ "Noto Color Emoji" "Font Awesome 5 Brands" "Font Awesome 5 Free" ];
+      monospace = [ "Fira Code Retina" ];
+      sansSerif = [ "Noto Sans" ];
+      serif = [ "Noto Sans Serif" ];
+    };
+    fonts = with pkgs; [ font-awesome noto-fonts-emoji fira-code noto-fonts ];
   };
 
   nixpkgs.config.allowUnfree = true;

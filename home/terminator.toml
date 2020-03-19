@@ -15,7 +15,7 @@
 [profiles]
   [[default]]
     cursor_color = "#aaaaaa"
-    font = NotoSansMono Nerd Font 10
+    font = Fira Code Retina 10
     scrollback_lines = 50000
     show_titlebar = False
     use_system_font = False

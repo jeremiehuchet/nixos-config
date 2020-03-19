@@ -42,9 +42,10 @@ in {
       enable = true;
       config = let
         mod = "Mod1";
-        ws1 = ''"1 "'';
+        mod = "Mod4";
+        ws1 = ''"1 "'';
         ws2 = ''"2 "'';
-        ws3 = ''"3 "'';
+        ws3 = ''"3 "'';
         ws4 = ''"4 "'';
         ws5 = ''"5 "'';
         ws6 = ''"6 "'';
@@ -62,7 +63,7 @@ in {
           "System Control [S for shutdown, R for restart, E for logout, L for lock]";
       in {
         focus.followMouse = false;
-        fonts = [ "NotoSansMono 8" ];
+        fonts = [ "Fira Code Retina 9" ];
         floating.criteria = [{ class = "SimpleScreenRecorder"; }];
         modifier = "${mod}";
         keybindings = lib.mkOptionDefault {
@@ -181,7 +182,7 @@ in {
           position = "top";
           statusCommand =
             "${pkgs.i3status-rust}/bin/i3status-rs ~/.config/i3/status.toml";
-          fonts = [ "NotoSansMono 8" ];
+          fonts = [ "Fira Code Retina 9" ];
         }];
       };
     };
@@ -203,7 +204,7 @@ in {
           frame_color = "#aaaaaa";
           separator_height = 2;
           separator_color = "frame";
-          font = "Noto Sans Mono 12";
+          font = "Fira Code Retina 12";
           icon_position = "left";
           max_icon_size = 32;
           browser = "${pkgs.google-chrome}/bin/google-chrome-stable";
@@ -281,7 +282,7 @@ in {
         fontui = ''
           -family \"Noto Sans\" -size 12 -weight normal -slant roman -underline 0 -overstrike 0'';
         fontdiff = ''
-          -family \"Noto Sans Mono\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0'';
+          -family \"Fira Code Retina\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0'';
       };
     };
   };
@@ -298,7 +299,8 @@ in {
     enable = true;
     userSettings = {
       "update.channel" = "none";
-      "editor.fontFamily" = "'Fira Code', 'Noto Color Emoji'";
+      "editor.fontFamily" =
+        "'Fira Code Retina', 'Noto Color Emoji', 'Font Awesome 5 Brands', 'Font Awesome 5 Free'";
       # font weight : 300 → light, 400 → regular, 500 → medium, 600 → bold
       "editor.fontWeight" = "400";
       "editor.fontLigatures" = true;
