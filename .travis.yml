@@ -1,0 +1,8 @@
+language: minimal
+env:
+  - HOST=laptop
+  - HOST=tv
+script:
+  - docker build -t system-configuration-tester .travis
+  - cp .travis/secrets-mock.nix hosts/tv/secrets.nix
+  - docker run -it -v $PWD:/configuration system-configuration-tester hosts/$HOST/configuration.nix

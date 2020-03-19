@@ -269,6 +269,7 @@ in {
     slack
     teams
     terminator
+    unstable.travis
     vagrant
   ];
 
