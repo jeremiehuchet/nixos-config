@@ -3,8 +3,7 @@ env:
   - HOST=laptop
     NIX_RELEASE=20.03
   - HOST=tv
-    NIX_RELEASE=19.09
+    NIX_RELEASE=20.03
 script:
   - docker build -t system-configuration-tester .travis
-  - cp .travis/secrets-mock.nix secrets.nix
   - docker run -it -v $PWD:/configuration system-configuration-tester $NIX_RELEASE hosts/$HOST/configuration.nix

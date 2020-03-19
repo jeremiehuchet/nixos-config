@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 
 let
-  unstable = import <nixos-unstable> { };
+  unstable = import <nixpkgs-unstable> { };
   lockCmd =
     "${pkgs.i3lock}/bin/i3lock --nofork --show-failed-attempts --ignore-empty-password --color 202020 --image "
     + ./screen-locker.png;

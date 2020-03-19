@@ -1,3 +1,4 @@
 FROM nixos/nix
 VOLUME /configuration
-ENTRYPOINT [ "/configuration/.travis/entrypoint.sh" ]
+ENTRYPOINT [ "/builder.sh" ]
+ADD builder.sh /

@@ -1,3 +1,0 @@
-{
-  wireless.psk = "secret";
-}
