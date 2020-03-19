@@ -43,7 +43,8 @@
   fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
   fileSystems."/home".options = [ "noatime" "nodiratime" "discard" ];
   fileSystems."/var/lib/docker".options = [ "noatime" "nodiratime" "discard" ];
-  fileSystems."/var/lib/machines".options = [ "noatime" "nodiratime" "discard" ];
+  fileSystems."/var/lib/machines".options =
+    [ "noatime" "nodiratime" "discard" ];
   fileSystems."/nix".options = [ "noatime" "nodiratime" "discard" ];
 
   powerManagement.powertop.enable = true;
@@ -70,7 +71,7 @@
     # enable nvidia power management
     #"w /sys/bus/pci/devices/0000:01:00.0/power/control - - - - on"
     # disable wake-on-lan
-    #"w /sys/class/net/*/device/power/wakeup - - - - disabled"
+    "w /sys/class/net/*/device/power/wakeup - - - - disabled"
   ];
 
   services.udev.extraRules = ''
@@ -81,8 +82,9 @@
 
     # critical battery level action
     SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-3]", RUN+="${pkgs.systemd}/bin/systemctl suspend"
-    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[4-10]", RUN+="${pkgs.battery-alert}/bin/battery-alert $attr{capacity}"
-    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[11-30]", RUN+="${pkgs.battery-alert}/bin/battery-alert $attr{capacity}"
+    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[4-9]", RUN+="${pkgs.battery-alert}/bin/battery-alert $attr{capacity}"
+    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[1-2][0-9]", RUN+="${pkgs.battery-alert}/bin/battery-alert $attr{capacity}"
+    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[3-5][0-9]", RUN+="${pkgs.battery-alert}/bin/battery-alert $attr{capacity}"
 
     # Happlink (formerly Plug-Up) Security KEY
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2581", ATTRS{idProduct}=="f1d0", TAG+="uaccess", GROUP="plugdev", MODE="0660"
@@ -93,14 +95,7 @@
   networking.networkmanager.enable = true;
   networking.extraHosts = ''
     192.168.10.12 printer.oberthur.local
-    127.0.1.1 ansible
-    127.0.1.1 medium
-    127.0.1.1 small
   '';
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   security.sudo.extraConfig = "Defaults timestamp_timeout=10";
   security.pam.services.sudo.fprintAuth = true;
@@ -110,7 +105,7 @@
   console = {
     earlySetup = true;
     font = "latarcyrheb-sun32";
-    keyMap = "fr";    
+    keyMap = "fr";
   };
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -145,14 +140,11 @@
     vim
   ];
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = { enable = true; enableSSHSupport = true; };
   programs.light.enable = true;
   programs.vim.defaultEditor = true;
   programs.zsh.enable = true;
-  programs.zsh.promptInit = "any-nix-shell zsh --info-right | source /dev/stdin";
+  programs.zsh.promptInit =
+    "any-nix-shell zsh --info-right | source /dev/stdin";
 
   services.kmscon.enable = true;
   services.kmscon.extraConfig = ''
@@ -163,12 +155,6 @@
   services.printing.enable = true;
   services.printing.drivers = [ pkgs.hplip ];
   services.printing.startWhenNeeded = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
 
   sound.enable = true;
   hardware.pulseaudio.enable = true;
@@ -183,7 +169,6 @@
     enable = true;
     layout = "fr";
     dpi = 192;
-    #videoDrivers = [ "intel" ];
     videoDrivers = [ "nvidia" ];
     libinput = {
       enable = true;

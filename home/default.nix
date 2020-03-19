@@ -340,13 +340,11 @@ in {
       "systemd"
       "vagrant"
     ];
-    plugins = [
-      {
-        name = "zsh-syntax-highlighting";
-        file = "share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
-        src = pkgs.zsh-syntax-highlighting;
-      }
-    ];
+    plugins = [{
+      name = "zsh-syntax-highlighting";
+      file = "share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
+      src = pkgs.zsh-syntax-highlighting;
+    }];
   };
 
   home.stateVersion = "20.03";
