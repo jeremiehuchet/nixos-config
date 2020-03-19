@@ -1,4 +1,4 @@
-{ lib, python3,  python3Packages, fetchFromGitHub }:
+{ lib, python37, python3Packages, fetchFromGitHub, git }:
 
 python3Packages.buildPythonApplication rec {
   pname = "bazarr";
@@ -18,8 +18,14 @@ python3Packages.buildPythonApplication rec {
   propagatedBuildInputs = with python3Packages; [ lxml ];
 
   installPhase = ''
-    mkdir -p $out
-    cp -r * $out
+    mkdir -p $out/bin $out/usr/share/bazarr
+    cp -r * $out/usr/share/bazarr
+    cat - <<EOF > $out/bin/bazarr
+    #!/bin/sh
+    export GIT_PYTHON_GIT_EXECUTABLE=${git}/bin/git
+    ${python37}/bin/python $out/usr/share/bazarr/bazarr.py \$*
+    EOF
+    chmod +x $out/bin/bazarr
   '';
 
   meta = with lib; {

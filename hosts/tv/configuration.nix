@@ -31,7 +31,7 @@
   networking.hostName = "tv";
   networking.enableIPv6 = false;
   networking.wireless.enable = true;
-  networking.wireless.networks."L'internet de J".psk = (import ./secrets.nix).wireless.psk;
+  networking.wireless.networks."L'internet de J".psk = (import ../../secrets.nix).wireless.psk;
   networking.interfaces.enp1s0.useDHCP = true;
   networking.interfaces.wlp2s0.useDHCP = true;
 
@@ -48,9 +48,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.packageOverrides = pkgs: rec {
-    bazarr = pkgs.callPackage ./bazarr.nix { };
-  };
 
   programs.vim.defaultEditor = true;
 
@@ -157,6 +154,19 @@
     user = "guest";
     group = "users";
     dataDir = "/home/guest/sonarr";
+  };
+
+  systemd.services.bazarr = {
+    description = "Bazarr";
+    after = [ "network.target" "sonarr.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "simple";
+      User = "guest";
+      Group = "users";
+      ExecStart = "${pkgs.bazarr}/bin/bazarr -c /home/guest/bazarr";
+      Restart = "on-failure";
+    };
   };
 
   # Enable the X11 windowing system.
