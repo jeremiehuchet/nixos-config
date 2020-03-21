@@ -70,6 +70,9 @@ in {
           { instance = "sun-awt-X11-XDialogPeer"; }
         ];
         modifier = "${mod}";
+        startup = [
+          { command = " i3-msg workspace ${ws1}"; notification = false; }
+        ];
         keybindings = lib.mkOptionDefault {
           "${mod}+Return" =
             "exec ${pkgs.terminator}/bin/terminator --working-directory $(${pkgs.xcwd}/bin/xcwd)";
