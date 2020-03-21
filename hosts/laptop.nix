@@ -5,35 +5,25 @@
 { config, pkgs, ... }:
 
 {
-  imports = [
-    <nixos-hardware/lenovo/thinkpad/x1-extreme/gen2>
-    ./hardware-configuration.nix
-    ../../custom-pkgs
-    ../../home-manager/nixos
-  ];
+  imports =
+    [ ./laptop/hardware-configuration.nix ./common.nix ../home ../custom-pkgs ];
+
+  i18n.defaultLocale = "en_US.UTF-8";
 
   hardware.nvidia.modesetting.enable = true;
   hardware.nvidia.optimus_prime.enable = true;
   hardware.nvidia.optimus_prime.intelBusId = "PCI:0:2:0";
   hardware.nvidia.optimus_prime.nvidiaBusId = "PCI:1:0:0";
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.systemd-boot.configurationLimit = 20;
   boot.loader.systemd-boot.consoleMode = "max";
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.supportedFilesystems = [ "btrfs" ];
-  #  boot.kernel.sysctl = {
-  #    "kernel.nmi_watchdog" = 0;
-  #    "vm.dirty_writeback_centisecs" = 6000;
-  #  };
   boot.extraModprobeConfig = ''
     # oled backlight
     options i915 enable_dpcd_backlight=1
     # audio power management
     options snd_hda_intel power_save=1
   '';
-  boot.cleanTmpDir = true;
   boot.initrd.luks.devices.pv-enc-opened = {
     device = "/dev/nvme0n1p2";
     preLVM = true;
@@ -74,6 +64,25 @@
     "w /sys/class/net/*/device/power/wakeup - - - - disabled"
   ];
 
+  networking.hostName = "laptop";
+  networking.enableIPv6 = false;
+  networking.networkmanager.enable = true;
+  networking.extraHosts = ''
+    192.168.10.12 printer.oberthur.local
+  '';
+
+  console.font = "latarcyrheb-sun32";
+
+  programs.light.enable = true;
+
+  environment.systemPackages = with pkgs; [ btrfs-progs ];
+
+  services.openssh.enable = true;
+
+  security.pam.services.sudo.fprintAuth = true;
+  services.fprintd.enable = true;
+  services.fprintd.package = pkgs.fprintd-thinkpad;
+
   services.udev.extraRules = ''
     # network cards
     SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="60:f2:62:15:55:db", NAME="wireless"
@@ -90,74 +99,6 @@
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2581", ATTRS{idProduct}=="f1d0", TAG+="uaccess", GROUP="plugdev", MODE="0660"
   '';
 
-  networking.hostName = "laptop";
-  networking.enableIPv6 = false;
-  networking.networkmanager.enable = true;
-  networking.extraHosts = ''
-    192.168.10.12 printer.oberthur.local
-  '';
-
-  security.sudo.extraConfig = "Defaults timestamp_timeout=10";
-  security.pam.services.sudo.fprintAuth = true;
-  services.fprintd.enable = true;
-  services.fprintd.package = pkgs.fprintd-thinkpad;
-
-  console = {
-    earlySetup = true;
-    font = "latarcyrheb-sun32";
-    keyMap = "fr";
-  };
-
-  i18n.defaultLocale = "en_US.UTF-8";
-  time.timeZone = "Europe/Paris";
-
-  fonts = {
-    enableDefaultFonts = false;
-    enableGhostscriptFonts = true;
-    fontconfig.dpi = 192;
-    fontconfig.defaultFonts = {
-      emoji =
-        [ "Noto Color Emoji" "Font Awesome 5 Brands" "Font Awesome 5 Free" ];
-      monospace = [ "Fira Code Retina" ];
-      sansSerif = [ "Noto Sans" ];
-      serif = [ "Noto Sans Serif" ];
-    };
-    fonts = with pkgs; [ font-awesome noto-fonts-emoji fira-code noto-fonts ];
-  };
-
-  nixpkgs.config.allowUnfree = true;
-
-  environment.pathsToLink = [ "/share/zsh" ];
-
-  environment.systemPackages = with pkgs; [
-    any-nix-shell
-    btrfs-progs
-    dfc
-    git
-    jq
-    hicolor-icon-theme
-    htop
-    kdeFrameworks.breeze-icons
-    libu2f-host
-    lm_sensors
-    p7zip
-    pretty-nixos-rebuild
-    tree
-    vim
-  ];
-
-  programs.light.enable = true;
-  programs.vim.defaultEditor = true;
-  programs.zsh.enable = true;
-  programs.zsh.promptInit =
-    "any-nix-shell zsh --info-right | source /dev/stdin";
-
-  services.kmscon.enable = true;
-  services.kmscon.extraConfig = ''
-    xkb-layout=fr
-    xkb-variant=fr
-  '';
-  services.openssh.enable = true;
   services.printing.enable = true;
   services.printing.drivers = [ pkgs.hplip ];
   services.printing.startWhenNeeded = true;
@@ -172,9 +113,6 @@
   services.blueman.enable = true;
 
   services.xserver = {
-    enable = true;
-    layout = "fr";
-    dpi = 192;
     videoDrivers = [ "nvidia" ];
     libinput = {
       enable = true;
@@ -184,17 +122,6 @@
       '';
       tappingDragLock = false;
     };
-    displayManager = {
-      defaultSession = "none+i3";
-      lightdm = {
-        enable = true;
-        autoLogin = {
-          enable = true;
-          user = "jeremie";
-        };
-      };
-    };
-    windowManager.i3.enable = true;
   };
 
   virtualisation.docker.enable = true;
@@ -205,21 +132,18 @@
     isNormalUser = true;
     extraGroups =
       [ "docker" "lp" "networkmanager" "vboxusers" "video" "wheel" ];
-    shell = pkgs.zsh;
   };
 
-  home-manager.useUserPackages = true;
-  home-manager.users.jeremie = import ../../home;
-
-  nix.autoOptimiseStore = true;
-  nix.gc.automatic = true;
-
-  system.activationScripts = {
-    shebangFix = ''
-      ln -fs ${pkgs.bash}/bin/bash /bin/bash
-    '';
+  custom = {
+    dpi = 192;
+    xserver.autoLogin = "jeremie";
+    xserver.primaryOutput = "DP-2";
+    home.root.cliTools.enable = true;
+    home.jeremie.cliTools.enable = true;
+    home.jeremie.guiTools.enable = true;
+    home.jeremie.guiTools.i3statusRustConfig = ./laptop/i3status-rust.toml;
+    home.jeremie.devTools.enable = true;
   };
 
   system.stateVersion = "20.03";
-
 }

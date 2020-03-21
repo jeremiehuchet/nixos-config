@@ -6,4 +6,4 @@ env:
     NIX_RELEASE=20.03
 script:
   - docker build -t system-configuration-tester .travis
-  - docker run -it -v $PWD:/configuration system-configuration-tester $NIX_RELEASE hosts/$HOST/configuration.nix
+  - docker run -it -v $PWD:/configuration system-configuration-tester $NIX_RELEASE hosts/$HOST.nix
