@@ -275,6 +275,7 @@ in {
           };
           xsuspender = {
             enable = true;
+            defaults.suspendDelay = 300;
             rules."intellij".matchWmClassContains = "jetbrains-idea-ce";
             rules."slack".matchWmClassContains = "slack";
           };
