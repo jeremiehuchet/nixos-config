@@ -19,7 +19,6 @@
           cachix
           dfc
           nur.gitmoji-cli
-          htop
           httpie
           jq
           nixfmt
@@ -54,6 +53,28 @@
                 -family \"Fira Code Retina\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0'';
             };
           };
+        };
+
+        programs.htop = {
+          enable = true;
+          detailedCpuTime = true;
+          showProgramPath = false;
+          meters.left = [ "LeftCPUs2" "Memory" "Swap" ];
+          meters.right = [
+            "RightCPUs2"
+            {
+              kind = "Tasks";
+              mode = 2;
+            }
+            {
+              kind = "LoadAverage";
+              mode = 2;
+            }
+            {
+              kind = "Uptime";
+              mode = 2;
+            }
+          ];
         };
 
         programs.vim = {
