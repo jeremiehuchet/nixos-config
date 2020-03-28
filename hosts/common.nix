@@ -68,6 +68,7 @@ with lib;
 
     environment.systemPackages = with pkgs; [
       any-nix-shell
+      gitAndTools.gitFull
       hicolor-icon-theme
       kdeFrameworks.breeze-icons
       libu2f-host

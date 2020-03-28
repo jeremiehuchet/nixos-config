@@ -86,6 +86,8 @@ in {
               fonts = [ "Fira Code Retina 9" ];
               floating.criteria = [
                 { class = "SimpleScreenRecorder"; }
+                { class = "Git-gui"; }
+                { class = "Gitk"; }
                 { instance = "sun-awt-X11-XDialogPeer"; }
               ];
               modifier = "${mod}";
