@@ -25,6 +25,7 @@
           pass
           pretty-nixos-rebuild
           pyrandr
+          speedtest-cli
           tree
         ];
 

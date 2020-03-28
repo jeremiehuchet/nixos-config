@@ -12,8 +12,12 @@ in {
         home.packages = with pkgs; [
           unstable.android-studio
           docker-compose
+          nur.gitmoji-cli
           jetbrains.idea-community
           nur.now
+          openjdk11
+          slack
+          teams
           unstable.travis
           vagrant
         ];
