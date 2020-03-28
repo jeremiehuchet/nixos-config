@@ -13,7 +13,7 @@ in {
           unstable.android-studio
           docker-compose
           jetbrains.idea-community
-          now-cli
+          nur.now
           unstable.travis
           vagrant
         ];
