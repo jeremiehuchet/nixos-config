@@ -16,7 +16,9 @@
       lib.mkIf userCfg.cliTools.enable {
 
         home.packages = with pkgs; [
+          cachix
           dfc
+          nur.gitmoji-cli
           htop
           httpie
           jq
@@ -28,6 +30,8 @@
           speedtest-cli
           tree
         ];
+
+        xdg.configFile."gitmoji-nodejs/config.json".source = ./gitmoji.json;
 
         programs.broot.enable = true;
 

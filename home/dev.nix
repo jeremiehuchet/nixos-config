@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 
-let unstable = import <nixpkgs-unstable> { };
-in {
+{
   imports = [ ../home-manager/nixos ];
 
   config = {
@@ -12,7 +11,6 @@ in {
         home.packages = with pkgs; [
           unstable.android-studio
           docker-compose
-          nur.gitmoji-cli
           jetbrains.idea-community
           nur.now
           openjdk11
