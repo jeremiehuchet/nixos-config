@@ -125,8 +125,8 @@
   };
 
   virtualisation.docker.enable = true;
-  #virtualisation.virtualbox.host.enable = true;
-  #virtualisation.virtualbox.host.enableExtensionPack = true;
+  virtualisation.virtualbox.host.enable = true;
+  virtualisation.virtualbox.host.enableExtensionPack = true;
 
   users.users.jeremie = {
     isNormalUser = true;
