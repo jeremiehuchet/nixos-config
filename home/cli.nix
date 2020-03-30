@@ -25,7 +25,7 @@
           p7zip
           pass
           pretty-nixos-rebuild
-          pyrandr
+          nur.pyrandr
           speedtest-cli
           tree
         ];
@@ -42,6 +42,7 @@
           aliases = {
             co = "checkout";
             ci = "commit";
+            mj = "!gitmoji -c";
             st = "status";
             glog = "log --graph --oneline --decorate --all";
           };

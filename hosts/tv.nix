@@ -111,7 +111,7 @@ in {
       Type = "simple";
       User = "guest";
       Group = "users";
-      ExecStart = "${pkgs.bazarr}/bin/bazarr -c /home/guest/bazarr";
+      ExecStart = "${pkgs.nur.bazarr}/bin/bazarr -c /home/guest/bazarr";
       Restart = "on-failure";
       TimeoutStopSec = 3;
     };

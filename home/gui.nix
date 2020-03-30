@@ -44,7 +44,7 @@ in {
           enable = true;
           initExtra = ''
             ${pkgs.xorg.xrandr}/bin/xrandr --dpi ${cfg.dpi} --output ${cfg.primaryOutput} --primary
-            ${pkgs.pyrandr}/bin/pyrandr --laptop-only
+            ${pkgs.nur.pyrandr}/bin/pyrandr --laptop-only
             ${pkgs.xorg.xbacklight}/bin/xbacklight -set $(cat ~/.config/i3/backlight.state)
             ${pkgs.xorg.xhost}/bin/xhost si:localuser:root
           '';
@@ -99,7 +99,7 @@ in {
                 "${mod}+Return" =
                   "exec ${pkgs.terminator}/bin/terminator --working-directory $(${pkgs.xcwd}/bin/xcwd)";
                 "${mod}+d" = "exec ${pkgs.rofi}/bin/rofi -show run";
-                "${mod}+i" = "exec ${pkgs.rofimoji}/bin/rofimoji";
+                "${mod}+i" = "exec ${pkgs.nur.rofimoji}/bin/rofimoji";
                 "${mod}+o" = ''mode "${output}"'';
                 "${mod}+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass";
                 "${mod}+Shift+p" =
@@ -151,21 +151,21 @@ in {
               modes = {
                 "${output}" = {
                   l =
-                    "exec ${pkgs.pyrandr}/bin/pyrandr --laptop-only ; mode default";
+                    "exec ${pkgs.nur.pyrandr}/bin/pyrandr --laptop-only ; mode default";
                   e =
-                    "exec ${pkgs.pyrandr}/bin/pyrandr --external-only ; mode default";
+                    "exec ${pkgs.nur.pyrandr}/bin/pyrandr --external-only ; mode default";
                   c =
-                    "exec ${pkgs.pyrandr}/bin/pyrandr --position center-of-laptop";
+                    "exec ${pkgs.nur.pyrandr}/bin/pyrandr --position center-of-laptop";
                   Left =
-                    "exec ${pkgs.pyrandr}/bin/pyrandr --position left-of-laptop";
+                    "exec ${pkgs.nur.pyrandr}/bin/pyrandr --position left-of-laptop";
                   Right =
-                    "exec ${pkgs.pyrandr}/bin/pyrandr --position right-of-laptop";
+                    "exec ${pkgs.nur.pyrandr}/bin/pyrandr --position right-of-laptop";
                   Up =
-                    "exec ${pkgs.pyrandr}/bin/pyrandr --position above-laptop";
+                    "exec ${pkgs.nur.pyrandr}/bin/pyrandr --position above-laptop";
                   Down =
-                    "exec ${pkgs.pyrandr}/bin/pyrandr --position below-laptop";
-                  Prior = "exec ${pkgs.pyrandr}/bin/pyrandr --zoom 30";
-                  Next = "exec ${pkgs.pyrandr}/bin/pyrandr --zoom -30";
+                    "exec ${pkgs.nur.pyrandr}/bin/pyrandr --position below-laptop";
+                  Prior = "exec ${pkgs.nur.pyrandr}/bin/pyrandr --zoom 30";
+                  Next = "exec ${pkgs.nur.pyrandr}/bin/pyrandr --zoom -30";
                   "Control+Left" = "move workspace to output left";
                   "Control+Right" = "move workspace to output right";
                   "Control+Up" = "move workspace to output top";
