@@ -11,9 +11,11 @@
         home.packages = with pkgs; [
           unstable.android-studio
           docker-compose
+          gitAndTools.hub
           jetbrains.idea-community
           nur.now
           openjdk11
+          shellcheck
           slack
           teams
           unstable.travis
