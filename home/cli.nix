@@ -17,6 +17,7 @@
 
         home.packages = with pkgs; [
           cachix
+          nur.ccat
           dfc
           nur.gitmoji-cli
           httpie
@@ -99,7 +100,6 @@
           oh-my-zsh.plugins = [
             "ansible"
             "colored-man-pages"
-            "colorize"
             "git"
             "git-extras"
             "gradle"
