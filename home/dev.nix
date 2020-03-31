@@ -12,6 +12,7 @@
           unstable.android-studio
           docker-compose
           gitAndTools.hub
+          graphviz
           jetbrains.idea-community
           nur.now
           openjdk11
