@@ -35,6 +35,15 @@
 
         programs.broot.enable = true;
 
+        programs.direnv = {
+          enable = true;
+          enableZshIntegration = true;
+          config = {
+            bash_path = "${pkgs.bash}/bin/bash";
+            strict_env = true;
+          };
+        };
+
         programs.git = {
           enable = true;
           package = pkgs.gitAndTools.gitFull;
