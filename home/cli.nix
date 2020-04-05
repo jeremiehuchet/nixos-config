@@ -44,6 +44,7 @@
             strict_env = true;
           };
         };
+        xdg.configFile."direnv/direnvrc".source  = "${pkgs.nur.nix-direnv}/share/nix-direnv/direnvrc";
 
         programs.git = {
           enable = true;
