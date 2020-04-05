@@ -20,6 +20,7 @@
           nur.ccat
           dfc
           nur.gitmoji-cli
+          gnupg
           httpie
           jq
           nixfmt
