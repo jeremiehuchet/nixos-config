@@ -24,9 +24,10 @@
           docker-compose
           gitAndTools.hub
           graphviz
-          jetbrains.idea-community
+          unstable.jetbrains.idea-community
           nur.now
           openjdk11
+          remmina
           shellcheck
           slack
           teams

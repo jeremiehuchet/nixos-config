@@ -30,6 +30,7 @@
           nur.pyrandr
           speedtest-cli
           tree
+          wget
         ];
 
         xdg.configFile."gitmoji-nodejs/config.json".source = ./gitmoji.json;
