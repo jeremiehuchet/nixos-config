@@ -3,9 +3,19 @@
 NIX_RELEASE=$1
 CONFIG_PATH=$2
 
+mkdir -p /configuration/secrets
+touch \
+    /configuration/secrets/m1-ca.crt \
+    /configuration/secrets/m1-sshuttle-subnets \
+    /configuration/secrets/vpn0.p12 \
+    /configuration/secrets/vpn0.pem
+
 cat - <<EOF > /configuration/secrets.nix
 {
   wireless.psk = "secret";
+  vpn0.remoteIp = "secret";
+  vpn0.authUserPass.username = "secret";
+  vpn0.authUserPass.password = "secret";
 }
 EOF
 nix-channel --remove nixpkgs
