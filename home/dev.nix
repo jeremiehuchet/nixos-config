@@ -4,6 +4,17 @@
   imports = [ ../home-manager/nixos ];
 
   config = {
+
+    system.activationScripts = {
+      jdks = ''
+        mkdir -p /opt
+        chmod 777 /opt
+        rm -f /opt/openjdk{8,11}
+        ln -s ${pkgs.openjdk8} /opt/openjdk8
+        ln -s ${pkgs.openjdk11} /opt/openjdk11
+      '';
+    };
+
     home-manager.users = lib.mapAttrs (name: userCfg:
 
       lib.mkIf userCfg.devTools.enable {
