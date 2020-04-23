@@ -8,7 +8,7 @@
     unstable = import <nixpkgs-unstable> {
       # propagates "allowUnfree" config
       config = config.nixpkgs.config; };
-    nur = import <nur-packages> { };
+    nur = import <nur-packages> { inherit pkgs; };
 
     battery-alert = pkgs.callPackage ./battery-alert.nix { };
     pretty-nixos-rebuild = pkgs.callPackage ./pretty-nixos-rebuild.nix { };
