@@ -24,8 +24,6 @@ with lib;
 
     time.timeZone = "Europe/Paris";
 
-    nixpkgs.config.allowUnfree = true;
-
     security.sudo.extraConfig = "Defaults timestamp_timeout=10";
 
     fonts = {
