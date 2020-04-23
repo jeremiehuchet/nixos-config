@@ -1,9 +1,6 @@
 { config, pkgs, ... }:
 
-let
-  secrets = import ../secrets.nix;
-  secretsFile = ../secrets;
-in {
+{
   imports =
     [ ./laptop/hardware-configuration.nix ./common ../home ../custom-pkgs ];
 
@@ -102,20 +99,6 @@ in {
   services.printing.drivers = [ pkgs.hplip ];
   services.printing.startWhenNeeded = true;
 
-  services.openvpn.servers.vpn0 = {
-    authUserPass = secrets.vpn0.authUserPass;
-    config = ''
-      client
-      dev tun
-      proto udp
-      remote ${secrets.vpn0.remoteIp} 1194
-      pkcs12 ${secretsFile}/vpn0.p12
-      auth-user-pass
-      auth-nocache
-      cipher AES-256-CBC
-    '';
-  };
-
   sound.enable = true;
   hardware.pulseaudio.enable = true;
   hardware.pulseaudio.package = pkgs.pulseaudioFull;
@@ -156,6 +139,7 @@ in {
     home.jeremie.guiTools.enable = true;
     home.jeremie.guiTools.i3statusRustConfig = ./laptop/i3status-rust.toml;
     home.jeremie.devTools.enable = true;
+    m0.enable = true;
     m1.enable = true;
   };
 

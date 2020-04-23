@@ -3,7 +3,7 @@
 with lib;
 
 {
-  imports = [ ./m1.nix ];
+  imports = [ ./m0.nix ./m1.nix ];
 
   options = {
     custom = {
