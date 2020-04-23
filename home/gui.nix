@@ -98,6 +98,8 @@ in {
               keybindings = lib.mkOptionDefault {
                 "${mod}+Return" =
                   "exec ${pkgs.terminator}/bin/terminator --working-directory $(${pkgs.xcwd}/bin/xcwd)";
+                "${mod}+b" =
+                  "exec ${pkgs.nur.rofi-bookmarks}/bin/rofi-bookmarks";
                 "${mod}+d" = "exec ${pkgs.rofi}/bin/rofi -show run";
                 "${mod}+i" = "exec ${pkgs.nur.rofimoji}/bin/rofimoji";
                 "${mod}+o" = ''mode "${output}"'';
