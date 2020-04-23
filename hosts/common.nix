@@ -16,7 +16,7 @@ with lib;
   config = {
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
-    boot.loader.systemd-boot.configurationLimit = 40;
+    boot.loader.systemd-boot.configurationLimit = 30;
     boot.cleanTmpDir = true;
 
     console.earlySetup = true;
@@ -81,6 +81,8 @@ with lib;
 
     nix.autoOptimiseStore = true;
     nix.gc.automatic = true;
+    nix.gc.dates = "weekly";
+    nix.gc.options = "--delete-older-than 30d";
 
     system.activationScripts = {
       shebangFix = ''
