@@ -116,6 +116,9 @@ in {
     '';
   };
 
+  security.pki.certificates = [ (builtins.readFile ../secrets/m1-ca.crt) ];
+
+
   sound.enable = true;
   hardware.pulseaudio.enable = true;
   hardware.pulseaudio.package = pkgs.pulseaudioFull;
