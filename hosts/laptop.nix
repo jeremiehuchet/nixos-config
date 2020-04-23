@@ -1,10 +1,9 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
-{
+let
+  secrets = import ../secrets.nix;
+  secretsFile = ../secrets;
+in {
   imports =
     [ ./laptop/hardware-configuration.nix ./common.nix ../home ../custom-pkgs ];
 
@@ -102,6 +101,20 @@
   services.printing.enable = true;
   services.printing.drivers = [ pkgs.hplip ];
   services.printing.startWhenNeeded = true;
+
+  services.openvpn.servers.vpn0 = {
+    authUserPass = secrets.vpn0.authUserPass;
+    config = ''
+      client
+      dev tun
+      proto udp
+      remote ${secrets.vpn0.remoteIp} 1194
+      pkcs12 ${secretsFile}/vpn0.p12
+      auth-user-pass
+      auth-nocache
+      cipher AES-256-CBC
+    '';
+  };
 
   sound.enable = true;
   hardware.pulseaudio.enable = true;
