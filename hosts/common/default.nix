@@ -3,6 +3,8 @@
 with lib;
 
 {
+  imports = [ ./m1.nix ];
+
   options = {
     custom = {
       dpi = mkOption {

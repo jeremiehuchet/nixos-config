@@ -7,7 +7,7 @@
 let dpi = 140;
 in {
   imports =
-    [ ./tv/hardware-configuration.nix ./common.nix ../home ../custom-pkgs ];
+    [ ./tv/hardware-configuration.nix ./common ../home ../custom-pkgs ];
 
   i18n.defaultLocale = "fr_FR.UTF-8";
 

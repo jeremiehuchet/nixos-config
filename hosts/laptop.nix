@@ -5,7 +5,7 @@ let
   secretsFile = ../secrets;
 in {
   imports =
-    [ ./laptop/hardware-configuration.nix ./common.nix ../home ../custom-pkgs ];
+    [ ./laptop/hardware-configuration.nix ./common ../home ../custom-pkgs ];
 
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -116,9 +116,6 @@ in {
     '';
   };
 
-  security.pki.certificates = [ (builtins.readFile ../secrets/m1-ca.crt) ];
-
-
   sound.enable = true;
   hardware.pulseaudio.enable = true;
   hardware.pulseaudio.package = pkgs.pulseaudioFull;
@@ -159,6 +156,7 @@ in {
     home.jeremie.guiTools.enable = true;
     home.jeremie.guiTools.i3statusRustConfig = ./laptop/i3status-rust.toml;
     home.jeremie.devTools.enable = true;
+    m1.enable = true;
   };
 
   system.stateVersion = "20.03";
