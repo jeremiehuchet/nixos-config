@@ -1,15 +1,17 @@
 { config, lib, pkgs, ... }:
 
-let shuttleSubnets = ../../secrets/m1-sshuttle-subnets;
+let
+  cfg = config.custom.m1;
+  shuttleSubnets = ../../secrets/m1-sshuttle-subnets;
 in {
 
   options = { custom.m1.enable = lib.mkEnableOption "M1 tools"; };
 
-  config = {
+  config = lib.mkIf cfg.enable {
 
     security.pki.certificates = [ (builtins.readFile ../../secrets/m1-ca.crt) ];
 
-    systemd.services.m1-vpn-bridge = lib.mkIf config.custom.m1.enable {
+    systemd.services.m1-vpn-bridge = {
       description = "M1 VPN bridge";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];

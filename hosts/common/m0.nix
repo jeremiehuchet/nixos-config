@@ -1,12 +1,13 @@
 { config, lib, pkgs, ... }:
 
 let
+  cfg = config.custom.m0;
   secrets = import ../../secrets.nix;
   secretFiles = ../../secrets;
 in {
   options = { custom.m0.enable = lib.mkEnableOption "M0 tools"; };
 
-  config = {
+  config = lib.mkIf cfg.enable {
 
     services.openvpn.servers.vpn0 = {
       authUserPass = secrets.vpn0.authUserPass;
