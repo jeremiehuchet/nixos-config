@@ -1,6 +1,7 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
-{
+let secrets = import ../secrets.nix;
+in {
   imports =
     [ ./laptop/hardware-configuration.nix ./common ../home ../custom-pkgs ];
 
@@ -63,9 +64,11 @@
   networking.hostName = "laptop";
   networking.enableIPv6 = false;
   networking.networkmanager.enable = true;
-  networking.extraHosts = ''
-    192.168.10.12 printer.oberthur.local
-  '';
+  networking.networkmanager.dns = "dnsmasq";
+  environment.etc."NetworkManager/dnsmasq.d/additional-hosts.conf".text =
+    builtins.concatStringsSep "\n"
+    (lib.mapAttrsToList (host: addr: "address=/${host}/${addr}")
+      (secrets.hosts));
 
   console.font = "latarcyrheb-sun32";
 
