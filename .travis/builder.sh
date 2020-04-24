@@ -5,17 +5,19 @@ CONFIG_PATH=$2
 
 mkdir -p /configuration/secrets
 touch \
+    /configuration/secrets/m0-vpn-cert.p12 \
     /configuration/secrets/m1-ca.crt \
-    /configuration/secrets/m1-sshuttle-subnets \
-    /configuration/secrets/vpn0.p12 \
-    /configuration/secrets/vpn0.pem
+    /configuration/secrets/m1-dnsmasq.conf \
+    /configuration/secrets/m1-vpn-cert.p12
 
 cat - <<EOF > /configuration/secrets.nix
 {
   wireless.psk = "secret";
+  hosts = {};
   vpn0.remoteIp = "secret";
   vpn0.authUserPass.username = "secret";
   vpn0.authUserPass.password = "secret";
+  vpn1.remoteIp = "secret";
 }
 EOF
 nix-channel --remove nixpkgs

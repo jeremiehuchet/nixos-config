@@ -15,11 +15,11 @@ in {
         client
         dev tun
         proto udp
-        remote ${secrets.vpn0.remoteIp} 1194
-        pkcs12 ${secretFiles}/vpn0.p12
+        remote ${secrets.vpn0.remoteIp}
+        pkcs12 ${secretFiles}/m0-vpn-cert.p12
+        cipher AES-256-CBC
         auth-user-pass
         auth-nocache
-        cipher AES-256-CBC
       '';
     };
 

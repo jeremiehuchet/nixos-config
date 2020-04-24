@@ -2,7 +2,8 @@
 
 let
   cfg = config.custom.m1;
-  shuttleSubnets = ../../secrets/m1-sshuttle-subnets;
+  secrets = import ../../secrets.nix;
+  secretFiles = ../../secrets;
 in {
 
   options = { custom.m1.enable = lib.mkEnableOption "M1 tools"; };
@@ -11,16 +12,19 @@ in {
 
     security.pki.certificates = [ (builtins.readFile ../../secrets/m1-ca.crt) ];
 
-    systemd.services.m1-vpn-bridge = {
-      description = "M1 VPN bridge";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "simple";
-        ExecStart =
-          "${pkgs.sshuttle}/bin/sshuttle -r jeremie@192.168.1.151 --dns --subnets ${shuttleSubnets}";
-        Restart = "on-failure";
-      };
+    environment.etc."NetworkManager/dnsmasq.d/m1-dns-servers.conf".source = "${secretFiles}/m1-dnsmasq.conf";
+
+    services.openvpn.servers.vpn1 = {
+      config = ''
+        client
+        dev tun
+        remote ${secrets.vpn1.remoteIp}
+        pkcs12 ${secretFiles}/m1-vpn-cert.p12
+        cipher AES-256-CBC
+        lport 1195
+        pull
+      '';
     };
+
   };
 }
