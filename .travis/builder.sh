@@ -6,7 +6,8 @@ CONFIG_PATH=$2
 mkdir -p /configuration/secrets
 touch \
     /configuration/secrets/m0-vpn-cert.p12 \
-    /configuration/secrets/m1-ca.crt \
+    /configuration/secrets/m1-ca-1.crt \
+    /configuration/secrets/m1-ca-2.crt \
     /configuration/secrets/m1-dnsmasq.conf \
     /configuration/secrets/m1-vpn-cert.p12
 

@@ -10,7 +10,7 @@ in {
 
   config = lib.mkIf cfg.enable {
 
-    security.pki.certificates = [ (builtins.readFile ../../secrets/m1-ca.crt) ];
+    security.pki.certificates = [ (builtins.readFile ../../secrets/m1-ca-1.crt) (builtins.readFile ../../secrets/m1-ca-2.crt) ];
 
     environment.etc."NetworkManager/dnsmasq.d/m1-dns-servers.conf".source = "${secretFiles}/m1-dnsmasq.conf";
 
