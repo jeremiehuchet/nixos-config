@@ -25,6 +25,7 @@
           gitAndTools.hub
           graphviz
           unstable.jetbrains.idea-community
+          nodejs-12_x
           nur.now
           openjdk11
           remmina
