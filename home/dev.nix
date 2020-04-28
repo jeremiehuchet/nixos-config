@@ -5,25 +5,20 @@
 
   config = {
 
-    system.activationScripts = {
-      jdks = ''
-        mkdir -p /opt
-        chmod 777 /opt
-        rm -f /opt/openjdk{8,11}
-        ln -s ${pkgs.openjdk8} /opt/openjdk8
-        ln -s ${pkgs.openjdk11} /opt/openjdk11
-      '';
-    };
-
     home-manager.users = lib.mapAttrs (name: userCfg:
 
       lib.mkIf userCfg.devTools.enable {
+
+        home.file.".sdks/openjdk8".source = pkgs.openjdk8;
+        home.file.".sdks/openjdk11".source = pkgs.openjdk11;
+        home.file.".sdks/groovy".source = pkgs.groovy;
 
         home.packages = with pkgs; [
           unstable.android-studio
           docker-compose
           gitAndTools.hub
           graphviz
+          groovy
           unstable.jetbrains.idea-community
           nodejs-12_x
           nur.now
