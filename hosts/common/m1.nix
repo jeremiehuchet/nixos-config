@@ -10,9 +10,13 @@ in {
 
   config = lib.mkIf cfg.enable {
 
-    security.pki.certificates = [ (builtins.readFile ../../secrets/m1-ca-1.crt) (builtins.readFile ../../secrets/m1-ca-2.crt) ];
+    security.pki.certificates = [
+      (builtins.readFile ../../secrets/m1-ca-1.crt)
+      (builtins.readFile ../../secrets/m1-ca-2.crt)
+    ];
 
-    environment.etc."NetworkManager/dnsmasq.d/m1-dns-servers.conf".source = "${secretFiles}/m1-dnsmasq.conf";
+    environment.etc."NetworkManager/dnsmasq.d/m1-dns-servers.conf".source =
+      "${secretFiles}/m1-dnsmasq.conf";
 
     services.openvpn.servers.vpn1 = {
       config = ''
@@ -25,6 +29,14 @@ in {
         pull
       '';
     };
+
+    environment.systemPackages = [
+      (pkgs.writeScriptBin "m1-git-config" ''
+        #!/usr/bin/env bash
+        git config user.name "Jeremie Huchet"
+        git config user.email "${secrets.m1.email}"
+      '')
+    ];
 
   };
 }
