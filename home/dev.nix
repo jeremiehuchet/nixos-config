@@ -20,6 +20,7 @@
           graphviz
           groovy
           unstable.jetbrains.idea-community
+          maven
           nodejs-12_x
           nur.now
           openjdk11
