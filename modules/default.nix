@@ -1,2 +1,2 @@
-[ ./notracking.nix ]
+[ ./notracking.nix ./xosd-battery-alert.nix ]
 

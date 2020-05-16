@@ -51,7 +51,6 @@ in {
             ${pkgs.xorg.xrandr}/bin/xrandr --dpi ${cfg.dpi} --output ${cfg.primaryOutput} --primary
             ${pkgs.nur.pyrandr}/bin/pyrandr --laptop-only
             ${pkgs.xorg.xbacklight}/bin/xbacklight -set $(cat ~/.config/i3/backlight.state)
-            ${pkgs.xorg.xhost}/bin/xhost si:localuser:root
           '';
           profileExtra = ''
             export GDK_SCALE=2
