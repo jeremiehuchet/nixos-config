@@ -280,12 +280,6 @@ in {
             enable = userCfg.guiTools.autoLock;
             lockCmd = "${lockCmd}";
           };
-          xsuspender = {
-            enable = true;
-            defaults.suspendDelay = 300;
-            rules."intellij".matchWmClassContains = "jetbrains-idea-ce";
-            rules."slack".matchWmClassContains = "slack";
-          };
         };
 
         programs.rofi = {
