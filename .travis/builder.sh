@@ -3,13 +3,12 @@
 NIX_RELEASE=$1
 CONFIG_PATH=$2
 
-mkdir -p /configuration/secrets
-touch \
-    /configuration/secrets/m0-vpn-cert.p12 \
-    /configuration/secrets/m1-ca-1.crt \
-    /configuration/secrets/m1-ca-2.crt \
-    /configuration/secrets/m1-dnsmasq.conf \
-    /configuration/secrets/m1-vpn-cert.p12
+mkdir -p '/configuration/secrets'
+touch '/configuration/secrets/m0-vpn-cert.p12'
+touch '/configuration/secrets/m1-ca-1.crt'
+touch '/configuration/secrets/m1-ca-2.crt'
+touch '/configuration/secrets/m1-dnsmasq.conf'
+touch '/configuration/secrets/m1-vpn-cert.p12'
 
 cat - <<EOF > /configuration/secrets.nix
 {
@@ -19,8 +18,10 @@ cat - <<EOF > /configuration/secrets.nix
   vpn0.authUserPass.username = "secret";
   vpn0.authUserPass.password = "secret";
   vpn1.remoteIp = "secret";
+  m1.email = "secret";
 }
 EOF
+
 nix-channel --remove nixpkgs
 nix-channel --add https://nixos.org/channels/nixos-$NIX_RELEASE nixpkgs
 nix-channel --add https://nixos.org/channels/nixpkgs-unstable   nixpkgs-unstable
