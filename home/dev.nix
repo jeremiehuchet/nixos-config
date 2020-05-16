@@ -21,6 +21,7 @@
           groovy
           unstable.jetbrains.idea-community
           maven
+          unstable.minikube unstable.kubectl
           nodejs-12_x
           nur.now
           openjdk11
