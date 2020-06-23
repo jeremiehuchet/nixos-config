@@ -4,12 +4,12 @@ let
   cfg.dpi = toString config.custom.dpi;
   cfg.primaryOutput = config.custom.xserver.primaryOutput;
   xlock = pkgs.writeScriptBin "xlock" ''
-    #!/usr/bin/env bash
+    #!${pkgs.bash}/bin/bash
     ${pkgs.xorg.xbacklight}/bin/xbacklight -get > ~/.config/i3/backlight.state
     ${pkgs.xorg.xbacklight}/bin/xbacklight -set 10
     ${pkgs.i3lock}/bin/i3lock --nofork --show-failed-attempts --ignore-empty-password --color ffffff || exit 1
     ${pkgs.xorg.xbacklight}/bin/xbacklight -set $(cat ~/.config/i3/backlight.state)
-    '';
+  '';
   lockCmd = "${xlock}/bin/xlock";
 in {
   imports = [ ../home-manager/nixos ];

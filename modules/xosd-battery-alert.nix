@@ -18,9 +18,12 @@ let
       delay=''${delay:-5}
       font=''${font:-'-*-*-bold-*-*-*-72-240-*-*-*-*-*-*'}
       for sessionId in $(loginctl --no-legend list-sessions | cut -d' ' -f1) ; do
-        export $(loginctl show-session -p Display -p Name $sessionId | sed 's/^/ALERT_/')
-        export DISPLAY="$ALERT_Display"
-        sudo -u $ALERT_Name ${pkgs.xosd}/bin/osd_cat --font=$font --delay=$delay --align=center --shadow=5 "$@"
+        eval $(loginctl show-session -p Display -p Name $sessionId)
+        if [ -n "$Display" ] ; then
+          sudo -u $Name \
+              DISPLAY=$Display \
+              ${pkgs.xosd}//bin/osd_cat --font=$font --delay=$delay --align=center --shadow=5 "$@"
+        fi
       done
     }
 
@@ -35,7 +38,7 @@ let
       echo "'$1' is not an integer value"                     | xosd --colour=red --pos=bottom
       exit 1
     fi
-  
+
     if [ $1 -le 10 ] ; then
       delay=10
       xosd --colour=red --pos=bottom --barmode=percentage --percentage=$1 &
@@ -60,9 +63,10 @@ in {
   config = lib.mkIf cfg.enable {
 
     services.udev.extraRules = ''
-      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[4-9]", RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
-      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[1-2][0-9]", RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
-      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[3-5][0-9]", RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
+      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[6-9]|10",  RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
+      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="1[0-9]|20", RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
+      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="4[0-9]|50", RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
+      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[5-8][0-9]", RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
     '';
 
   };
