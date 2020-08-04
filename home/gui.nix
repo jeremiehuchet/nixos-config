@@ -4,7 +4,7 @@ let
   cfg.dpi = toString config.custom.dpi;
   cfg.primaryOutput = config.custom.xserver.primaryOutput;
 in {
-  imports = [ ../home-manager/nixos ];
+  imports = [ <home-manager/nixos> ];
 
   options = with lib; {
     custom.xserver = { primaryOutput = mkOption { type = types.str; }; };
@@ -218,7 +218,8 @@ in {
                   e = "exec i3-msg exit; mode default";
                   r = "exec reboot; mode default";
                   s = "exec poweroff; mode default";
-                  "Control+s" = "exec ${pkgs.systemd}/bin/systemctl suspend; mode default";
+                  "Control+s" =
+                    "exec ${pkgs.systemd}/bin/systemctl suspend; mode default";
                   l = "exec ${lockCmd}; mode default";
                   Escape = "mode default";
                   "${mod}+Shift+e" = "mode default";

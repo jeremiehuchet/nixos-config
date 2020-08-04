@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ ../home-manager/nixos ];
+  imports = [ <home-manager/nixos> ];
 
   config = {
 
@@ -46,7 +46,8 @@
             strict_env = true;
           };
         };
-        xdg.configFile."direnv/direnvrc".source  = "${pkgs.nur.nix-direnv}/share/nix-direnv/direnvrc";
+        xdg.configFile."direnv/direnvrc".source =
+          "${pkgs.nur.nix-direnv}/share/nix-direnv/direnvrc";
 
         programs.git = {
           enable = true;
@@ -63,9 +64,9 @@
           extraConfig = {
             gui = {
               fontui = ''
-                -family \"Noto Sans\" -size 12 -weight normal -slant roman -underline 0 -overstrike 0'';
+                -family "Noto Sans" -size 12 -weight normal -slant roman -underline 0 -overstrike 0'';
               fontdiff = ''
-                -family \"Fira Code Retina\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0'';
+                -family "Fira Code Retina" -size 10 -weight normal -slant roman -underline 0 -overstrike 0'';
             };
           };
         };

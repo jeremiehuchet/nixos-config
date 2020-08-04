@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ ../home-manager/nixos ];
+  imports = [ <home-manager/nixos> ];
 
   config = {
 
