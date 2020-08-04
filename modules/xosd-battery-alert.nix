@@ -6,12 +6,14 @@ let
     #!/usr/bin/env bash
     set -e
 
-    XOSD="${pkgs.xosd}/bin/osd_cat --delay=10 --align=center --shadow=5"
+    PATH="${pkgs.xosd}/bin:${pkgs.utillinux}/bin:${pkgs.systemd}/bin:${pkgs.coreutils}/bin"
+
+    XOSD="osd_cat --delay=10 --align=center --shadow=5"
     XOSD_NORMAL="$XOSD --font=-*-*-bold-*-*-*-72-240-*-*-*-*-*-*"
     XOSD_LARGE="$XOSD --font=-*-*-bold-*-*-*-144-480-*-*-*-*-*-*"
 
     log() {
-      ${pkgs.utillinux}/bin/logger -t "$(basename $0)" "$@"
+      logger -t "$(basename $0)" "$@"
     }
 
     xosd() {
@@ -20,9 +22,9 @@ let
       for sessionId in $(loginctl --no-legend list-sessions | cut -d' ' -f1) ; do
         eval $(loginctl show-session -p Display -p Name $sessionId)
         if [ -n "$Display" ] ; then
-          sudo -u $Name \
+          /run/wrappers/bin/sudo -u $Name \
               DISPLAY=$Display \
-              ${pkgs.xosd}//bin/osd_cat --font=$font --delay=$delay --align=center --shadow=5 "$@"
+              osd_cat --font=$font --delay=$delay --align=center --shadow=5 "$@"
         fi
       done
     }
@@ -39,7 +41,19 @@ let
       exit 1
     fi
 
-    if [ $1 -le 10 ] ; then
+    if [ $1 -le 5 ] ; then
+      log "60 seconds count down before suspend"
+      for i in $(seq 1 60 | sort -nr) ; do
+        delay=1
+        echo "SUSPENDING IN ''${i}s" | xosd_large --colour=red --pos=bottom
+        if [[ "Charging" =~ $(cat /sys/class/power_supply/BAT0/status) ]] ; then
+          log "the power supply as been plugged in"
+          exit 0
+        fi
+      done
+      log "triggering suspend"
+      systemctl suspend
+    elif [ $1 -le 10 ] ; then
       delay=10
       xosd --colour=red --pos=bottom --barmode=percentage --percentage=$1 &
       for i in $(seq 1 8) ; do
@@ -63,10 +77,10 @@ in {
   config = lib.mkIf cfg.enable {
 
     services.udev.extraRules = ''
-      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[6-9]|10",  RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
-      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="1[0-9]|20", RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
-      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="4[0-9]|50", RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
-      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[5-8][0-9]", RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
+      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-5]",      RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
+      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[6-9]|10",   RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
+      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="1[1-9]|20",  RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
+      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="4[1-9]|50",  RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
     '';
 
   };

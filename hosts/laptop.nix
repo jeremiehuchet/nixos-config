@@ -89,9 +89,6 @@ in {
     SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:0e:c6:fe:5a:0c", NAME="aukey-ethernet"
     SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="42:14:92:61:c6:70c", NAME="oneplus-usb"
 
-    # critical battery level action
-    SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-5]", RUN+="${pkgs.systemd}/bin/systemctl suspend"
-
     # Happlink (formerly Plug-Up) Security KEY
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2581", ATTRS{idProduct}=="f1d0", TAG+="uaccess", GROUP="plugdev", MODE="0660"
   '';
