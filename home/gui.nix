@@ -3,14 +3,6 @@
 let
   cfg.dpi = toString config.custom.dpi;
   cfg.primaryOutput = config.custom.xserver.primaryOutput;
-  xlock = pkgs.writeScriptBin "xlock" ''
-    #!${pkgs.bash}/bin/bash
-    ${pkgs.xorg.xbacklight}/bin/xbacklight -get > ~/.config/i3/backlight.state
-    ${pkgs.xorg.xbacklight}/bin/xbacklight -set 10
-    ${pkgs.i3lock}/bin/i3lock --nofork --show-failed-attempts --ignore-empty-password --color ffffff || exit 1
-    ${pkgs.xorg.xbacklight}/bin/xbacklight -set $(cat ~/.config/i3/backlight.state)
-  '';
-  lockCmd = "${xlock}/bin/xlock";
 in {
   imports = [ ../home-manager/nixos ];
 
@@ -21,7 +13,17 @@ in {
   config = {
     home-manager.users = lib.mapAttrs (name: userCfg:
 
-      lib.mkIf userCfg.guiTools.enable {
+      let
+        xlock = pkgs.writeScriptBin "xlock" ''
+          #!${pkgs.bash}/bin/bash
+          PATH="${pkgs.xorg.xbacklight}/bin:${pkgs.i3lock}/bin:${pkgs.coreutils}/bin"
+          xbacklight -get > /home/${name}/.config/i3/backlight.state
+          xbacklight -set 10
+          i3lock --nofork --show-failed-attempts --ignore-empty-password --color ffffff || exit 1
+          xbacklight -set $(cat /home/${name}/.config/i3/backlight.state)
+        '';
+        lockCmd = "${xlock}/bin/xlock";
+      in lib.mkIf userCfg.guiTools.enable {
 
         nixpkgs.config.allowUnfree = true;
 
@@ -84,7 +86,7 @@ in {
               screenshot =
                 "Screenshot [S for selection, W for active window] use Control modifier to save a file";
               systemControl =
-                "System Control [S for shutdown, R for restart, E for logout, L for lock]";
+                "System Control [Ctrl+S for suspend, S for shutdown, R for restart, E for logout, L for lock]";
             in {
               focus.followMouse = false;
               fonts = [ "Fira Code Retina 9" ];
@@ -216,6 +218,7 @@ in {
                   e = "exec i3-msg exit; mode default";
                   r = "exec reboot; mode default";
                   s = "exec poweroff; mode default";
+                  "Control+s" = "exec ${pkgs.systemd}/bin/systemctl suspend; mode default";
                   l = "exec ${lockCmd}; mode default";
                   Escape = "mode default";
                   "${mod}+Shift+e" = "mode default";

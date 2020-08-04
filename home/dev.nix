@@ -20,11 +20,13 @@
           graphviz
           groovy
           unstable.jetbrains.idea-community
+          nur.jfrog-cli
           maven
           unstable.minikube unstable.kubectl
           nodejs-12_x
           nur.now
           openjdk11
+          unstable.packer
           remmina
           shellcheck
           slack
