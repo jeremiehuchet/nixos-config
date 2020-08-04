@@ -9,19 +9,5 @@ in {
 
   config = lib.mkIf cfg.enable {
 
-    services.openvpn.servers.vpn0 = {
-      authUserPass = secrets.vpn0.authUserPass;
-      config = ''
-        client
-        dev tun
-        proto udp
-        remote ${secrets.vpn0.remoteIp}
-        pkcs12 ${secretFiles}/m0-vpn-cert.p12
-        cipher AES-256-CBC
-        auth-user-pass
-        auth-nocache
-      '';
-    };
-
   };
 }

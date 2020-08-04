@@ -4,7 +4,6 @@ NIX_RELEASE=$1
 CONFIG_PATH=$2
 
 mkdir -p '/configuration/secrets'
-touch '/configuration/secrets/m0-vpn-cert.p12'
 touch '/configuration/secrets/m1-ca-1.crt'
 touch '/configuration/secrets/m1-ca-2.crt'
 touch '/configuration/secrets/m1-dnsmasq.conf'
@@ -14,9 +13,6 @@ cat - <<EOF > /configuration/secrets.nix
 {
   wireless.psk = "secret";
   hosts = {};
-  vpn0.remoteIp = "secret";
-  vpn0.authUserPass.username = "secret";
-  vpn0.authUserPass.password = "secret";
   vpn1.remoteIp = "secret";
   m1.email = "secret";
 }
