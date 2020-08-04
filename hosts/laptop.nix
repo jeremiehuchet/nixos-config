@@ -65,7 +65,7 @@ in {
   networking.enableIPv6 = false;
   networking.networkmanager.enable = true;
   networking.networkmanager.dns = "dnsmasq";
-  networking.networkmanager.notracking.enable = true;
+  networking.networkmanager.notracking.enable = false;
   environment.etc."NetworkManager/dnsmasq.d/additional-hosts.conf".text =
     builtins.concatStringsSep "\n"
     (lib.mapAttrsToList (host: addr: "address=/${host}/${addr}")
