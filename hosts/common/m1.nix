@@ -30,13 +30,31 @@ in {
       '';
     };
 
-    environment.systemPackages = [
-      (pkgs.writeScriptBin "m1-git-config" ''
+    environment.systemPackages = let
+      gitConfig = pkgs.writeScriptBin "m1-git-config" ''
         #!/usr/bin/env bash
+        set -e
         git config user.name "Jeremie Huchet"
         git config user.email "${secrets.m1.email}"
-      '')
-    ];
+        cat - <<EOF
+        $PWD
+          remote.origin.url: $(git config remote.origin.url)
+          user.name:         $(git config user.name)
+          user.email:        $(git config user.email)
+        EOF
+      '';
+      gitClone = pkgs.writeScriptBin "m1-git-clone" ''
+        #!/usr/bin/env bash
+        set -e
+        dir=${secrets.m1.homedir}/$(sed -E 's/.*:(.*)\.git.*/\1/'<<< "$*")
+        mkdir -p "$dir"
+        git clone "$*" "$dir"
+        (
+          cd "$dir"
+          ${gitConfig}/bin/m1-git-config
+        )
+      '';
+    in [ gitConfig gitClone ];
 
   };
 }

@@ -14,6 +14,7 @@ cat - <<EOF > /configuration/secrets.nix
   wireless.psk = "secret";
   hosts = {};
   vpn1.remoteIp = "secret";
+  m1.homedir = "secret";
   m1.email = "secret";
 }
 EOF
