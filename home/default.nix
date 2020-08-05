@@ -13,6 +13,7 @@ let
       };
       guiTools.i3statusRustConfig = mkOption { type = types.path; };
       devTools.enable = mkEnableOption "Development tools";
+      obs-studio.enable = mkEnableOption "OBS Studio tools";
     };
   };
 in {

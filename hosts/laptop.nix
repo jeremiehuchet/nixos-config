@@ -138,6 +138,7 @@ in {
     home.jeremie.guiTools.enable = true;
     home.jeremie.guiTools.i3statusRustConfig = ./laptop/i3status-rust.toml;
     home.jeremie.devTools.enable = true;
+    home.jeremie.obs-studio.enable = true;
     m0.enable = true;
     m1.enable = true;
   };
