@@ -81,10 +81,20 @@ with lib;
       xkb-variant=fr
     '';
 
-    nix.autoOptimiseStore = true;
-    nix.gc.automatic = true;
-    nix.gc.dates = "weekly";
-    nix.gc.options = "--delete-older-than 30d";
+    nix = {
+      autoOptimiseStore = true;
+      gc.automatic = true;
+      gc.dates = "weekly";
+      gc.options = "--delete-older-than 30d";
+      binaryCaches = [
+        "https://cachix.cachix.org"
+        "https://jeremiehuchet.cachix.org"
+      ];
+      binaryCachePublicKeys = [
+        "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
+        "jeremiehuchet.cachix.org-1:NPQGzLT375jYLfRiIAsSierm0DJX1PlgMjczQVtIZYM="
+      ];
+    };
 
     system.activationScripts = {
       shebangFix = ''

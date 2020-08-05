@@ -1,9 +1,35 @@
-language: minimal
+language: nix
 env:
+  global:
+    - NIXPKGS_ALLOW_UNFREE=1
+    - secure: "pWKgyTY2Xszq7kEb3AxAyraE0SNsMSZkMuUzFflagn3i71JPLzkhat4B4G0nTl6bF1MLU99sXiW3FIg+SWIHfjdGGyp2nrdRiaALA2F3kNyztoVkxEXR4tGlSMFumsC7jmM+2aIdKIXQFlQB/w742Hw3Jeiz2sfZOgx3eNbwlnu7n/kaA2W9FNJAWaV2aDsBKfkrDmTKKB3OZCr/aHkooWLjnMwOHaKMxlDJyYgZDinv/qSaUd5j2uIaNhPUL5XKA33iAJLJmy9tLIBvi/XMjP1jg16a+2K0EX4Yqn69TRrWytzsRm6+CXObElkmFP41RGJCwemNf8/cOWohPnhthFTw1nxzlVxelaqHwXX7NSD9Ti50KGclW6Jk4e5eEiNBBqSflJ0ZzX/BxbONMBQmM6vHX22WPz0FK1ZqJGvxkycOMvqGrav0R1QcjPUaMCBhZQK/NDHO0TW49cFMvd/S3e1lzeUPnA9aKXpaiOxbAN8RRIm5XBgct9zecn7bLzZJlkHwYQLFVKGsRyz7QFjyr4Dqp4Jp6spveUTFiVnVrx6Kj1fp6psmW0XRqiN9Gyw/Go2jp/dQE+LsnVJv6oGBfmEDVsOBVd7Pg+LR8S2465Trdin2wbzfE68ybe+7CWkFRsFUln5av4ntk0gTWxvMZdeae3+DF15MZZdNMcxmx24="
+  jobs:
   - HOST=laptop
     NIX_RELEASE=20.03
   - HOST=tv
     NIX_RELEASE=20.03
+install:
+  # setup required channels
+  - nix-channel --remove nixpkgs
+  - nix-channel --add https://nixos.org/channels/nixos-$NIX_RELEASE                       nixpkgs
+  - nix-channel --add https://nixos.org/channels/nixpkgs-unstable                         nixpkgs-unstable
+  - nix-channel --add https://github.com/NixOS/nixos-hardware/archive/master.tar.gz       nixos-hardware
+  - nix-channel --add https://github.com/rycee/home-manager/archive/release-20.03.tar.gz  home-manager
+  - nix-channel --add https://github.com/jeremiehuchet/nur-packages/archive/master.tar.gz nur-packages
+  - nix-channel --update
+  - export NIX_PATH=~/.nix-defexpr/channels
+  # setup cachix
+  - echo "trusted-users = $USER" | sudo tee -a /etc/nix/nix.conf
+  - echo "sandbox = true" | sudo tee -a /etc/nix/nix.conf
+  - sudo systemctl restart nix-daemon
+  - nix-env -iA nixpkgs.cachix
+  - cachix use jeremiehuchet
+  # mock secrets
+  - ./.travis/mock-secrets.sh
+  # disable virtualbox, it takes too much time to build
+  - sed -i '/virtualisation\.virtualbox\.host\.enable = true/d' hosts/$HOST.nix;
 script:
-  - docker build -t system-configuration-tester .travis
-  - docker run -it -v $PWD:/configuration system-configuration-tester $NIX_RELEASE hosts/$HOST.nix
+  - nix-build '<nixpkgs/nixos>' -A system -k -I nixos-config=hosts/$HOST.nix
+after_script:
+  - nix-store -qR $(nix-instantiate '<nixpkgs/nixos>' -A system -I nixos-config=hosts/$HOST.nix) > system_store_paths
+  - sort system_store_paths | cachix push jeremiehuchet

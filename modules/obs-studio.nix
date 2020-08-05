@@ -7,8 +7,8 @@ let
       src = pkgs.fetchFromGitHub {
         owner = "umlaeute";
         repo = "v4l2loopback";
-        rev = "v0.12.15";
-        hash = "sha256:0h3qdcs07swzngpbzykavsij9aa66kwrlzvmnxlzzki2d2xh3is4";
+        rev = "v0.12.5";
+        hash = "sha256:1qi4l6yam8nrlmc3zwkrz9vph0xsj1cgmkqci4652mbpbzigg7vn";
       };
     });
   someoneWantsObsStudio =
