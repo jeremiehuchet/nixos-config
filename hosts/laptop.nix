@@ -20,6 +20,8 @@ in {
     options i915 enable_dpcd_backlight=1
     # audio power management
     options snd_hda_intel power_save=1
+    # improved touchpad experience
+    options psmouse synaptics_intertouch=1
   '';
   boot.initrd.luks.devices.pv-enc-opened = {
     device = "/dev/nvme0n1p2";
