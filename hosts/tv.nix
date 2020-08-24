@@ -141,6 +141,16 @@ in {
     home.guest.guiTools.i3statusRustConfig = ./tv/i3status-rust.toml;
   };
 
+  services.cron = {
+    enable = true;
+    systemCronJobs = [
+      "0 4 * * * guest git -C /etc/nixos pull --rebase"
+    ];
+  };
+
+  system.autoUpgrade.enable = true;
+  system.autoUpgrade.allowReboot = true;
+
   system.stateVersion = "20.03";
 }
 
