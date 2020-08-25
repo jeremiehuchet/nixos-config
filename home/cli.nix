@@ -16,6 +16,7 @@
       lib.mkIf userCfg.cliTools.enable {
 
         home.packages = with pkgs; [
+          unstable.bpytop
           cachix
           nur.ccat
           dfc
