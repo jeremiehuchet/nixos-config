@@ -92,7 +92,8 @@ in {
     # network cards
     SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="60:f2:62:15:55:db", NAME="wireless"
     SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:0e:c6:fe:5a:0c", NAME="aukey-ethernet"
-    SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="42:14:92:61:c6:70c", NAME="oneplus-usb"
+    SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="42:14:92:61:c6:70", NAME="oneplus-usb"
+    SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:0e:c6:db:15:c0", NAME="dock-startech"
 
     # Happlink (formerly Plug-Up) Security KEY
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2581", ATTRS{idProduct}=="f1d0", TAG+="uaccess", GROUP="plugdev", MODE="0660"
