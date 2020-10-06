@@ -3,7 +3,7 @@
 with lib;
 
 {
-  imports = import ../../modules ++ [ ./m0.nix ];
+  imports = import ../../modules;
 
   options = {
     custom = {
