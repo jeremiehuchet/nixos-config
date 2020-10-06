@@ -278,6 +278,7 @@ in {
           gpg-agent.enableScDaemon = false;
           gpg-agent.pinentryFlavor = "qt";
           udiskie.enable = true;
+          blueman-applet.enable = true;
           network-manager-applet.enable = true;
           screen-locker = {
             enable = userCfg.guiTools.autoLock;
