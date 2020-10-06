@@ -36,6 +36,9 @@ in {
     [ "noatime" "nodiratime" "discard" ];
   fileSystems."/nix".options = [ "noatime" "nodiratime" "discard" ];
 
+  services.fwupd.enable = true;
+  services.fwupd.package = pkgs.unstable.fwupd;
+
   powerManagement.powertop.enable = true;
   services.tlp.enable = true; # https://linrunner.de/en/tlp/tlp.html
   services.tlp.extraConfig = ''
@@ -83,7 +86,7 @@ in {
 
   security.pam.services.sudo.fprintAuth = true;
   services.fprintd.enable = true;
-  services.fprintd.package = pkgs.fprintd-thinkpad;
+  services.fprintd.package = pkgs.unstable.fprintd;
 
   services.udev.extraRules = ''
     # network cards
