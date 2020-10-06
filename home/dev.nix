@@ -31,6 +31,7 @@
           shellcheck
           slack
           teams
+          unstable.terraform
           unstable.travis
           vagrant
           unstable.zoom-us
