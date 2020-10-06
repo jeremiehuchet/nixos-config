@@ -41,7 +41,12 @@ in {
 
   powerManagement.powertop.enable = true;
   services.tlp.enable = true; # https://linrunner.de/en/tlp/tlp.html
-  services.tlp.extraConfig = ''
+  services.tlp.extraConfig = let
+    unsupsendableUsbDevices = [
+      "046d:c03e" # desktop mouse
+      "045e:00dd" # desktop keyboard
+    ];
+  in ''
     CPU_SCALING_GOVERNOR_ON_AC=powersave
     CPU_SCALING_GOVERNOR_ON_BAT=powersave
     CPU_HWP_ON_AC=balance_performance
@@ -54,6 +59,7 @@ in {
     CPU_BOOST_ON_BAT=0
     SCHED_POWERSAVE_ON_AC=0
     SCHED_POWERSAVE_ON_BAT=1
+    USB_BLACKLIST="${builtins.concatStringsSep "" unsupsendableUsbDevices}"
   '';
   services.throttled.enable = true; # https://github.com/erpalma/throttled
 
