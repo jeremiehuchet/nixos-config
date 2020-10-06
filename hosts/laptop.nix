@@ -142,7 +142,6 @@ in {
     home.jeremie.devTools.enable = true;
     home.jeremie.obs-studio.enable = true;
     m0.enable = true;
-    m1.enable = true;
   };
 
   system.stateVersion = "20.03";

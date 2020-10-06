@@ -1,18 +1,13 @@
 #!/bin/sh -e
 
 mkdir secrets
-touch secrets/m1-ca-1.crt
-touch secrets/m1-ca-2.crt
-touch secrets/m1-dnsmasq.conf
-touch secrets/m1-vpn-cert.p12
+touch secrets/m2-proxy.pac
 
 cat - <<EOF > secrets.nix
 {
   wireless.psk = "secret";
   hosts = {};
-  vpn1.remoteIp = "secret";
-  m1.homedir = "secret";
-  m1.email = "secret";
+  m2.proxy = "secret";
 }
 EOF
 
