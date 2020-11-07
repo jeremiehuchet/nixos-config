@@ -151,6 +151,8 @@ in {
     home.jeremie.guiTools.i3statusRustConfig = ./laptop/i3status-rust.toml;
     home.jeremie.devTools.enable = true;
     home.jeremie.obs-studio.enable = true;
+    m0.enable = true;
+    m2.enable = true;
   };
 
   system.stateVersion = "20.03";
