@@ -18,6 +18,7 @@
         home.packages = with pkgs; [
           unstable.bpytop
           cachix
+          dnsutils
           nur.ccat
           dfc
           nur.gitmoji-cli
@@ -27,6 +28,7 @@
           nixfmt
           p7zip
           pass
+          pdftk
           pretty-nixos-rebuild
           nur.pyrandr
           speedtest-cli
