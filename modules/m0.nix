@@ -8,7 +8,7 @@ in {
 
   options = { custom.m0.enable = lib.mkEnableOption "M0 tools"; };
 
-  config = {
+  config = lib.mkIf cfg.enable {
 
     services.openvpn.servers.m0 = {
       authUserPass = secrets.m0.vpn.authUserPass;

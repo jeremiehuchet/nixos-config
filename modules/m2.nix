@@ -9,7 +9,7 @@ in {
 
   options = { custom.m2.enable = lib.mkEnableOption "M2 tools"; };
 
-  config = {
+  config = lib.mkIf cfg.enable {
 
     users.groups.m2 = { };
     users.users.m2-squid = {

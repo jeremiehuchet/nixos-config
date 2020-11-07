@@ -151,6 +151,6 @@ in {
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = true;
 
-  system.stateVersion = "20.03";
+  system.stateVersion = "20.09";
 }
 
