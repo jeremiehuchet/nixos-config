@@ -11,6 +11,23 @@ in {
 
   config = lib.mkIf cfg.enable {
 
+    systemd.services.m2-proxy-tunnel = {
+      description = "M2 proxy access through SSH tunnel";
+      after = [ "openvpn-m0.service" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        User = "jeremie";
+        ExecStart = ''
+          ${pkgs.openssh}/bin/ssh -N -T \
+              -o "ServerAliveInterval 10" \
+              -o "ExitOnForwardFailure yes" \
+              -L3128:${secrets.m2.proxy} \
+              ${secrets.m2.ssh-gateway.user}@${secrets.m2.ssh-gateway.host}
+        '';
+        Restart = "on-failure";
+      };
+    };
+
     users.groups.m2 = { };
     users.users.m2-squid = {
       isSystemUser = true;
