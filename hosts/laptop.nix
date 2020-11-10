@@ -70,6 +70,8 @@ in {
     #"w /sys/bus/pci/devices/0000:01:00.0/power/control - - - - on"
     # disable wake-on-lan
     "w /sys/class/net/*/device/power/wakeup - - - - disabled"
+    # disable intel pstates turbo
+    "w /sys/devices/system/cpu/intel_pstate/no_turbo - - - - 1"
   ];
 
   networking.hostName = "laptop";
