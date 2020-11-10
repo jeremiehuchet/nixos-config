@@ -3,14 +3,9 @@
 let
   cfg = config.services.xserver.xosdBatteryAlert;
   batteryAlert = pkgs.writeScriptBin "battery-alert" ''
-    #!/usr/bin/env bash
-    set -e
+    #!${pkgs.bash}/bin/bash
 
     PATH="${pkgs.xosd}/bin:${pkgs.utillinux}/bin:${pkgs.systemd}/bin:${pkgs.coreutils}/bin"
-
-    XOSD="osd_cat --delay=10 --align=center --shadow=5"
-    XOSD_NORMAL="$XOSD --font=-*-*-bold-*-*-*-72-240-*-*-*-*-*-*"
-    XOSD_LARGE="$XOSD --font=-*-*-bold-*-*-*-144-480-*-*-*-*-*-*"
 
     log() {
       logger -t "$(basename $0)" "$@"
@@ -33,6 +28,23 @@ let
       font='-*-*-bold-*-*-*-144-480-*-*-*-*-*-*'
       xosd --offset=100 "$@"
     }
+
+    xosd_small() {
+      font='-*-*-bold-*-*-*-36-120-*-*-*-*-*-*'
+      xosd "$@"
+    }
+
+    log $0 $*
+
+    if [ "_''$1" == "_charging" ] ; then
+      echo "charging" | xosd_small --colour=green --pos=bottom
+      exit 0
+    fi
+
+    if [ "_''$1" == "_discharging" ] ; then
+      echo "discharging" | xosd_small --colour=yellow --pos=bottom
+      exit 0
+    fi
 
     if [ -z "''${1//[^0-9]}" ] ; then
       log "invalid argument: $1"
@@ -77,6 +89,8 @@ in {
   config = lib.mkIf cfg.enable {
 
     services.udev.extraRules = ''
+      SUBSYSTEM=="power_supply", ATTR{status}=="Charging",    RUN+="${batteryAlert}/bin/battery-alert charging"
+      SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", RUN+="${batteryAlert}/bin/battery-alert discharging"
       SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-5]",      RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
       SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[6-9]|10",   RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
       SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="1[1-9]|20",  RUN+="${batteryAlert}/bin/battery-alert $attr{capacity}"
