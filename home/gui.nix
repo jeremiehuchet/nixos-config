@@ -11,6 +11,8 @@ in {
   };
 
   config = {
+    programs.dconf.enable = true;
+
     home-manager.users = lib.mapAttrs (name: userCfg:
 
       let
