@@ -11,6 +11,15 @@ in {
 
   config = lib.mkIf cfg.enable {
 
+    security.pki.certificates = [ (builtins.readFile "${secretFiles}/m2-ca.crt") ];
+
+    system.activationScripts = {
+      m2-ca-chrome = ''
+        # FIXME: following script will fail if nssdb doesn't exist
+        ${pkgs.nssTools}/bin/certutil -d sql:/home/jeremie/.pki/nssdb -A -n 'M1 CA' -i ${secretFiles}/m2-ca.crt -t TCP,TCP,TCP
+      '';
+    };
+
     systemd.services.m2-proxy-tunnel = {
       description = "M2 proxy access through SSH tunnel";
       after = [ "openvpn-m0.service" ];
