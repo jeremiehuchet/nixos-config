@@ -65,6 +65,7 @@
             glog = "log --graph --oneline --decorate --all";
           };
           extraConfig = {
+            credential = { helper = "store"; };
             gui = {
               fontui = ''
                 -family "Noto Sans" -size 12 -weight normal -slant roman -underline 0 -overstrike 0'';

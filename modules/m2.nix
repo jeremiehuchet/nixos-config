@@ -4,7 +4,6 @@ let
   cfg = config.custom.m2;
   secrets = import ../secrets.nix;
   secretFiles = ../secrets;
-  iptables = "${pkgs.iptables}/bin/iptables";
 in {
 
   options = { custom.m2.enable = lib.mkEnableOption "M2 tools"; };
@@ -44,7 +43,7 @@ in {
       home = "/var/cache/m2-squid";
       createHome = true;
     };
-    users.users.m2-redsocks = {
+    users.users.m2-any-proxy = {
       isSystemUser = true;
       group = "m2";
       createHome = false;
@@ -86,7 +85,13 @@ in {
 
     systemd.services.m2-squid = let
       squidConfig = pkgs.writeText "m2-squid.conf" ''
+        # Uncomment for ACL debugging
+        #debug_options 28,3
+
+        http_access allow all
+
         http_port 127.0.0.1:23128
+        http_port 127.0.0.1:23129 transparent
 
         acl localnet src 10.0.0.0/8     # RFC 1918 possible internal network
         acl localnet src 172.16.0.0/12  # RFC 1918 possible internal network
@@ -118,11 +123,6 @@ in {
         http_access allow localhost manager
         http_access deny manager
 
-        # We strongly recommend the following be uncommented to protect innocent
-        # web applications running on the proxy server who think the only
-        # one who can access services on "localhost" is a local user
-        http_access deny to_localhost
-
         # logs
         cache_log       stdio:/var/log/m2-squid/cache.log
         access_log      stdio:/var/log/m2-squid/access.log
@@ -139,7 +139,7 @@ in {
         # allow localhost to access the squid proxy
         http_access allow localhost
         # And finally deny all other access to this proxy
-        http_access deny all
+        #http_access deny all
 
         # Add any of your own refresh_pattern entries above these.
         refresh_pattern ^ftp:           1440    20%     10080
@@ -154,10 +154,6 @@ in {
       after = [ "network.target" ];
       wants = [ "m2-coredns.service" ];
       wantedBy = [ "multi-user.target" ];
-      preStart = ''
-        mkdir -p "/var/log/m2-squid"
-        chown m2-squid:m2 "/var/log/m2-squid"
-      '';
       serviceConfig = {
         PIDFile = "/run/m2-squid.pid";
         ExecStart = "${pkgs.squid}/bin/squid -YCs -f ${squidConfig}";
@@ -165,70 +161,51 @@ in {
       };
     };
 
-    systemd.services.m2-redsocks = let
-      redsocksConfig = pkgs.writeText "m2-redsocks.conf" ''
-        base {
-          log_debug = on;
-          log_info = on;
-          log = stderr;
-          daemon = on;
-          redirector = iptables;
-          user = m2-redsocks;
-          group = m2;
-        }
-        redsocks {
-          local_ip = 127.0.0.1;
-          local_port = 23129;
-          ip = 127.0.0.1;
-          port = 23128;
-          type = http-relay;
-          disclose_src = false;
-        }
-        redsocks {
-          local_ip = 127.0.0.1;
-          local_port = 23130;
-          ip = 127.0.0.1;
-          port = 23128;
-          type = http-connect;
-          disclose_src = false;
-          on_proxy_fail = forward_http_err;
-        }
-
-      '';
+    systemd.services.m2-any-proxy = let
       iptables = "${pkgs.iptables}/bin/iptables";
-    in {
-      description = "M2 redsocks transparent proxy relay server";
-      after = [ "network.target" ];
-      wants = [ "m2-squid.service" ];
-      #wantedBy = [ "multi-user.target" ];
-      preStart = ''
-        ${pkgs.redsocks}/bin/redsocks -t -c ${redsocksConfig}
-        ${pkgs.coreutils}/bin/touch /run/m2-redsocks.pid
-        ${pkgs.coreutils}/bin/chown m2-redsocks:m2 /run/m2-redsocks.pid
+      preStart = pkgs.writeScriptBin "m2-any-proxy-pre-start" ''
+        #!${pkgs.stdenv.shell}
         # drop existing rules
         ${iptables} -t nat -D OUTPUT -p tcp -j REDSOCKS || true
         ${iptables} -t nat -F REDSOCKS || true
         ${iptables} -t nat -X REDSOCKS || true
         # setup rules
         ${iptables} -t nat -N REDSOCKS
+        ${iptables} -t nat -A REDSOCKS -d 127.0.0.0/8 -j RETURN
         ${iptables} -t nat -A REDSOCKS -p tcp -m owner --gid-owner m2 -j RETURN
         ${iptables} -t nat -A REDSOCKS -p tcp --match multiport --dports 80,8080 -j REDIRECT --to-ports 23129
         ${iptables} -t nat -A REDSOCKS -p tcp --match multiport --dports 443 -j REDIRECT --to-ports 23130
       '';
-      postStart = ''
+      postStart = pkgs.writeScriptBin "m2-any-proxy-post-start" ''
+        #!${pkgs.stdenv.shell}
         ${iptables} -t nat -A OUTPUT -p tcp -j REDSOCKS
       '';
-      preStop = ''
+      preStop = pkgs.writeScriptBin "m2-any-proxy-pre-stop" ''
+        #!${pkgs.stdenv.shell}
         ${iptables} -t nat -D OUTPUT -p tcp -j REDSOCKS
         ${iptables} -t nat -F REDSOCKS
         ${iptables} -t nat -X REDSOCKS
       '';
+    in {
+      description = "M2 any-proxy transparent proxy relay server";
+      after = [ "network.target" ];
+      wants = [ "m2-squid.service" ];
+      #wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        PIDFile = "/run/m2-redsocks.pid";
-        ExecStart =
-          "${pkgs.redsocks}/bin/redsocks -p /run/m2-redsocks.pid -c ${redsocksConfig}";
+        User = "m2-any-proxy";
+        Group = "m2";
+        ExecStartPre = "+${preStart}/bin/m2-any-proxy-pre-start";
+        ExecStartPost = "+${postStart}/bin/m2-any-proxy-post-start";
+        ExecStopPre = "+${preStop}/bin/m2-any-proxy-pre-stop";
+        ExecStart = "${pkgs.nur.any-proxy}/bin/any-proxy -l 127.0.0.1:23130 -p 127.0.0.1:23128 -f /var/log/m2-any-proxy/any-proxy.log -v=1";
         Restart = "on-failure";
       };
     };
+
+    systemd.tmpfiles.rules = [
+      "d /var/log/m2-any-proxy 0775 m2-any-proxy m2 - -"
+      "d /var/log/m2-squid 0775 m2-squid m2 - -"
+    ];
+
   };
 }
