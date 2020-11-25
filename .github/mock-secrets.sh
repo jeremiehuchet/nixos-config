@@ -9,8 +9,8 @@ cat - <<EOF > secrets.nix
 {
   wireless.psk = "secret";
   hosts = {};
-  m0.vpn.authUserPass.username = "secret";
-  m0.vpn.authUserPass.password = "secret";
+  m0.vpn.username = "secret";
+  m0.vpn.password = "secret";
   m0.vpn.remoteIpPort = "1.2.3.4 567";
   m2.ssh-gateway.user = "secret";
   m2.ssh-gateway.host = "secret";

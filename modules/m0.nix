@@ -11,7 +11,10 @@ in {
   config = lib.mkIf cfg.enable {
 
     services.openvpn.servers.m0 = {
-      authUserPass = secrets.m0.vpn.authUserPass;
+      authUserPass = {
+        username = secrets.m0.vpn.username;
+        password = secrets.m0.vpn.password;
+      };
       config = ''
         client
         dev tun
@@ -21,6 +24,8 @@ in {
         auth-user-pass
         auth-nocache
         cipher AES-256-CBC
+        route-nopull
+        route ${secrets.m2.ssh-gateway.host} 255.255.255.255
       '';
     };
 
