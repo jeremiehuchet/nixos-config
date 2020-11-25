@@ -8,9 +8,9 @@ in {
   i18n.defaultLocale = "en_US.UTF-8";
 
   hardware.nvidia.modesetting.enable = true;
-  hardware.nvidia.optimus_prime.enable = true;
-  hardware.nvidia.optimus_prime.intelBusId = "PCI:0:2:0";
-  hardware.nvidia.optimus_prime.nvidiaBusId = "PCI:1:0:0";
+  hardware.nvidia.prime.sync.enable = true;
+  hardware.nvidia.prime.intelBusId = "PCI:0:2:0";
+  hardware.nvidia.prime.nvidiaBusId = "PCI:1:0:0";
 
   boot.loader.systemd-boot.consoleMode = "max";
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -37,7 +37,6 @@ in {
   fileSystems."/nix".options = [ "noatime" "nodiratime" "discard" ];
 
   services.fwupd.enable = true;
-  services.fwupd.package = pkgs.unstable.fwupd;
 
   powerManagement.powertop.enable = true;
   services.tlp.enable = true; # https://linrunner.de/en/tlp/tlp.html

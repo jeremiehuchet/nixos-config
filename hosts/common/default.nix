@@ -48,12 +48,9 @@ with lib;
       layout = "fr";
       displayManager = {
         defaultSession = "none+i3";
-        lightdm = {
+        autoLogin = {
           enable = true;
-          autoLogin = {
-            enable = true;
-            user = config.custom.xserver.autoLogin;
-          };
+          user = config.custom.xserver.autoLogin;
         };
       };
       windowManager.i3.enable = true;
