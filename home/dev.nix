@@ -27,6 +27,7 @@
           nur.now
           openjdk11
           unstable.packer
+          pgcli
           remmina
           shellcheck
           slack
@@ -34,7 +35,6 @@
           unstable.terraform
           unstable.travis
           vagrant
-          unstable.zoom-us
         ];
 
         programs.vscode = {
