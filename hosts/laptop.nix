@@ -123,7 +123,7 @@ in {
     videoDrivers = [ "nvidia" ];
     libinput = {
       enable = true;
-      accelProfile = "flat";
+      accelProfile = "adaptive";
       additionalOptions = ''
         Option "TransformationMatrix" "2.2 0 0 0 2.2 0 0 0 1"
       '';
