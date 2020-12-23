@@ -27,8 +27,9 @@ in {
         User = "jeremie";
         ExecStart = ''
           ${pkgs.openssh}/bin/ssh -N -T \
-              -o "ServerAliveInterval 10" \
-              -o "ExitOnForwardFailure yes" \
+              -o ConnectTimeout=5 \
+              -o ServerAliveInterval=10 \
+              -o ExitOnForwardFailure=yes \
               -L3128:${secrets.m2.proxy} \
               ${secrets.m2.ssh-gateway.user}@${secrets.m2.ssh-gateway.host}
         '';
