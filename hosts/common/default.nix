@@ -79,14 +79,13 @@ with lib;
     '';
 
     nix = {
+      nixPath = (import ../../pinned-channels).nixPath;
       autoOptimiseStore = true;
       gc.automatic = true;
       gc.dates = "weekly";
       gc.options = "--delete-older-than 30d";
-      binaryCaches = [
-        "https://cachix.cachix.org"
-        "https://jeremiehuchet.cachix.org"
-      ];
+      binaryCaches =
+        [ "https://cachix.cachix.org" "https://jeremiehuchet.cachix.org" ];
       binaryCachePublicKeys = [
         "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
         "jeremiehuchet.cachix.org-1:NPQGzLT375jYLfRiIAsSierm0DJX1PlgMjczQVtIZYM="
