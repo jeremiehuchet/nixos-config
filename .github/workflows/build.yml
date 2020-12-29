@@ -24,18 +24,8 @@ jobs:
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
     - name: Setup channels
       run: |
-        # setup required channels
-        nix-channel --list
-        nix-channel --remove nixpkgs
-        nix-channel --add https://nixos.org/channels/nixos-20.09                              nixpkgs
-        nix-channel --add https://nixos.org/channels/nixpkgs-unstable                         nixpkgs-unstable
-        nix-channel --add https://github.com/NixOS/nixos-hardware/archive/master.tar.gz       nixos-hardware
-        nix-channel --add https://github.com/rycee/home-manager/archive/release-20.09.tar.gz  home-manager
-        nix-channel --add https://github.com/jeremiehuchet/nur-packages/archive/main.tar.gz   nur-packages
-        nix-channel --update
-        nix-channel --list
         # set NIX_PATH
-        echo NIX_PATH=~/.nix-defexpr/channels >> "$GITHUB_ENV"
+        echo NIX_PATH=$(nix eval --raw '(builtins.concatStringsSep ":" (import ./pinned-channels).nixPath)') >> "$GITHUB_ENV"
         # mock secrets
         ./.github/mock-secrets.sh
         # disable virtualbox, it takes too much time to build
