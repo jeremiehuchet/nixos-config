@@ -20,5 +20,5 @@ for lockfile in *.json ; do
       | jq --sort-keys \
       > "$lockfile"
 
-  git diff --exit-code "$lockfile" > /dev/null && echo "✅" || echo "⬆"
+  git diff --exit-code "$lockfile" > /dev/null 2>&1 && echo "✅" || echo "⬆"
 done
