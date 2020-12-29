@@ -40,26 +40,20 @@ in {
 
   powerManagement.powertop.enable = true;
   services.tlp.enable = true; # https://linrunner.de/en/tlp/tlp.html
-  services.tlp.extraConfig = let
-    unsupsendableUsbDevices = [
-      "046d:c03e" # desktop mouse
-      "045e:00dd" # desktop keyboard
-    ];
-  in ''
-    CPU_SCALING_GOVERNOR_ON_AC=powersave
-    CPU_SCALING_GOVERNOR_ON_BAT=powersave
-    CPU_HWP_ON_AC=balance_performance
-    CPU_HWP_ON_BAT=balance_power
-    CPU_MIN_PERF_ON_AC=17
-    CPU_MAX_PERF_ON_AC=100
-    CPU_MIN_PERF_ON_BAT=17
-    CPU_MAX_PERF_ON_BAT=80
-    CPU_BOOST_ON_AC=1
-    CPU_BOOST_ON_BAT=0
-    SCHED_POWERSAVE_ON_AC=0
-    SCHED_POWERSAVE_ON_BAT=1
-    USB_BLACKLIST="${builtins.concatStringsSep "" unsupsendableUsbDevices}"
-  '';
+  services.tlp.settings = {
+    CPU_SCALING_GOVERNOR_ON_AC = "powersave";
+    CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+    CPU_HWP_ON_AC = "balance_performance";
+    CPU_HWP_ON_BAT = "balance_power";
+    CPU_MIN_PERF_ON_AC = 17;
+    CPU_MAX_PERF_ON_AC = 100;
+    CPU_MIN_PERF_ON_BAT = 17;
+    CPU_MAX_PERF_ON_BAT = 80;
+    CPU_BOOST_ON_AC = 1;
+    CPU_BOOST_ON_BAT = 0;
+    SCHED_POWERSAVE_ON_AC = 0;
+    SCHED_POWERSAVE_ON_BAT = 1;
+  };
   services.throttled.enable = true; # https://github.com/erpalma/throttled
 
   systemd.tmpfiles.rules = [
