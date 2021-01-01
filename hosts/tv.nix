@@ -72,6 +72,10 @@ in {
     }
   '';
 
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.package = pkgs.bluezFull;
+  services.blueman.enable = true;
+
   services.xserver.libinput.enable = true;
 
   services.logind = {
