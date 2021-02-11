@@ -13,7 +13,6 @@ in {
   hardware.nvidia.prime.nvidiaBusId = "PCI:1:0:0";
 
   boot.loader.systemd-boot.consoleMode = "max";
-  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.supportedFilesystems = [ "btrfs" ];
   boot.extraModprobeConfig = ''
     # oled backlight
