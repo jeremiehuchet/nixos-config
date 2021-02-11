@@ -2,6 +2,6 @@
   "owner": "nixos",
   "ref": "master",
   "repo": "nixos-hardware",
-  "rev": "c242378e63b0ec334e964ac0c0fbbdd2b3e89ebf",
-  "sha256": "1z4cr5gsyfdpcy31vqg4ikalbxmnnac6jjk1nl8mxj0h0ix7pp36"
+  "rev": "0cb5491af9da8d6f16540ffc4db24e2361852e46",
+  "sha256": "053d64zk6i8yx9mvz4q426wj00p9qlw2px6qghf0shqgsfg39b1l"
 }
