@@ -96,6 +96,7 @@ in {
                 { class = "SimpleScreenRecorder"; }
                 { class = "Git-gui"; }
                 { class = "Gitk"; }
+                { class = "jetbrains-idea-ce"; title = "win0"; }
                 { instance = "sun-awt-X11-XDialogPeer"; }
               ];
               modifier = "${mod}";
