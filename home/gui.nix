@@ -35,7 +35,7 @@ in {
           google-chrome
           libreoffice
           mplayer
-          simplescreenrecorder
+          nur.simplescreenrecorder
           terminator
         ];
 
