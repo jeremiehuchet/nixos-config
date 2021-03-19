@@ -9,6 +9,12 @@ env:
   NIXPKGS_ALLOW_UNFREE: 1
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        system_name:
+          - laptop
+          - tv
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -30,7 +36,7 @@ jobs:
         ./.github/mock-secrets.sh
         # disable virtualbox, it takes too much time to build
         sed -i '/virtualisation\.virtualbox\.host\.enable = true/d' hosts/*.nix;
-    - name: Build tv system
-      run: nix-build '<nixpkgs/nixos>' -A system -k -I nixos-config=hosts/tv.nix
-    - name: Build laptop system
-      run: nix-build '<nixpkgs/nixos>' -A system -k -I nixos-config=hosts/laptop.nix
+        # remove android studio, it takes too much space on github action executor
+        sed -i '/android-studio/d' home/dev.nix;
+    - name: Build system
+      run: nix-build '<nixpkgs/nixos>' -A system -k -I nixos-config=hosts/${{ matrix.system_name }}.nix
