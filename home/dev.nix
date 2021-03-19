@@ -20,7 +20,6 @@
           graphviz
           groovy
           unstable.jetbrains.idea-community
-          nur.jfrog-cli
           maven
           unstable.minikube unstable.kubectl
           nodejs-12_x
