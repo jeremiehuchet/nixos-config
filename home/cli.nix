@@ -27,7 +27,7 @@
           jq
           nixfmt
           p7zip
-          pass
+          (pass.withExtensions (exts: [ exts.pass-update ]))
           pdftk
           pretty-nixos-rebuild
           nur.pyrandr
