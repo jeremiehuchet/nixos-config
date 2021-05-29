@@ -114,12 +114,7 @@ in {
     };
   };
 
-  services.sonarr = {
-    enable = true;
-    user = "guest";
-    group = "users";
-    dataDir = "/home/guest/sonarr";
-  };
+  services.sonarr.enable = true;
 
   services.bazarr.enable = true;
 
