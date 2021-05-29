@@ -121,19 +121,7 @@ in {
     dataDir = "/home/guest/sonarr";
   };
 
-  systemd.services.bazarr = {
-    description = "Bazarr";
-    after = [ "network.target" "sonarr.service" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "simple";
-      User = "guest";
-      Group = "users";
-      ExecStart = "${pkgs.nur.bazarr}/bin/bazarr -c /home/guest/bazarr";
-      Restart = "on-failure";
-      TimeoutStopSec = 3;
-    };
-  };
+  services.bazarr.enable = true;
 
   users.users.guest = {
     isNormalUser = true;
