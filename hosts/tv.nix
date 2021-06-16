@@ -4,8 +4,7 @@
 
 { config, pkgs, ... }:
 
-let dpi = 140;
-in {
+{
   imports =
     [ ./tv/hardware-configuration.nix ./common ../home ../custom-pkgs ];
 
@@ -133,7 +132,7 @@ in {
   };
 
   custom = {
-    dpi = 140;
+    dpi = 128;
     xserver.autoLogin = "guest";
     xserver.primaryOutput = "HDMI-1";
     home.root.cliTools.enable = true;
