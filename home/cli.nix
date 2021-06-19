@@ -77,24 +77,13 @@
 
         programs.htop = {
           enable = true;
-          detailedCpuTime = true;
-          showProgramPath = false;
-          meters.left = [ "LeftCPUs2" "Memory" "Swap" ];
-          meters.right = [
-            "RightCPUs2"
-            {
-              kind = "Tasks";
-              mode = 2;
-            }
-            {
-              kind = "LoadAverage";
-              mode = 2;
-            }
-            {
-              kind = "Uptime";
-              mode = 2;
-            }
-          ];
+          settings = {
+            detailed_cpu_time = true;
+            show_program_path = false;
+            left_meters = [ "LeftCPUs2" "Memory" "Swap" ];
+            right_meters = [ "RightCPUs2" "Tasks" "LoadAverage" "Uptime" ];
+            right_meters_modes = [ 1 2 2 2 ];
+          };
         };
 
         programs.vim = {

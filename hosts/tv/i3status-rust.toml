@@ -4,16 +4,10 @@ icons = "awesome"
 [[block]]
 block = "net"
 device = "wireless"
-ssid = true
-speed_up = true
-speed_down = true
 
 [[block]]
 block = "net"
 device = "ethernet"
-speed_up = true
-speed_down = true
-hide_missing = true
 
 [[block]]
 block = "disk_space"
@@ -54,8 +48,8 @@ format = "{1m}"
 [[block]]
 block = "memory"
 display_type = "memory"
-format_mem = "{Mup}%"
-format_swap = "{SUp}%"
+format_mem = "{mem_total_used_percents}%"
+format_swap = "{swap_used_percents}%"
 
 [[block]]
 block = "sound"

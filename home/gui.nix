@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg.dpi = toString config.custom.dpi;
+  cfg.dpi = config.custom.dpi;
   cfg.primaryOutput = config.custom.xserver.primaryOutput;
 in {
   imports = [ <home-manager/nixos> ];
@@ -52,7 +52,7 @@ in {
         xsession = {
           enable = true;
           initExtra = ''
-            ${pkgs.xorg.xrandr}/bin/xrandr --dpi ${cfg.dpi} --output ${cfg.primaryOutput} --primary
+            ${pkgs.xorg.xrandr}/bin/xrandr --dpi ${toString cfg.dpi} --output ${cfg.primaryOutput} --primary
             ${pkgs.nur.pyrandr}/bin/pyrandr --laptop-only
             ${pkgs.xorg.xbacklight}/bin/xbacklight -set $(cat ~/.config/i3/backlight.state)
           '';
@@ -91,7 +91,7 @@ in {
                 "System Control [Ctrl+S for suspend, S for shutdown, R for restart, E for logout, L for lock]";
             in {
               focus.followMouse = false;
-              fonts = [ "Fira Code Retina 9" ];
+              fonts.names = [ "Fira Code Retina 9" ];
               floating.criteria = [
                 { class = "SimpleScreenRecorder"; }
                 { class = "Git-gui"; }
@@ -110,7 +110,7 @@ in {
                 "${mod}+b" =
                   "exec ${pkgs.nur.rofi-bookmarks}/bin/rofi-bookmarks";
                 "${mod}+d" = "exec ${pkgs.rofi}/bin/rofi -show run";
-                "${mod}+i" = "exec ${pkgs.nur.rofimoji}/bin/rofimoji";
+                "${mod}+i" = "exec ${pkgs.rofi}/bin/rofi -show emoji -modi emoji";
                 "${mod}+o" = ''mode "${output}"'';
                 "${mod}+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass";
                 "${mod}+Shift+p" =
@@ -232,7 +232,7 @@ in {
                 position = "top";
                 statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs "
                   + userCfg.guiTools.i3statusRustConfig;
-                fonts = [ "Fira Code Retina 9" ];
+                fonts.names = [ "Fira Code Retina 9" ];
               }];
             };
           };
@@ -291,10 +291,13 @@ in {
 
         programs.rofi = {
           enable = true;
+          package = pkgs.rofi.override {
+            plugins = [ pkgs.rofi-emoji ];
+          };
           theme = "solarized";
-          extraConfig = ''
-            rofi.dpi: ${cfg.dpi}
-          '';
+          extraConfig = {
+            dpi = cfg.dpi;
+          };
         };
 
       }) config.custom.home;

@@ -1,7 +1,7 @@
 {
   "owner": "rycee",
-  "ref": "release-20.09",
+  "ref": "release-21.05",
   "repo": "home-manager",
-  "rev": "49706878e1580d796cc99b63574310405935113f",
-  "sha256": "07f903ij0czyhly8kvwjazvz3s6kflxzh5fs6j8781lkxsy47i9f"
+  "rev": "148d85ee8303444fb0116943787aa0b1b25f94df",
+  "sha256": "1qdq9cm10lq7ypj26qk4l8mwpmz24j7yn5diy6xi4bijnk0hh07n"
 }

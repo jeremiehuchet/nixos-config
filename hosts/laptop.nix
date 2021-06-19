@@ -55,6 +55,21 @@ in {
   };
   services.throttled.enable = true; # https://github.com/erpalma/throttled
 
+  systemd.network.links = {
+    "wireless" = {
+      matchConfig.MACAddress = "60:f2:62:15:55:db";
+      linkConfig.Name = "wireless";
+    };
+    "aukey-ethernet" = {
+      matchConfig.MACAddress = "00:0e:c6:fe:5a:0c";
+      linkConfig.Name = "aukey-ethernet";
+    };
+    "oneplus-usb" = {
+      matchConfig.MACAddress = "42:14:92:61:c6:70";
+      linkConfig.Name = "oneplus-usb";
+    };
+  };
+
   systemd.tmpfiles.rules = [
     # remove internal ethernet device
     "w /sys/devices/pci0000:00/0000:00:1f.6/remove - - - - 1"
@@ -89,12 +104,6 @@ in {
   services.fprintd.package = pkgs.unstable.fprintd;
 
   services.udev.extraRules = ''
-    # network cards
-    SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="60:f2:62:15:55:db", NAME="wireless"
-    SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:0e:c6:fe:5a:0c", NAME="aukey-ethernet"
-    SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="42:14:92:61:c6:70", NAME="oneplus-usb"
-    SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="00:0e:c6:db:15:c0", NAME="dock-startech"
-
     # Happlink (formerly Plug-Up) Security KEY
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2581", ATTRS{idProduct}=="f1d0", TAG+="uaccess", GROUP="plugdev", MODE="0660"
   '';
@@ -109,13 +118,13 @@ in {
   hardware.pulseaudio.extraModules = [ pkgs.pulseaudio-modules-bt ];
   hardware.bluetooth.enable = true;
   hardware.bluetooth.package = pkgs.bluezFull;
-  hardware.bluetooth.config.General.Enable = "Source,Sink,Media,Socket";
+  hardware.bluetooth.settings.General.Enable = "Source,Sink,Media,Socket";
   services.blueman.enable = true;
 
   services.xserver = {
     videoDrivers = [ "nvidia" ];
-    libinput = {
-      enable = true;
+    libinput.enable = true;
+    libinput.touchpad = {
       accelProfile = "adaptive";
       additionalOptions = ''
         Option "TransformationMatrix" "2.2 0 0 0 2.2 0 0 0 1"
@@ -149,5 +158,5 @@ in {
     m2.enable = true;
   };
 
-  system.stateVersion = "20.09";
+  system.stateVersion = "21.05";
 }
