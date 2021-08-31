@@ -33,6 +33,7 @@ in {
           dolphin
           gimp
           google-chrome
+          kdenlive
           libreoffice
           mplayer
           nur.simplescreenrecorder
