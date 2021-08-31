@@ -34,7 +34,6 @@ in {
 
         programs.obs-studio = {
           enable = true;
-          plugins = [ pkgs.unstable.obs-v4l2sink ];
         };
 
       }) config.custom.home;
