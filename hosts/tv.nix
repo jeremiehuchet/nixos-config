@@ -33,6 +33,7 @@
         films  -rw,soft,intr nas:/mnt/md1/films
         music  -rw,soft,intr nas:/mnt/md1/music
         series -rw,soft,intr nas:/mnt/md1/series
+        photos -rw,soft,intr nas:/mnt/md1/photos
       '';
     in ''
       /nas file:${nasMapConf} --timeout 30
