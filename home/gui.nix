@@ -111,7 +111,7 @@ in {
                 "${mod}+b" =
                   "exec ${pkgs.nur.rofi-bookmarks}/bin/rofi-bookmarks";
                 "${mod}+d" = "exec ${pkgs.rofi}/bin/rofi -show run";
-                "${mod}+i" = "exec ${pkgs.rofi}/bin/rofi -show emoji -modi emoji";
+                "${mod}+i" = "exec ${pkgs.rofimoji}/bin/rofimoji";
                 "${mod}+o" = ''mode "${output}"'';
                 "${mod}+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass";
                 "${mod}+Shift+p" =
