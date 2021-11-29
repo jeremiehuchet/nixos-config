@@ -31,7 +31,7 @@ jobs:
     - name: Setup channels
       run: |
         # set NIX_PATH
-        echo NIX_PATH=$(nix eval --raw '(builtins.concatStringsSep ":" (import ./pinned-channels).nixPath)') >> "$GITHUB_ENV"
+        echo NIX_PATH=$(nix-instantiate --eval --expr '(builtins.concatStringsSep ":" (import ./pinned-channels).nixPath)') >> $GITHUB_ENV
         # mock secrets
         ./.github/mock-secrets.sh
         # disable virtualbox, it takes too much time to build
@@ -39,4 +39,4 @@ jobs:
         # remove android studio, it takes too much space on github action executor
         sed -i '/android-studio/d' home/dev.nix;
     - name: Build system
-      run: nix-build --show-trace '<nixpkgs/nixos>' -A system -k -I nixos-config=hosts/${{ matrix.system_name }}.nix
+      run: nix-build --show-trace '<nixpkgs/nixos>' -A system -k -I nixos-config=$PWD/hosts/${{ matrix.system_name }}.nix
