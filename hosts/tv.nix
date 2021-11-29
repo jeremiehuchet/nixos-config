@@ -120,7 +120,11 @@
     };
   };
 
-  services.sonarr.enable = true;
+  services.sonarr = {
+    enable = true;
+    user = "guest";
+    group = "users";
+  };
 
   services.bazarr.enable = true;
 
