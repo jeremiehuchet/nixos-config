@@ -30,10 +30,10 @@
     enable = true;
     autoMaster = let
       nasMapConf = pkgs.writeText "nas-auto" ''
-        films  -rw,soft,intr nas:/mnt/md1/films
-        music  -rw,soft,intr nas:/mnt/md1/music
-        series -rw,soft,intr nas:/mnt/md1/series
-        photos -rw,soft,intr nas:/mnt/md1/photos
+        films  -rw,soft,intr,sync nas:/mnt/md1/films
+        music  -rw,soft,intr,sync nas:/mnt/md1/music
+        series -rw,soft,intr,sync nas:/mnt/md1/series
+        photos -rw,soft,intr,sync nas:/mnt/md1/photos
       '';
     in ''
       /nas file:${nasMapConf} --timeout 30
@@ -53,7 +53,7 @@
   networking.enableIPv6 = false;
   networking.wireless.enable = true;
   networking.wireless.interfaces = [ "wireless" ];
-  networking.wireless.networks."L'internet de J".psk =
+  networking.wireless.networks."L'internet de J et S".psk =
     (import ../secrets.nix).wireless.psk;
   networking.interfaces.ethernet.useDHCP = true;
   networking.interfaces.wireless.useDHCP = true;
