@@ -2,6 +2,6 @@
   "owner": "nixos",
   "ref": "nixos-21.05",
   "repo": "nixpkgs",
-  "rev": "2553aee74fed8c2205a4aeb3ffd206ca14ede60f",
-  "sha256": "16v5qjc84gg57yd8pzp9np420h72ahrgpp8hmcnmz4nf8x5alhvy"
+  "rev": "88579effa7e88c25087faf6de6388d0cd1738dc0",
+  "sha256": "10hmww1jc3gmld77fi5gngjbqpd42j51mxmyizramfymsqndrwsq"
 }
