@@ -70,7 +70,7 @@
               fontui = ''
                 -family "Noto Sans" -size 12 -weight normal -slant roman -underline 0 -overstrike 0'';
               fontdiff = ''
-                -family "Fira Code Retina" -size 10 -weight normal -slant roman -underline 0 -overstrike 0'';
+                -family "Fira Code Light Retina" -size 10 -weight normal -slant roman -underline 0 -overstrike 0'';
             };
           };
         };

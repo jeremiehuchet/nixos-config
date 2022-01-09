@@ -35,7 +35,7 @@ with lib;
       fontconfig.defaultFonts = {
         emoji =
           [ "Noto Color Emoji" "Font Awesome 5 Brands" "Font Awesome 5 Free" ];
-        monospace = [ "Fira Code Retina" ];
+        monospace = [ "Fira Code Regular" ];
         sansSerif = [ "Noto Sans" ];
         serif = [ "Noto Sans Serif" ];
       };

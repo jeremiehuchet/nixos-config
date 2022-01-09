@@ -2,6 +2,6 @@
   "owner": "nixos",
   "ref": "nixos-unstable",
   "repo": "nixpkgs",
-  "rev": "fa0326ce5233f7d592271df52c9d0812bec47b84",
-  "sha256": "1rzgjhzp5gnd49fl123cbd70zl4gmf7175150aj51h796mr7aah3"
+  "rev": "59ef8087a3d95bf6c69767c126bbc0b7ced89e32",
+  "sha256": "0bdjy6np0r9vixsva973q49bq1pbk201bfghf6132x6izzcdma27"
 }
