@@ -38,6 +38,7 @@ in {
           mplayer
           nur.simplescreenrecorder
           terminator
+          vlc
         ];
 
         xresources.properties = {
