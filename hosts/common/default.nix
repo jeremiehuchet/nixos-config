@@ -31,7 +31,6 @@ with lib;
     fonts = {
       enableDefaultFonts = false;
       enableGhostscriptFonts = true;
-      fontconfig.dpi = config.custom.dpi;
       fontconfig.defaultFonts = {
         emoji =
           [ "Noto Color Emoji" "Font Awesome 5 Brands" "Font Awesome 5 Free" ];
