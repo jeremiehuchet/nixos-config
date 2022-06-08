@@ -36,7 +36,7 @@ in {
           kdenlive
           libreoffice
           mplayer
-          nur.simplescreenrecorder
+          simplescreenrecorder
           terminator
           vlc
         ];
