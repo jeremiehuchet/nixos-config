@@ -163,6 +163,6 @@
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = true;
 
-  system.stateVersion = "21.11";
+  system.stateVersion = "22.05";
 }
 
