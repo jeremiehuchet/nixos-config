@@ -22,7 +22,7 @@
           unstable.jetbrains.idea-community
           maven
           unstable.minikube unstable.kubectl
-          nodejs-12_x
+          nodejs-14_x
           nur.now
           openjdk11
           unstable.packer
