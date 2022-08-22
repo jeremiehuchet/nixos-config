@@ -28,6 +28,11 @@
     fsType = "ext4";
   };
 
+  fileSystems."/home/guest/torrent" = {
+    device = "/dev/disk/by-label/torrent";
+    fsType = "ext4";
+  };
+
   swapDevices = [
    { device = "/dev/disk/by-label/swap"; }
   ];
