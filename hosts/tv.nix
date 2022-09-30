@@ -109,25 +109,6 @@
     '';
   };
 
-  services.transmission = {
-    enable = true;
-    user = "guest";
-    group = "users";
-    settings = {
-      download-dir = "/home/guest/torrent/finished";
-      incomplete-dir = "/home/guest/torrent/incomplete";
-      incomplete-dir-enabled = true;
-    };
-  };
-
-  services.sonarr = {
-    enable = true;
-    user = "guest";
-    group = "users";
-  };
-
-  services.bazarr.enable = true;
-
   users.users.guest = {
     isNormalUser = true;
     extraGroups = [ "video" "wheel" ];
