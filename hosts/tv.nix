@@ -123,6 +123,19 @@
     ];
   };
 
+  virtualisation.oci-containers = {
+    backend = "podman";
+    containers.homeassistant = {
+      volumes = [ "home-assistant:/config" ];
+      environment.TZ = "Europe/Berlin";
+      image = "ghcr.io/home-assistant/home-assistant:2022.9.7";
+      extraOptions = [
+        "--network=host"
+        "--volume=/run/dbus:/run/dbus:ro"
+      ];
+    };
+  };
+
   custom = {
     dpi = 128;
     xserver.autoLogin = "guest";
