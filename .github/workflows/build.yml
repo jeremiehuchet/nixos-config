@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         system_name:
-          - laptop
+          #- laptop
           - tv
     runs-on: ubuntu-latest
     steps:
