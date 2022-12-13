@@ -10,7 +10,13 @@
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "sr_mod" "rtsx_usb_sdmmc" ];
   boot.initrd.kernelModules = [ "dm-snapshot" ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [
+    # fix hwmon drivers to avoid random device ids disturbing fancontrol
+    "coretemp"
+    "dell_smm_hwmon"
+
+    "kvm-intel"
+  ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
