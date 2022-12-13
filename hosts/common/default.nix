@@ -32,13 +32,12 @@ with lib;
       enableDefaultFonts = false;
       enableGhostscriptFonts = true;
       fontconfig.defaultFonts = {
-        emoji =
-          [ "Noto Color Emoji" "Font Awesome 5 Brands" "Font Awesome 5 Free" ];
-        monospace = [ "Fira Code Retina" ];
+        emoji = [ "Noto Color Emoji" "Font Awesome 6 Free" ];
+        monospace = [ "Fira Code Regular" ];
         sansSerif = [ "Noto Sans" ];
         serif = [ "Noto Sans Serif" ];
       };
-      fonts = with pkgs; [ font-awesome noto-fonts-emoji fira-code noto-fonts ];
+      fonts = with pkgs; [ noto-fonts-emoji fira-code noto-fonts ];
     };
 
     services.xserver = {

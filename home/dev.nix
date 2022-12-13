@@ -41,7 +41,7 @@
           userSettings = {
             "update.mode" = "none";
             "editor.fontFamily" =
-              "'Fira Code Retina', 'Noto Color Emoji', 'Font Awesome 5 Brands', 'Font Awesome 5 Free'";
+              "'Fira Code Regular', 'Noto Color Emoji', 'Font Awesome 5 Brands', 'Font Awesome 5 Free'";
             # font weight : 300 → light, 400 → regular, 500 → medium, 600 → bold
             "editor.fontWeight" = "400";
             "editor.fontLigatures" = true;

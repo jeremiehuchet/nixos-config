@@ -94,7 +94,7 @@ in {
                 "System Control [Ctrl+S for suspend, S for shutdown, R for restart, E for logout, L for lock]";
             in {
               focus.followMouse = false;
-              fonts.names = [ "Fira Code Retina 9" ];
+              fonts.names = [ "Fira Code Regular 9" ];
               floating.criteria = [
                 { class = "SimpleScreenRecorder"; }
                 { class = "Git-gui"; }
@@ -235,7 +235,7 @@ in {
                 position = "top";
                 statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs "
                   + userCfg.guiTools.i3statusRustConfig;
-                fonts.names = [ "Fira Code Retina 9" ];
+                fonts.names = [ "Fira Code Regular 9" ];
               }];
             };
           };
@@ -256,7 +256,7 @@ in {
                 frame_color = "#aaaaaa";
                 separator_height = 2;
                 separator_color = "frame";
-                font = "Fira Code Retina 12";
+                font = "Fira Code Regular 12";
                 icon_position = "left";
                 max_icon_size = 32;
                 browser = "${pkgs.google-chrome}/bin/google-chrome-stable";
