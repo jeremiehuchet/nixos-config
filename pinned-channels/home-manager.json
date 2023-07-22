@@ -1,9 +1,9 @@
 {
- "deepClone": false,
+  "deepClone": false,
   "leaveDotGit": false,
   "owner": "rycee",
-  "ref": "release-22.05",
+  "ref": "release-23.05",
   "repo": "home-manager",
-  "rev": "6639e3a837fc5deb6f99554072789724997bc8e5",
-  "sha256": "bHkAwkYlBjkupPUFcQjimNS8gxWSWjOTevEuwdnp5m0="
+  "rev": "07c347bb50994691d7b0095f45ebd8838cf6bc38",
+  "sha256": "bBFlPthuYX322xOlpJvkjUBz0C+MOBjZdDOOJJ+G2jU="
 }
