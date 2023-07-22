@@ -4,9 +4,25 @@
 
 { config, pkgs, ... }:
 
-{
-  imports =
-    [ ./tv/hardware-configuration.nix ./common ../home ../custom-pkgs ];
+let
+  unstable = import <nixpkgs-unstable> {};
+in {
+  nixpkgs.overlays = [
+    (self: super: {
+      inherit (unstable) home-assistant;
+    })
+  ];
+
+  disabledModules = [
+    "services/home-automation/home-assistant.nix"
+  ];
+  imports = [
+    ./tv/hardware-configuration.nix
+    ./common
+    ../home
+    ../custom-pkgs
+    <nixpkgs-unstable/nixos/modules/services/home-automation/home-assistant.nix>
+  ];
 
   i18n.defaultLocale = "fr_FR.UTF-8";
 
@@ -41,7 +57,7 @@
   };
 
   systemd.network.links."10-wireless" = {
-    matchConfig.MACAddress = "f4:b7:e2:4b:d8:b7";
+    matchConfig.MACAddress = "28:87:ba:cc:d8:e8";
     linkConfig.Name = "wireless";
   };
   systemd.network.links."10-ethernet" = {
@@ -73,6 +89,8 @@
   services.udev.extraRules = ''
     # wake on usb
     ACTION=="add", SUBSYSTEM=="usb", DRIVERS=="usbhid", ATTR{../power/wakeup}="enabled"
+    # disable internal bluetooth usb controller
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="0cf3", ATTRS{idProduct}=="e004", ATTR{authorized}="0"
   '';
 
   sound.enable = true;
@@ -96,6 +114,8 @@
   hardware.bluetooth.enable = true;
   hardware.bluetooth.package = pkgs.bluezFull;
   services.blueman.enable = true;
+
+  services.dbus.implementation = "broker";
 
   services.xserver.libinput.enable = true;
 
@@ -123,19 +143,113 @@
     ];
   };
 
-  networking.firewall.allowedTCPPorts = [8123 1883];
-  virtualisation.containers.containersConf.cniPlugins = [ pkgs.cni-plugins pkgs.dnsname-cni ];
-  virtualisation.oci-containers = {
-    backend = "podman";
-    containers.homeassistant = {
-      volumes = [ "home-assistant:/config" ];
-      environment.TZ = "Europe/Berlin";
-      image = "ghcr.io/home-assistant/home-assistant:2022.9.7";
-      extraOptions = [
-        "--network=host"
-        "--volume=/run/dbus:/run/dbus:ro"
+  services.home-assistant = {
+    enable = true;
+    openFirewall = true;
+    package =
+      (pkgs.home-assistant.override {
+        extraPackages = py: with py; [
+          psycopg2
+        ];
+      })
+      .overrideAttrs (oldAttrs: {
+        doInstallCheck = false;
+      });
+    extraComponents = [
+      "default_config"
+
+      "bluetooth"
+      "bluetooth_le_tracker"
+      "bthome"
+      "meteo_france"
+      "mobile_app"
+      "mqtt"
+      "open_meteo"
+      "prometheus"
+      "rest"
+      "signal_messenger"
+      "sun"
+    ];
+    config = {
+      default_config = {};
+      logger.default = "info";
+      homeassistant = let
+        homeSecrets = (import ../secrets.nix).home;
+      in {
+        name = "Home";
+        country = "FR";
+        longitude = homeSecrets.longitude;
+        latitude = homeSecrets.latitude;
+        temperature_unit = "C";
+        time_zone = "Europe/Paris";
+        unit_system = "metric";
+      };
+      http = {
+        use_x_forwarded_for = true;
+        trusted_proxies = [ "172.30.33.0/24" ];
+      };
+      bluetooth = {};
+      prometheus.filter.include_domains = [
+        "persistent_notification"
+        "sensor"
+        "sun"
       ];
+      device_tracker = [
+        {
+          platform = "bluetooth_le_tracker";
+        }
+      ];
+      sensor = [
+        {
+          platform = "rest";
+          name = "Prix d'une palette de pellets";
+          unique_id = "feedufeu_one_pellet_pallet_price";
+          state_class = "measurement";
+          icon = "mdi:currency-eur";
+          picture = "https://www.feedufeu.com/images/logo.png";
+          unit_of_measurement = "€";
+          resource = "https://www.feedufeu.com/fdf-bo/includes/getPrice.php?dep=35&qte=1";
+          value_template = "{{ value | regex_replace(find='€.*', replace='') }}";
+          scan_interval = 86400; # seconds or 1 day
+          force_update = true;
+        }
+      ];
+      template = [
+        {
+          sensor = [
+            {
+              name = "Prix d'un sac de 15kg de pellets";
+              unique_id = "sensor.15kg_pellet_bag_price";
+              state = "{{ state_attr('sensor.feedufeu_pellet_pallet_price') / 65 }}";
+              state_class = "measurement";
+              icon = "mdi:currency-eur";
+              picture = "https://www.feedufeu.com/images/logo.png";
+              unit_of_measurement = "€";
+            }
+          ];
+        }
+      ];
+      recorder.db_url = "postgresql://@/hass";
     };
+  };
+  systemd.services.hass-tunnel = {
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token=${(import ../secrets.nix).hass.cloudflare-tunnel-token}";
+      Restart = "always";
+      DynamicUser = true;
+    };
+  };
+  services.postgresql = {
+    enable = true;
+    ensureDatabases = [ "hass" ];
+    ensureUsers = [{
+      name = "hass";
+      ensurePermissions = {
+        "DATABASE hass" = "ALL PRIVILEGES";
+      };
+    }];
   };
   services.mosquitto = {
     enable = true;
@@ -144,35 +258,34 @@
       address = "0.0.0.0";
       users = {
         home-assistant = {
-          acl = ["read somfy-protect/#"];
+          acl = [
+            "readwrite homeassistant/status"
+            "read homeassistant/#"
+          ];
           password = "123456";
         };
         mqtt-bridge = {
-          acl = ["readwrite somfy-protect/#"];
+          acl = ["readwrite homeassistant/#"];
           password = "123456";
         };
       };
     }];
   };
-  systemd.services.dbus-broker = {
-    enable = false;
-    description= "D-Bus System Message Bus";
-    documentation = ["man:dbus-broker-launch(1)"];
-    before = ["basic.target" "shutdown.target"];
-    requires = ["dbus.socket"];
-    conflicts = ["shutdown.target"];
-    serviceConfig = {
-      Type = "notify";
-      Sockets = "dbus.socket";
-      OOMScoreAdjust = -900;
-      LimitNOFILE = 16384;
-      ProtectSystem = "full";
-      PrivateTmp = true;
-      PrivateDevices = true;
-    };
-    script = "${pkgs.dbus-broker}/bin/dbus-broker-launch --scope system --audit";
-    reload = "${pkgs.systemd}/bin/busctl call org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus ReloadConfig";
-    #aliases = ["dbus.service"];
+  services.prometheus = {
+    enable = true;
+    listenAddress = "127.0.0.1";
+    retentionTime = "900d";
+    scrapeConfigs = [
+      {
+        job_name = "hass";
+        scrape_interval = "1m";
+        metrics_path =  "/api/prometheus";
+        bearer_token = (import ../secrets.nix).hass.prometheus-token;
+        static_configs = [
+          { targets = [ "localhost:8123" ]; }
+        ];
+      }
+    ];
   };
 
   custom = {

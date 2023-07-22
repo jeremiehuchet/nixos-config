@@ -78,13 +78,13 @@ with lib;
 
     nix = {
       nixPath = (import ../../pinned-channels).nixPath;
-      autoOptimiseStore = true;
       gc.automatic = true;
       gc.dates = "weekly";
       gc.options = "--delete-older-than 30d";
-      binaryCaches =
+      settings.auto-optimise-store = true;
+      settings.substituters =
         [ "https://cachix.cachix.org" "https://jeremiehuchet.cachix.org" ];
-      binaryCachePublicKeys = [
+      settings.trusted-public-keys = [
         "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
         "jeremiehuchet.cachix.org-1:NPQGzLT375jYLfRiIAsSierm0DJX1PlgMjczQVtIZYM="
       ];

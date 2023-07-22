@@ -17,6 +17,8 @@ cat - <<EOF > secrets.nix
   m2.domain = "secret";
   m2.regex-zones = {};
   m2.proxy = "1.2.3.4:567";
+  home.longitude = 4.9;
+  home.latitude = 52.3;
 }
 EOF
 
