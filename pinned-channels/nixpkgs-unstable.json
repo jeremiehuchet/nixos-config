@@ -1,9 +1,7 @@
 {
-  "deepClone": false,
-  "leaveDotGit": false,
   "owner": "nixos",
   "ref": "nixos-unstable",
   "repo": "nixpkgs",
-  "rev": "9ca785644d067445a4aa749902b29ccef61f7476",
-  "sha256": "397xShPnFqPC59Bmpo3lS+/Aw0yoDRMACGo1+h2VJMo="
+  "rev": "ce5e4a6ef2e59d89a971bc434ca8ca222b9c7f5e",
+  "sha256": "gSILTEx1jRaJjwZxRlnu3ZwMn1FVNk80qlwiCX8kmpo="
 }

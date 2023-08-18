@@ -19,7 +19,7 @@ with lib;
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
     boot.loader.systemd-boot.configurationLimit = 30;
-    boot.cleanTmpDir = true;
+    #boot.tmp.cleanOnBoot = true;
 
     console.earlySetup = true;
     console.keyMap = "fr";
