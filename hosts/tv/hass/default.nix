@@ -4,10 +4,6 @@ let
   secrets = import ../../../secrets.nix ;
 in {
 
-  disabledModules = [
-    "services/home-automation/home-assistant.nix"
-  ];
-
   networking.firewall.allowedTCPPorts = [ 80 1883 ];
 
   services.nginx = {
@@ -27,15 +23,9 @@ in {
   services.home-assistant = {
     enable = true;
     openFirewall = true;
-    package =
-      (pkgs.home-assistant.override {
-        extraPackages = py: with py; [
-          psycopg2
-        ];
-      })
-      .overrideAttrs (oldAttrs: {
-        doInstallCheck = false;
-      });
+    extraPackages = python3Packages: with python3Packages; [
+      psycopg2
+    ];
     extraComponents = [
       "default_config"
 
@@ -50,7 +40,12 @@ in {
       "rest"
       "signal_messenger"
       "sun"
+      "tasmota"
     ];
+    #customComponents = with pkgs.home-assistant-custom-components; [
+    #  livebox
+    #  prixcarburant
+    #];
     config = {
       default_config = {};
       logger.default = "info";
@@ -83,6 +78,27 @@ in {
           platform = "bluetooth_le_tracker";
         }
       ];
+      mqtt = {
+        sensor = [
+          {
+            name = "Energy";
+            unique_id = "Winky-7F93B4";
+            device_class = "energy";
+            device = {
+              name = "Winky";
+              identifiers = [ "Winky-7F93B4" ];
+              connections = [ ["mac" "8c:aa:b5:7f:93:b4"] ];
+              sw_version = "V55";
+            };
+            expire_after = "120";
+            state_class = "total_increasing";
+            state_topic = "/xky-8c:aa:b5:7f:93:b4";
+            value_template = "{{ value_json.BASE | int }}";
+            unit_of_measurement = "Wh";
+            json_attributes_topic = "/xky-8c:aa:b5:7f:93:b4";
+          }
+        ];
+      };
       sensor = [
         {
           platform = "rest";
@@ -98,6 +114,60 @@ in {
           force_update = true;
         }
       ];
+      cover = [
+        {
+          platform = "template";
+          covers = {
+            garage_door = {
+              device_class = "door";
+              friendly_name = "Garage Door";
+              unique_id = "OpenBK7231T-042BE1_cover";
+              value_template = ''
+                {% if states('binary_sensor.garagedoor_sensor') == 'off' %}
+                  open
+                {% else %}
+                  closed
+                {% endif %}
+              '';
+              open_cover = [
+                {
+                  condition = "state";
+                  entity_id = "binary_sensor.garagedoor_sensor";
+                  state = "on";
+                }
+                {
+                  service = "switch.turn_on";
+                  target.entity_id = "switch.garagedoor_button";
+                }
+              ];
+              close_cover = [
+                {
+                  condition = "state";
+                  entity_id = "binary_sensor.garagedoor_sensor";
+                  state = "off";
+                }
+                {
+                  service = "switch.turn_on";
+                  target.entity_id = "switch.garagedoor_button";
+                }
+              ];
+              stop_cover = [
+                {
+                  service = "switch.turn_on";
+                  target.entity_id = "switch.garagedoor_button";
+                }
+              ];
+              icon_template = ''
+                {% if states('binary_sensor.garagedoor_sensor')=='off' %}
+                  mdi:garage-open
+                {% else %}
+                  mdi:garage
+                {% endif %}
+              '';
+            };
+          };
+        }
+      ];
       template = [
         {
           sensor = [
@@ -109,6 +179,11 @@ in {
               icon = "mdi:currency-eur";
               picture = "https://www.feedufeu.com/images/logo.png";
               unit_of_measurement = "€";
+            }
+            {
+              name = "Apparent Power";
+              state = ''{{ state_attr('sensor.winky_energy', 'PAPP') | int }}'';
+              unit_of_measurement = "VA";
             }
           ];
         }
@@ -122,9 +197,7 @@ in {
     ensureDatabases = [ "hass" ];
     ensureUsers = [{
       name = "hass";
-      ensurePermissions = {
-        "DATABASE hass" = "ALL PRIVILEGES";
-      };
+      ensureDBOwnership = true;
     }];
   };
 
@@ -139,21 +212,73 @@ in {
             "read #"
             "readwrite homeassistant/status"
             "readwrite shelly/#"
+            "readwrite somfy-protect/#"
+            "readwrite tasmota/#"
           ];
           password = "123456";
         };
         shelly = {
           acl = [
-            "readwrite shelly/#"
+            "read homeassistant/status"
             "readwrite homeassistant/#"
+            "readwrite shelly/#"
+          ];
+          password = "123456";
+        };
+        tasmota = {
+          acl = [
+            "read homeassistant/status"
+            "readwrite homeassistant/#"
+            "readwrite tasmota/#"
+          ];
+          password = "123456";
+        };
+        openbk = {
+          acl = [
+            "read homeassistant/status"
+            "readwrite homeassistant/#"
+            "readwrite openbk/#"
           ];
           password = "123456";
         };
         mqtt-bridge = {
-          acl = ["readwrite homeassistant/#"];
+          acl = [
+            "read homeassistant/status"
+            "readwrite homeassistant/#"
+            "readwrite rika-firenet/#"
+            "readwrite somfy-protect/#"
+          ];
           password = "123456";
+        };
+        winky = {
+          acl = [
+            "readwrite #"
+          ];
+          password = secrets.home-automation.winky-password;
         };
       };
     }];
+  };
+
+  systemd.services.hass-mqtt-bridge = let hmb = pkgs.callPackage /home/guest/projects/nur-packages/pkgs/hass-mqtt-bridge { }; in {
+    description = "Home Assistant integrations MQTT bridge";
+    after = [ "network.target" "mosquitto.service" ];
+    wants = [ "mosquitto.service" ];
+    environment = {
+      RUST_LOG="info";
+      MQTT_USERNAME = "mqtt-bridge";
+      MQTT_PASSWORD = "123456";
+      RIKA_USERNAME = secrets.home-automation.rika-username;
+      RIKA_PASSWORD = secrets.home-automation.rika-password;
+      SOMFY_USERNAME = secrets.home-automation.somfy-username;
+      SOMFY_PASSWORD = secrets.home-automation.somfy-password;
+      SOMFY_CLIENT_ID = secrets.home-automation.somfy-client-id;
+      SOMFY_CLIENT_SECRET = secrets.home-automation.somfy-client-secret;
+    };
+    serviceConfig = {
+      DynamicUser = "yes";
+      ExecStart = "${hmb}/bin/hass-mqtt-bridge";
+      Restart = "on-failure";
+    };
   };
 }

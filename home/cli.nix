@@ -29,7 +29,6 @@
           p7zip
           (pass.withExtensions (exts: [ exts.pass-update ]))
           pdftk
-          pretty-nixos-rebuild
           nur.pyrandr
           speedtest-cli
           tree

@@ -4,18 +4,12 @@
 
 { config, pkgs, ... }:
 
-let
-  unstable = import <nixpkgs-unstable> {};
-in {
-  nixpkgs.overlays = [
-    (self: super: {
-      inherit (unstable) home-assistant;
-    })
-  ];
+{
 
   disabledModules = [
     "services/home-automation/home-assistant.nix"
   ];
+
   imports = [
     ./tv/hardware-configuration.nix
     ./common
@@ -135,7 +129,7 @@ in {
 
   users.users.guest = {
     isNormalUser = true;
-    extraGroups = [ "video" "wheel" ];
+    extraGroups = [ "video" "wheel" "tty" "dialout" ];
   };
 
   users.users.git = {
@@ -147,132 +141,6 @@ in {
     ];
   };
 
-  services.home-assistant = {
-    enable = true;
-    openFirewall = true;
-    package =
-      (pkgs.home-assistant.override {
-        extraPackages = py: with py; [
-          psycopg2
-        ];
-      })
-      .overrideAttrs (oldAttrs: {
-        doInstallCheck = false;
-      });
-    extraComponents = [
-      "default_config"
-
-      "bluetooth"
-      "bluetooth_le_tracker"
-      "bthome"
-      "meteo_france"
-      "mobile_app"
-      "mqtt"
-      "open_meteo"
-      "prometheus"
-      "rest"
-      "signal_messenger"
-      "sun"
-    ];
-    config = {
-      default_config = {};
-      logger.default = "info";
-      homeassistant = let
-        homeSecrets = (import ../secrets.nix).home;
-      in {
-        name = "Home";
-        country = "FR";
-        longitude = homeSecrets.longitude;
-        latitude = homeSecrets.latitude;
-        temperature_unit = "C";
-        time_zone = "Europe/Paris";
-        unit_system = "metric";
-      };
-      http = {
-        use_x_forwarded_for = true;
-        trusted_proxies = [ "172.30.33.0/24" ];
-      };
-      bluetooth = {};
-      prometheus.filter.include_domains = [
-        "persistent_notification"
-        "sensor"
-        "sun"
-      ];
-      device_tracker = [
-        {
-          platform = "bluetooth_le_tracker";
-        }
-      ];
-      sensor = [
-        {
-          platform = "rest";
-          name = "Prix d'une palette de pellets";
-          unique_id = "feedufeu_one_pellet_pallet_price";
-          state_class = "measurement";
-          icon = "mdi:currency-eur";
-          picture = "https://www.feedufeu.com/images/logo.png";
-          unit_of_measurement = "€";
-          resource = "https://www.feedufeu.com/fdf-bo/includes/getPrice.php?dep=35&qte=1";
-          value_template = "{{ value | regex_replace(find='€.*', replace='') }}";
-          scan_interval = 86400; # seconds or 1 day
-          force_update = true;
-        }
-      ];
-      template = [
-        {
-          sensor = [
-            {
-              name = "Prix d'un sac de 15kg de pellets";
-              unique_id = "sensor.15kg_pellet_bag_price";
-              state = "{{ state_attr('sensor.feedufeu_pellet_pallet_price') / 65 }}";
-              state_class = "measurement";
-              icon = "mdi:currency-eur";
-              picture = "https://www.feedufeu.com/images/logo.png";
-              unit_of_measurement = "€";
-            }
-          ];
-        }
-      ];
-      recorder.db_url = "postgresql://@/hass";
-    };
-  };
-  systemd.services.hass-tunnel = {
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
-    serviceConfig = {
-      ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token=${(import ../secrets.nix).hass.cloudflare-tunnel-token}";
-      Restart = "always";
-      DynamicUser = true;
-    };
-  };
-  services.postgresql = {
-    enable = true;
-    ensureDatabases = [ "hass" ];
-    ensureUsers = [{
-      name = "hass";
-      ensureDBOwnership = true;
-    }];
-  };
-  services.mosquitto = {
-    enable = true;
-    listeners = [{
-      port = 1883;
-      address = "0.0.0.0";
-      users = {
-        home-assistant = {
-          acl = [
-            "readwrite homeassistant/status"
-            "read homeassistant/#"
-          ];
-          password = "123456";
-        };
-        mqtt-bridge = {
-          acl = ["readwrite homeassistant/#"];
-          password = "123456";
-        };
-      };
-    }];
-  };
   services.prometheus = {
     enable = true;
     listenAddress = "127.0.0.1";

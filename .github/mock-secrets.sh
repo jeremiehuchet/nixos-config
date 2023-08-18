@@ -19,6 +19,7 @@ cat - <<EOF > secrets.nix
   m2.proxy = "1.2.3.4:567";
   home.longitude = 4.9;
   home.latitude = 52.3;
+  home-automation.winky-password = "secret";
 }
 EOF
 
