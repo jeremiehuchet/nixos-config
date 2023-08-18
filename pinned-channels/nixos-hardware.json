@@ -1,9 +1,7 @@
 {
-  "deepClone": false,
-  "leaveDotGit": false,
   "owner": "nixos",
   "ref": "master",
   "repo": "nixos-hardware",
-  "rev": "d4ea64f2063820120c05f6ba93ee02e6d4671d6b",
-  "sha256": "vODUkZLWFVCvo1KPK3dC2CbXjxa9antEn5ozwlcTr48="
+  "rev": "8ff521acd2c8132c62141c2990deb7406e32b335",
+  "sha256": "c4G++nXzVgJbXe5tuUZxSS+SbDqynO/nG3wocRcP6YE="
 }

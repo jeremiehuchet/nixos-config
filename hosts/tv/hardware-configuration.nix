@@ -10,6 +10,16 @@
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "sr_mod" "rtsx_usb_sdmmc" ];
   boot.initrd.kernelModules = [ "dm-snapshot" ];
+  boot.kernelPackages = pkgs.linuxPackages_latest.extend (lpSelf: lpSuper: {
+    rtl8821au = lpSuper.rtl8821au.overrideAttrs (rtl8821auOld: rec {
+      src = pkgs.fetchFromGitHub {
+        owner = "morrownr";
+        repo = "8821au-20210708";
+        rev = "0dc022287b0ab534efa885881eaa65c5503291be";
+        hash = "sha256-pLRBWdqlv9A39VbCS8dymTCJHcwJooqD8v6mTbOsBz0=";
+      };
+    });
+  });
   boot.kernelModules = [
     # fix hwmon drivers to avoid random device ids disturbing fancontrol
     "coretemp"

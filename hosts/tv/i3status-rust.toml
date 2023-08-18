@@ -1,5 +1,7 @@
+[theme]
 theme = "solarized-dark"
-icons = "awesome"
+[icons]
+icons = "awesome6"
 
 [[block]]
 block = "net"

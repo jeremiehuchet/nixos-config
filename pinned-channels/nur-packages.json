@@ -1,9 +1,7 @@
 {
-  "deepClone": false,
-  "leaveDotGit": false,
   "owner": "jeremiehuchet",
   "ref": "main",
   "repo": "nur-packages",
-  "rev": "0b6eddb67b25278b87a5be61782276a6c0dc957d",
-  "sha256": "mMruLwzbBVCZWWvE016GXy8o2qXNAXn22GTnj2vsOc8="
+  "rev": "cbdb87bcc4a3fd9a97dee357e2e06541a6c713b1",
+  "sha256": "paHFShJ+VhL50TYC0bn5pi0zICVzwWYM8tffQUefevQ="
 }

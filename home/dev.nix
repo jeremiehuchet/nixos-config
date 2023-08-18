@@ -22,9 +22,9 @@
           unstable.jetbrains.idea-community
           maven
           unstable.minikube unstable.kubectl
-          nodejs-14_x
+          nodejs-18_x
           nur.now
-          openjdk11
+          openjdk17
           unstable.packer
           pgcli
           remmina

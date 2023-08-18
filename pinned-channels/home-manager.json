@@ -1,6 +1,4 @@
 {
-  "deepClone": false,
-  "leaveDotGit": false,
   "owner": "rycee",
   "ref": "release-23.05",
   "repo": "home-manager",
