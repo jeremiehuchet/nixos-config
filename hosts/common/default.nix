@@ -29,7 +29,7 @@ with lib;
     security.sudo.extraConfig = "Defaults timestamp_timeout=10";
 
     fonts = {
-      enableDefaultFonts = false;
+      enableDefaultPackages = false;
       enableGhostscriptFonts = true;
       fontconfig.defaultFonts = {
         emoji = [ "Noto Color Emoji" "Font Awesome 6 Free" ];
@@ -37,7 +37,7 @@ with lib;
         sansSerif = [ "Noto Sans" ];
         serif = [ "Noto Sans Serif" ];
       };
-      fonts = with pkgs; [ noto-fonts-emoji fira-code noto-fonts ];
+      packages = with pkgs; [ noto-fonts-emoji fira-code noto-fonts ];
     };
 
     services.xserver = {
