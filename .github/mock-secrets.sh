@@ -20,6 +20,9 @@ cat - <<EOF > secrets.nix
   home.longitude = 4.9;
   home.latitude = 52.3;
   home-automation.winky-password = "secret";
+  livebox.password = "secret";
+  freedns.username = "secret";
+  freedns.password = "secret";
 }
 EOF
 
