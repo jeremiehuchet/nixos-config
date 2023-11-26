@@ -117,7 +117,6 @@ in {
   hardware.pulseaudio.package = pkgs.pulseaudioFull;
   hardware.pulseaudio.extraModules = [ pkgs.pulseaudio-modules-bt ];
   hardware.bluetooth.enable = true;
-  hardware.bluetooth.package = pkgs.bluezFull;
   hardware.bluetooth.settings.General.Enable = "Source,Sink,Media,Socket";
   services.blueman.enable = true;
 

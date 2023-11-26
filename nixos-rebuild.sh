@@ -3,7 +3,7 @@
 NIX_PATH=$(
   cd /etc/nixos
   nix --extra-experimental-features nix-command \
-      eval --impure --expr '(builtins.concatStringsSep ":" (import ./pinned-channels).nixPath)' \
+      eval --impure --expr '(import ./pinned-channels).nixPathString' \
       | sed 's/^"//g' | sed 's/"$//g'
 )
 echo $NIX_PATH

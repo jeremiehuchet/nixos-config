@@ -113,7 +113,7 @@
             "httpie"
             "mvn"
             "npm"
-            "nvm"
+            #"nvm"
             "pip"
             "rvm"
             "systemd"
