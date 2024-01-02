@@ -1,4 +1,6 @@
 let
+  fetchFromGitHub = (import <nixpkgs> {}).fetchFromGitHub;
+
   /* Reads a JSON file.
      Type :: path -> any
   */
@@ -14,29 +16,11 @@ let
   mapAttrsToList = f: attrs:
     map (name: f name attrs.${name}) (builtins.attrNames attrs);
 
-  /* Fetch an archive from Github and return the store path.
-     Example:
-       fetchGithub {
-         name = "channel-nixos-nixpkgs-nixos-20.09";
-         owner = "nixos";
-         repo = "nixpkgs";
-         rev = "b94726217f7cdc02ddf277b65553762d520da196";
-         sha256 = "1v3v7f2apmsdwv1w6hvsxr8whggjbiaxy00k47pxdzyigxv3s400";
-       }
-     => "/nix/store/r69hpwrl2anwl8yzc5hd7n8zfwdrx1mr-channel-nixos-nixpkgs-nixos-20.09"
-  */
-  fetchGithub = { name, owner, repo, rev, sha256 }:
-    builtins.fetchTarball {
-      inherit name sha256;
-      url = "https://github.com/${owner}/${repo}/archive/${rev}.tar.gz";
-    };
-
   # Fetch a channel archive from a github "pin file".
   fetchChannel = pinFile:
     let ghInfos = importJSON pinFile;
-    in fetchGithub {
-      name = "channel-${ghInfos.owner}-${ghInfos.repo}-${ghInfos.ref}";
-      inherit (ghInfos) owner repo rev sha256;
+    in fetchFromGitHub {
+      inherit (ghInfos) owner repo rev hash;
     };
 
   # Convert a name/value pair to a nixpath entry string.
