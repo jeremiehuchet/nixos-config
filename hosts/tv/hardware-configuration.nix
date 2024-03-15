@@ -15,8 +15,8 @@
       src = pkgs.fetchFromGitHub {
         owner = "morrownr";
         repo = "8821au-20210708";
-        rev = "0dc022287b0ab534efa885881eaa65c5503291be";
-        hash = "sha256-pLRBWdqlv9A39VbCS8dymTCJHcwJooqD8v6mTbOsBz0=";
+        rev = "6cd61cfce48218c26b57db4733aa0d3cbf9a2f2c";
+        hash = "sha256-3A/Kn50UB2RyEOqe/p1FPKP2Nfg3NbtuHo7RsTYGaLY";
       };
     });
   });

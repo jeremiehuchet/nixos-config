@@ -7,22 +7,23 @@ touch secrets/m2-proxy.pac
  
 cat - <<EOF > secrets.nix
 {
+  email = "secret";
   wireless.psk = "secret";
-  hosts = {};
-  m0.vpn.username = "secret";
-  m0.vpn.password = "secret";
-  m0.vpn.remoteIpPort = "1.2.3.4 567";
-  m2.ssh-gateway.user = "secret";
-  m2.ssh-gateway.host = "secret";
-  m2.domain = "secret";
-  m2.regex-zones = {};
-  m2.proxy = "1.2.3.4:567";
-  home.longitude = 4.9;
-  home.latitude = 52.3;
-  home-automation.winky-password = "secret";
-  livebox.password = "secret";
+  home.longitude = 1.1234567;
+  home.latitude = 1.21234567;
+  hass.prometheus-token = "secret";
   freedns.username = "secret";
   freedns.password = "secret";
+  livebox.password = "secret";
+  home-automation = {
+    winky-password = "secret";
+    rika-username = "secret";
+    rika-password = "secret";
+    somfy-username = "secret";
+    somfy-password = "secret";
+    somfy-client-id = "secret";
+    somfy-client-secret = "secret";
+  };
 }
 EOF
 
