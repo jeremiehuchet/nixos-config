@@ -260,7 +260,7 @@ in {
     }];
   };
 
-  systemd.services.hass-mqtt-bridge = let hmb = pkgs.callPackage /home/guest/projects/nur-packages/pkgs/hass-mqtt-bridge { }; in {
+  systemd.services.hass-mqtt-bridge = {
     description = "Home Assistant integrations MQTT bridge";
     after = [ "network.target" "mosquitto.service" ];
     wants = [ "mosquitto.service" ];
@@ -277,7 +277,7 @@ in {
     };
     serviceConfig = {
       DynamicUser = "yes";
-      ExecStart = "${hmb}/bin/hass-mqtt-bridge";
+      ExecStart = "${pkgs.nur.hass-mqtt-bridge}/bin/hass-mqtt-bridge";
       Restart = "on-failure";
     };
   };

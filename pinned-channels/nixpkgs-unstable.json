@@ -1,7 +1,7 @@
 {
-  "hash": "sha256-gkZJRDBUCpTPBvQk25G0B7vfbpEYM5s5OZqghkjZsnE=",
+  "hash": "sha256-g0bDwXFmTE7uGDOs9HcJsfLFhH7fOsASbAuOzDC+fhQ=",
   "owner": "nixos",
   "ref": "nixos-unstable",
   "repo": "nixpkgs",
-  "rev": "a9bf124c46ef298113270b1f84a164865987a91c"
+  "rev": "0ad13a6833440b8e238947e47bea7f11071dc2b2"
 }

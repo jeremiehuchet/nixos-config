@@ -24,7 +24,7 @@ for lockfile in *.json ; do
       | jq 'del(.fetchSubmodules)' \
       | jq --sort-keys
     )
-    echo $new_lockfile_content #> "$lockfile"
+    echo "$new_lockfile_content" > "$lockfile"
     echo "⬆ ${latest_rev:0:7}"
   else
     echo "✅"
