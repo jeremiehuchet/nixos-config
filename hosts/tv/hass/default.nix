@@ -42,10 +42,10 @@ in {
       "sun"
       "tasmota"
     ];
-    #customComponents = with pkgs.home-assistant-custom-components; [
-    #  livebox
+    customComponents = with pkgs.home-assistant-custom-components; [
+      livebox
     #  prixcarburant
-    #];
+    ];
     config = {
       default_config = {};
       logger.default = "info";
@@ -79,32 +79,124 @@ in {
         }
       ];
       mqtt = {
-        sensor = [
-          {
-            name = "Energy";
-            unique_id = "Winky-7F93B4";
-            device_class = "energy";
+        sensor = let
+          winky_id = "Winky-7F93B4";
+          winky_defaults = {
             device = {
               name = "Winky";
               identifiers = [ "Winky-7F93B4" ];
               connections = [ ["mac" "8c:aa:b5:7f:93:b4"] ];
               sw_version = "V55";
+              hw_version = "ESP8266";
             };
-            expire_after = "120";
-            state_class = "total_increasing";
+            expire_after = "3600";
             state_topic = "/xky-8c:aa:b5:7f:93:b4";
+          };
+        in [
+          {
+            inherit (winky_defaults) device expire_after state_topic;
+            name = "Energy";
+            unique_id = "${winky_id}_energy";
+            device_class = "energy";
+            state_class = "total_increasing";
             value_template = "{{ value_json.BASE | int }}";
             unit_of_measurement = "Wh";
-            json_attributes_topic = "/xky-8c:aa:b5:7f:93:b4";
+          }
+          {
+            inherit (winky_defaults) device expire_after state_topic;
+            name = "Mode";
+            unique_id = "${winky_id}_mode";
+            value_template = ''{{ value_json.ModeTic }}'';
+            device_class = "enum";
+            entity_category = "diagnostic";
+          }
+          {
+            inherit (winky_defaults) device expire_after state_topic;
+            name = "Option Tarifaire";
+            unique_id = "${winky_id}_optarif";
+            value_template = ''{{ value_json.OPTARIF }}'';
+            device_class = "enum";
+            entity_category = "diagnostic";
+          }
+          {
+            inherit (winky_defaults) device expire_after state_topic;
+            name = "Intensité souscrite";
+            unique_id = "${winky_id}_isousc";
+            state_class = "measurement";
+            value_template = ''{{ value_json.ISOUSC | int }}'';
+            unit_of_measurement = "A";
+            device_class = "current";
+            entity_category = "diagnostic";
+          }
+          {
+            inherit (winky_defaults) device expire_after state_topic;
+            name = "Puissance apparente";
+            unique_id = "${winky_id}_apower";
+            value_template = ''{{ value_json.PAPP | int }}'';
+            unit_of_measurement = "VA";
+            device_class = "apparent_power";
+          }
+          {
+            inherit (winky_defaults) device expire_after state_topic;
+            name = "Période tarifaire en cours";
+            unique_id = "${winky_id}_ptec";
+            value_template = ''{{ value_json.PTEC }}'';
+            device_class = "enum";
+            entity_category = "diagnostic";
+          }
+          {
+            inherit (winky_defaults) device expire_after state_topic;
+            name = "Intensité instantanée";
+            unique_id = "${winky_id}_iinst";
+            state_class = "measurement";
+            value_template = ''{{ value_json.IINST | int }}'';
+            unit_of_measurement = "A";
+            device_class = "current";
+          }
+          {
+            inherit (winky_defaults) device expire_after state_topic;
+            name = "Intensité maximale";
+            unique_id = "${winky_id}_imax";
+            state_class = "measurement";
+            value_template = ''{{ value_json.IMAX | int }}'';
+            unit_of_measurement = "A";
+            device_class = "current";
+          }
+          {
+            inherit (winky_defaults) device expire_after state_topic;
+            name = "Groupe horaire";
+            unique_id = "${winky_id}_hhphc";
+            value_template = ''{{ value_json.HHPHC }}'';
+            device_class = "enum";
+            entity_category = "diagnostic";
+         }
+          {
+            inherit (winky_defaults) device expire_after state_topic;
+            name = "Mot d'état";
+            unique_id = "${winky_id}_motdetat";
+            value_template = ''{{ value_json.MOTDETAT }}'';
+            device_class = "enum";
+            entity_category = "diagnostic";
+          }
+          {
+            inherit (winky_defaults) device expire_after state_topic;
+            name = "Wifi signal";
+            unique_id = "${winky_id}_rssi";
+            state_class = "measurement";
+            value_template = ''{{ value_json.RSSI | int }}'';
+            device_class = "signal_strength";
+            unit_of_measurement = "dBm";
+            entity_category = "diagnostic";
           }
         ];
       };
       sensor = [
         {
           platform = "rest";
-          name = "Prix d'une palette de pellets";
-          unique_id = "feedufeu_one_pellet_pallet_price";
-          state_class = "measurement";
+          #name = "Prix d'une palette de 975kg de pellets";
+          name = "feedufeu_price_975kg"; # unique_id doesn't seem to work properly
+          unique_id = "feedufeu_price_975kg";
+          device_class = "monetary";
           icon = "mdi:currency-eur";
           picture = "https://www.feedufeu.com/images/logo.png";
           unit_of_measurement = "€";
@@ -170,22 +262,96 @@ in {
       ];
       template = [
         {
+          unique_id = "feedufeu_price_";
           sensor = [
             {
-              name = "Prix d'un sac de 15kg de pellets";
-              unique_id = "feedufeu_16kg_pellet_price";
-              state = "{{ states.sensor.prix_d_une_palette_de_pellets.state | float / 65 }}";
-              state_class = "measurement";
+              unique_id = "15kg";
+              state = "{{ (states.sensor.feedufeu_price_975kg.state | float / 65) | round(2) }}";
+              device_class = "monetary";
               icon = "mdi:currency-eur";
               picture = "https://www.feedufeu.com/images/logo.png";
               unit_of_measurement = "€";
             }
             {
-              name = "Apparent Power";
-              state = ''{{ state_attr('sensor.winky_energy', 'PAPP') | int }}'';
-              unit_of_measurement = "VA";
+              unique_id = "12kg";
+              state = "{{ (states.sensor.feedufeu_price_15kg.state | float / 15 * 12) | round(2) }}";
+              device_class = "monetary";
+              icon = "mdi:currency-eur";
+              picture = "https://www.feedufeu.com/images/logo.png";
+              unit_of_measurement = "€";
             }
           ];
+        }
+      ];
+      script = {
+        create_winky_entities = let
+          id = "Winky-7F93B4";
+          mac = "8c:aa:b5:7f:93:b4";
+        in {
+          alias = "Create Winki device and entities";
+          sequence = [
+            {
+              service = "mqtt.publish";
+              data = {
+                topic = "homeassistant/sensor/${id}/config";
+                retain = true;
+                payload = ''
+                  {
+                    "state_topic": "/xky-${mac}",
+                    "name": "Energy",
+                    "unique_id": "${id}-energy",
+                    "device": {
+                      "name": "Winky",
+                      "model": "Winky {{ value_json.BoardVersion }}",
+                      "manufacturer": "",
+                      "identifiers": ["${id}"],
+                      "connections": [ [ "mac", "${mac}" ] ],
+                      "sw_version": "{{ value_json.FWVersion }}",
+                      "hw_version": "{{ value_json.BoardVersion }}"
+                    },
+                    "device_class": "energy",
+                    "expire_after": 600,
+                    "state_class": "total_increasing",
+                    "value_template": "{% raw %}{{ value_json.BASE | int }}{% endraw %}"
+                  }
+                '';
+              };
+            }
+          ];
+        };
+      };
+      "automation manual" = [
+        {
+          alias = "open covers weekdays";
+          trigger = {
+            platform = "sun";
+            event = "sunrise";
+            offset = "01:00:00";
+          };
+          condition = {
+            condition = "time";
+            weekday = ["fri" "thu" "wed" "tue" "mon"];
+          };
+          action = [{
+            service = "cover.open_cover";
+            entity_id = "cover.cover_ch4";
+          }];
+        }
+        {
+          alias = "close covers weekdays";
+          trigger = {
+            platform = "sun";
+            event = "sunset";
+            offset = "01:00:00";
+          };
+          condition = {
+            condition = "time";
+            weekday = ["fri" "thu" "wed" "tue" "mon"];
+          };
+          action = [{
+            service = "cover.close_cover";
+            entity_id = "cover.cover_ch4";
+          }];
         }
       ];
       recorder.db_url = "postgresql://@/hass";
@@ -203,14 +369,16 @@ in {
 
   services.mosquitto = {
     enable = true;
+    logType = ["debug"];
     listeners = [{
       port = 1883;
       address = "0.0.0.0";
       users = {
         home-assistant = {
           acl = [
-            "read #"
+            "readwrite #"
             "readwrite homeassistant/status"
+            "readwrite rika-firenet/#"
             "readwrite shelly/#"
             "readwrite somfy-protect/#"
             "readwrite tasmota/#"
@@ -264,16 +432,17 @@ in {
     description = "Home Assistant integrations MQTT bridge";
     after = [ "network.target" "mosquitto.service" ];
     wants = [ "mosquitto.service" ];
+    wantedBy = ["multi-user.target"];
     environment = {
       RUST_LOG="info";
       MQTT_USERNAME = "mqtt-bridge";
       MQTT_PASSWORD = "123456";
       RIKA_USERNAME = secrets.home-automation.rika-username;
       RIKA_PASSWORD = secrets.home-automation.rika-password;
-      SOMFY_USERNAME = secrets.home-automation.somfy-username;
-      SOMFY_PASSWORD = secrets.home-automation.somfy-password;
-      SOMFY_CLIENT_ID = secrets.home-automation.somfy-client-id;
-      SOMFY_CLIENT_SECRET = secrets.home-automation.somfy-client-secret;
+      #SOMFY_USERNAME = secrets.home-automation.somfy-username;
+      #SOMFY_PASSWORD = secrets.home-automation.somfy-password;
+      #SOMFY_CLIENT_ID = secrets.home-automation.somfy-client-id;
+      #SOMFY_CLIENT_SECRET = secrets.home-automation.somfy-client-secret;
     };
     serviceConfig = {
       DynamicUser = "yes";

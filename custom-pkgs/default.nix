@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 
 let
   channels = import ../pinned-channels;
@@ -24,13 +24,12 @@ in {
     (
       final: prev: {
         home-assistant = unstable.home-assistant;
-        home-assistant-custom-components = prev.home-assistant-custom-components // {
-          livebox = pkgs.nur.hass-livebox-component;
-          prixcarburant = pkgs.callPackage /home/guest/projects/nur-packages/pkgs/hass-prixcarburant-component {
-            prixCarburantFrClient = pkgs.callPackage /home/guest/projects/nur-packages/pkgs/python-packages/prix-carburant-fr-client { };
+        home-assistant-custom-components = unstable.home-assistant-custom-components // {
+          livebox = pkgs.python312Packages.callPackage ./ha-custom-component-livebox.nix {
+            aiosysbus = unstable.python312Packages.callPackage ./python-lib-aiosysbus.nix { };
           };
         };
       }
-      )
+    )
   ];
 }
