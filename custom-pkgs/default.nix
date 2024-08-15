@@ -25,7 +25,7 @@ in {
       final: prev: {
         home-assistant = unstable.home-assistant;
         home-assistant-custom-components = unstable.home-assistant-custom-components // {
-          livebox = pkgs.python312Packages.callPackage ./ha-custom-component-livebox.nix {
+          livebox = unstable.callPackage ./ha-custom-component-livebox.nix {
             aiosysbus = unstable.python312Packages.callPackage ./python-lib-aiosysbus.nix { };
           };
         };

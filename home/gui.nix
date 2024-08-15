@@ -282,7 +282,7 @@ in {
           };
           gpg-agent.enable = true;
           gpg-agent.enableScDaemon = false;
-          gpg-agent.pinentryFlavor = "qt";
+          gpg-agent.pinentryPackage = pkgs.pinentry-rofi;
           udiskie.enable = true;
           blueman-applet.enable = true;
           network-manager-applet.enable = true;

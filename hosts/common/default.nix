@@ -40,10 +40,7 @@ with lib;
       packages = with pkgs; [ noto-fonts-emoji fira-code noto-fonts ];
     };
 
-    services.xserver = {
-      enable = true;
-      dpi = config.custom.dpi;
-      layout = "fr";
+    services = {
       displayManager = {
         defaultSession = "none+i3";
         autoLogin = {
@@ -51,7 +48,13 @@ with lib;
           user = config.custom.xserver.autoLogin;
         };
       };
-      windowManager.i3.enable = true;
+
+      xserver = {
+        enable = true;
+        dpi = config.custom.dpi;
+        xkb.layout = "fr";
+        windowManager.i3.enable = true;
+      };
     };
 
     programs.vim.defaultEditor = true;

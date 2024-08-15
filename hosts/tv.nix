@@ -115,7 +115,7 @@
 
   services.dbus.implementation = "broker";
 
-  services.xserver.libinput.enable = true;
+  services.libinput.enable = true;
 
   services.logind = {
     lidSwitch = "ignore";

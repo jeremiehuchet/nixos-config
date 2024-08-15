@@ -25,7 +25,7 @@
           gnupg
           httpie
           jq
-          nixfmt
+          nixfmt-rfc-style
           p7zip
           (pass.withExtensions (exts: [ exts.pass-update ]))
           pdftk
@@ -93,7 +93,7 @@
 
         programs.zsh = {
           enable = true;
-          enableAutosuggestions = true;
+          autosuggestion.enable = true;
           enableCompletion = true;
           history = {
             expireDuplicatesFirst = true;
