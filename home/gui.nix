@@ -282,7 +282,7 @@ in {
           };
           gpg-agent.enable = true;
           gpg-agent.enableScDaemon = false;
-          gpg-agent.pinentryPackage = pkgs.pinentry-rofi;
+          gpg-agent.pinentryPackage = pkgs.pinentry-qt;
           udiskie.enable = true;
           blueman-applet.enable = true;
           network-manager-applet.enable = true;
