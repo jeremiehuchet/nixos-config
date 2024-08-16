@@ -37,7 +37,14 @@ with lib;
         sansSerif = [ "Noto Sans" ];
         serif = [ "Noto Sans Serif" ];
       };
-      packages = with pkgs; [ noto-fonts-emoji fira-code noto-fonts ];
+      packages = with pkgs; [
+        dejavu_fonts
+        emacs-all-the-icons-fonts
+        fira-code
+        font-awesome
+        noto-fonts-emoji
+        noto-fonts
+      ];
     };
 
     services = {
