@@ -24,6 +24,10 @@ cat - <<EOF > secrets.nix
     somfy-client-id = "secret";
     somfy-client-secret = "secret";
   };
+  home-vpn = {
+    username = "secret";
+    password = "secret";
+  };
 }
 EOF
 

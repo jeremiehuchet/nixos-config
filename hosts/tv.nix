@@ -73,6 +73,13 @@
   networking.interfaces.ethernet.useDHCP = true;
   networking.interfaces.wireless.useDHCP = true;
 
+    services.openvpn.servers = {
+      "home" = {
+        config = ''config /etc/nixos/secrets/home-vpn/openvpn.ovpn'';
+        authUserPass = (import ../secrets.nix).home-vpn;
+      };
+    };
+
   environment.systemPackages = with pkgs; [
     acpitool
     gnupg
