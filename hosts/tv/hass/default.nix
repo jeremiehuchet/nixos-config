@@ -4,6 +4,8 @@ let
   secrets = import ../../../secrets.nix ;
 in {
 
+  imports = import ./entities;
+
   networking.firewall.allowedTCPPorts = [ 80 1883 ];
 
   services.nginx = {
@@ -29,26 +31,32 @@ in {
     extraComponents = [
       "default_config"
 
-      "bluetooth"
+      "alert"
+      #"bluetooth" use shelly bluetooth gateway instead
       "bluetooth_le_tracker"
       "bthome"
+      "linux_battery"
       "meteo_france"
       "mobile_app"
       "mqtt"
       "open_meteo"
       "prometheus"
       "rest"
+      "roborock"
+      "shelly"
       "signal_messenger"
       "sun"
       "tasmota"
     ];
     customComponents = with pkgs.home-assistant-custom-components; [
+      ecoflowcloud
       livebox
-    #  prixcarburant
+      prixcarburant
     ];
     config = {
       default_config = {};
       logger.default = "info";
+      recorder.db_url = "postgresql://@/hass";
       homeassistant = let
         homeSecrets = (import ../../../secrets.nix).home;
       in {
@@ -66,7 +74,6 @@ in {
         ip_ban_enabled = true;
         login_attempts_threshold = 5;
       };
-      bluetooth = {};
       prometheus.filter.include_domains = [
         "persistent_notification"
         "sensor"
@@ -74,123 +81,14 @@ in {
         "sun"
       ];
       device_tracker = [
-        {
-          platform = "bluetooth_le_tracker";
-        }
+        { platform = "bluetooth_le_tracker"; }
       ];
-      mqtt = {
-        sensor = let
-          winky_id = "Winky-7F93B4";
-          winky_defaults = {
-            device = {
-              name = "Winky";
-              identifiers = [ "Winky-7F93B4" ];
-              connections = [ ["mac" "8c:aa:b5:7f:93:b4"] ];
-              sw_version = "V55";
-              hw_version = "ESP8266";
-            };
-            expire_after = "3600";
-            state_topic = "/xky-8c:aa:b5:7f:93:b4";
-          };
-        in [
-          {
-            inherit (winky_defaults) device expire_after state_topic;
-            name = "Energy";
-            unique_id = "${winky_id}_energy";
-            device_class = "energy";
-            state_class = "total_increasing";
-            value_template = "{{ value_json.BASE | int }}";
-            unit_of_measurement = "Wh";
-          }
-          {
-            inherit (winky_defaults) device expire_after state_topic;
-            name = "Mode";
-            unique_id = "${winky_id}_mode";
-            value_template = ''{{ value_json.ModeTic }}'';
-            device_class = "enum";
-            entity_category = "diagnostic";
-          }
-          {
-            inherit (winky_defaults) device expire_after state_topic;
-            name = "Option Tarifaire";
-            unique_id = "${winky_id}_optarif";
-            value_template = ''{{ value_json.OPTARIF }}'';
-            device_class = "enum";
-            entity_category = "diagnostic";
-          }
-          {
-            inherit (winky_defaults) device expire_after state_topic;
-            name = "Intensité souscrite";
-            unique_id = "${winky_id}_isousc";
-            state_class = "measurement";
-            value_template = ''{{ value_json.ISOUSC | int }}'';
-            unit_of_measurement = "A";
-            device_class = "current";
-            entity_category = "diagnostic";
-          }
-          {
-            inherit (winky_defaults) device expire_after state_topic;
-            name = "Puissance apparente";
-            unique_id = "${winky_id}_apower";
-            value_template = ''{{ value_json.PAPP | int }}'';
-            unit_of_measurement = "VA";
-            device_class = "apparent_power";
-          }
-          {
-            inherit (winky_defaults) device expire_after state_topic;
-            name = "Période tarifaire en cours";
-            unique_id = "${winky_id}_ptec";
-            value_template = ''{{ value_json.PTEC }}'';
-            device_class = "enum";
-            entity_category = "diagnostic";
-          }
-          {
-            inherit (winky_defaults) device expire_after state_topic;
-            name = "Intensité instantanée";
-            unique_id = "${winky_id}_iinst";
-            state_class = "measurement";
-            value_template = ''{{ value_json.IINST | int }}'';
-            unit_of_measurement = "A";
-            device_class = "current";
-          }
-          {
-            inherit (winky_defaults) device expire_after state_topic;
-            name = "Intensité maximale";
-            unique_id = "${winky_id}_imax";
-            state_class = "measurement";
-            value_template = ''{{ value_json.IMAX | int }}'';
-            unit_of_measurement = "A";
-            device_class = "current";
-          }
-          {
-            inherit (winky_defaults) device expire_after state_topic;
-            name = "Groupe horaire";
-            unique_id = "${winky_id}_hhphc";
-            value_template = ''{{ value_json.HHPHC }}'';
-            device_class = "enum";
-            entity_category = "diagnostic";
-         }
-          {
-            inherit (winky_defaults) device expire_after state_topic;
-            name = "Mot d'état";
-            unique_id = "${winky_id}_motdetat";
-            value_template = ''{{ value_json.MOTDETAT }}'';
-            device_class = "enum";
-            entity_category = "diagnostic";
-          }
-          {
-            inherit (winky_defaults) device expire_after state_topic;
-            name = "Wifi signal";
-            unique_id = "${winky_id}_rssi";
-            state_class = "measurement";
-            value_template = ''{{ value_json.RSSI | int }}'';
-            device_class = "signal_strength";
-            unit_of_measurement = "dBm";
-            entity_category = "diagnostic";
-          }
-        ];
-      };
       sensor = [
+        { platform = "linux_battery"; }
+        {
+           platform = "prix_carburant";
+           stations = secrets.home-automation.fuel-stations;
+        }
         {
           platform = "rest";
           #name = "Prix d'une palette de 975kg de pellets";
@@ -204,60 +102,6 @@ in {
           value_template = "{{ value | regex_replace(find='€.*', replace='') }}";
           scan_interval = 86400; # seconds or 1 day
           force_update = true;
-        }
-      ];
-      cover = [
-        {
-          platform = "template";
-          covers = {
-            garage_door = {
-              device_class = "door";
-              friendly_name = "Garage Door";
-              unique_id = "OpenBK7231T-042BE1_cover";
-              value_template = ''
-                {% if states('binary_sensor.garagedoor_sensor') == 'off' %}
-                  open
-                {% else %}
-                  closed
-                {% endif %}
-              '';
-              open_cover = [
-                {
-                  condition = "state";
-                  entity_id = "binary_sensor.garagedoor_sensor";
-                  state = "on";
-                }
-                {
-                  service = "switch.turn_on";
-                  target.entity_id = "switch.garagedoor_button";
-                }
-              ];
-              close_cover = [
-                {
-                  condition = "state";
-                  entity_id = "binary_sensor.garagedoor_sensor";
-                  state = "off";
-                }
-                {
-                  service = "switch.turn_on";
-                  target.entity_id = "switch.garagedoor_button";
-                }
-              ];
-              stop_cover = [
-                {
-                  service = "switch.turn_on";
-                  target.entity_id = "switch.garagedoor_button";
-                }
-              ];
-              icon_template = ''
-                {% if states('binary_sensor.garagedoor_sensor')=='off' %}
-                  mdi:garage-open
-                {% else %}
-                  mdi:garage
-                {% endif %}
-              '';
-            };
-          };
         }
       ];
       template = [
@@ -282,44 +126,41 @@ in {
             }
           ];
         }
-      ];
-      script = {
-        create_winky_entities = let
-          id = "Winky-7F93B4";
-          mac = "8c:aa:b5:7f:93:b4";
-        in {
-          alias = "Create Winki device and entities";
-          sequence = [
+        {
+          unique_id = "garage_door_";
+          binary_sensor = [
             {
-              service = "mqtt.publish";
-              data = {
-                topic = "homeassistant/sensor/${id}/config";
-                retain = true;
-                payload = ''
-                  {
-                    "state_topic": "/xky-${mac}",
-                    "name": "Energy",
-                    "unique_id": "${id}-energy",
-                    "device": {
-                      "name": "Winky",
-                      "model": "Winky {{ value_json.BoardVersion }}",
-                      "manufacturer": "",
-                      "identifiers": ["${id}"],
-                      "connections": [ [ "mac", "${mac}" ] ],
-                      "sw_version": "{{ value_json.FWVersion }}",
-                      "hw_version": "{{ value_json.BoardVersion }}"
-                    },
-                    "device_class": "energy",
-                    "expire_after": 600,
-                    "state_class": "total_increasing",
-                    "value_template": "{% raw %}{{ value_json.BASE | int }}{% endraw %}"
-                  }
-                '';
-              };
+              unique_id = "opened_at_night";
+              state = ''{{ not is_state("cover.garage_door", "closed") and (today_at("21:00") < now() or now() < today_at('7:30')) }}'';
+              device_class = "safety";
+            }
+            {
+              unique_id = "opened_but_nobody_at_home";
+              state = ''{{ not is_state("cover.garage_door", "closed") and not is_state('person.jeremie','home') }}'';
+              device_class = "safety";
             }
           ];
-        };
-      };
+          sensor = [
+            {
+              unique_id = "optimistic_state";
+              device_class = "enum";
+              state = ''
+                {% if is_state('binary_sensor.garagedoor_sensor', 'off') %}
+                  CLOSED
+                {% elif is_state('binary_sensor.garagedoor_sensor', 'on') %}
+                  {% if as_timestamp(now()) - as_timestamp(states.switch.garagedoor_button.last_changed) > 16 %}
+                    OPENED
+                  {% else %}
+                    OPENING or CLOSING
+                  {% endif %}
+                {% else %}
+                  unknown
+                {% endif %}
+              '';
+            }
+          ];
+        }
+      ];
       "automation manual" = [
         {
           alias = "open covers weekdays";
@@ -354,7 +195,32 @@ in {
           }];
         }
       ];
-      recorder.db_url = "postgresql://@/hass";
+      alert = {
+        garage_door_open_at_night = {
+          name = "Garage is open at night";
+          done_message = "clear_notification";
+          entity_id = "binary_sensor.garage_door_opened_at_night";
+          repeat = 15;
+          can_acknowledge = true;
+          skip_first = true;
+          notifiers = [ "mobile_app_jeremie" ];
+          data = {
+            tag = "garage-door";
+          };
+        };
+        garage_door_open_but_nobody_at_home = {
+          name = "Garage is open but nobody at home";
+          done_message = "clear_notification";
+          entity_id = "binary_sensor.garage_door_opened_but_nobody_at_home";
+          repeat = 5;
+          can_acknowledge = true;
+          skip_first = false;
+          notifiers = [ "mobile_app_jeremie" ];
+          data = {
+            tag = "garage-door";
+          };
+        };
+      };
     };
   };
 

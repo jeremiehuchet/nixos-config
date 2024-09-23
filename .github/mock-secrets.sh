@@ -23,6 +23,7 @@ cat - <<EOF > secrets.nix
     somfy-password = "secret";
     somfy-client-id = "secret";
     somfy-client-secret = "secret";
+    fuel-stations = [];
   };
   home-vpn = {
     username = "secret";
