@@ -32,7 +32,7 @@ in {
       "default_config"
 
       "alert"
-      #"bluetooth" use shelly bluetooth gateway instead
+      "bluetooth" # use shelly bluetooth gateway instead?
       "bluetooth_le_tracker"
       "bthome"
       "linux_battery"

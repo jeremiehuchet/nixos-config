@@ -6,6 +6,17 @@
 }:
 
 let
+  jsonpath-ng = let
+    pname = "jsonpath-ng";
+    version = "1.6.1";
+  in buildPythonPackage {
+    inherit pname version;
+    src = fetchPypi {
+      inherit pname version;
+      hash = "sha256-CGw3ukkXMEhQvYN66rgGZwIk0/A4/igz/1k6Zy7wpfo=";
+    };
+    propagatedBuildInputs = [ ply ];
+  };
   paho-mqtt = let
     pname = "paho-mqtt";
     version = "1.6.1";
@@ -16,42 +27,42 @@ let
       hash = "sha256-KoKRyBYjrsADcrWoVVijcsdHy8qOmTTf4hhji47vwm8";
     };
   };
-  reactivex = let
-    pname = "reactivex";
-    version = "4.0.4";
+  ply = let
+    pname = "ply";
+    version = "3.11";
   in buildPythonPackage {
     inherit pname version;
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-6RLmWRAiq5F234NIplP+jI+nowHyb5kxydjHimUOBOg=";
+      hash = "sha256-AMfBqqiDWLnHZbbTAAxu7AukKrylNRsJUyGu9EYIHaM=";
     };
   };
   protobuf = let
     pname = "protobuf";
-    version = "5.27.3";
+    version = "5.28.2";
   in buildPythonPackage {
     inherit pname version;
     src = fetchPypi {
       inherit pname version;
-      hash = "sha256-gkYJA+ZA8rfjTugalH/arYneeW0yS8vDj/VDC83q2Cw=";
+      hash = "sha256-WTeWdP8RlxdAT3RUZHkTeHA08D/nBJy+8ddKl7tFk/A=";
     };
   };
 in buildHomeAssistantComponent rec {
   owner = "tolwi";
   domain = "ecoflow_cloud";
-  version = "0.13.4";
+  version = "1.2.0";
 
   src = fetchFromGitHub {
     owner = "tolwi";
     repo = "hassio-ecoflow-cloud";
     rev = "refs/tags/v${version}";
-    hash = "sha256-3vMqGA0JTN5S15QmC7ITvxV4e9b36derT6yNcgiBnOQ";
+    hash = "sha256-mW2UAjsV5RHi/n5O7b5lowZvCnCm8WIPpUo5Mu7UOr0=";
   };
 
   propagatedBuildInputs = [
+    jsonpath-ng
     paho-mqtt
     protobuf
-    reactivex
   ];
 
   meta = with lib; {
