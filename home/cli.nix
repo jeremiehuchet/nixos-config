@@ -33,7 +33,7 @@
           speedtest-cli
           tree
           wget
-          nur.webtorrent-cli
+          nodePackages.webtorrent-cli
         ];
 
         xdg.configFile."gitmoji-nodejs/config.json".source = ./gitmoji.json;
