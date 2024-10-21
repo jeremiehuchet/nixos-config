@@ -31,6 +31,7 @@ in {
 
         home.packages = with pkgs; [
           dolphin
+          firefox
           gimp
           google-chrome
           kdenlive
