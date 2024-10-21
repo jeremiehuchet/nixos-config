@@ -77,6 +77,7 @@
       "home" = {
         config = ''config /etc/nixos/secrets/home-vpn/openvpn.ovpn'';
         authUserPass = (import ../secrets.nix).home-vpn;
+        autoStart = false;
       };
     };
 
