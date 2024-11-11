@@ -40,6 +40,7 @@ in {
           simplescreenrecorder
           terminator
           vlc
+          xdotool
         ];
 
         xresources.properties = {
@@ -117,8 +118,7 @@ in {
                 "${mod}+i" = "exec ${pkgs.rofimoji}/bin/rofimoji";
                 "${mod}+o" = ''mode "${output}"'';
                 "${mod}+p" = "exec ${pkgs.rofi-pass}/bin/rofi-pass";
-                "${mod}+Shift+p" =
-                  "exec ${pkgs.rofi-pass}/bin/rofi-pass --last-used";
+                "${mod}+Shift+p" ="exec ${pkgs.rofi-rbw}/bin/rofi-rbw";
                 "${mod}+Tab" = "exec rofi -show window";
                 "${mod}+l" = "exec ${lockCmd}";
                 "${mod}+r" = ''mode "${resize}"'';
@@ -301,6 +301,15 @@ in {
           theme = "solarized";
           extraConfig = {
             dpi = cfg.dpi;
+          };
+        };
+        programs.rbw = {
+          enable = true;
+          settings = {
+            email = (import ../secrets.nix).vaultwarden.email;
+            base_url = "http://127.0.0.1:8222";
+            lock_timeout = 900;
+            pinentry = pkgs.pinentry-qt;
           };
         };
 

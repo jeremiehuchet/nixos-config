@@ -2,17 +2,17 @@
 
 let
   secrets = import ../../secrets.nix ;
-  freednspassfile = pkgs.writeText "freednspassfile" ''${secrets.freedns.password}'';
+  dyndnspassfile = pkgs.writeText "dyndnspassfile" ''${secrets.dyndns.password}'';
 in {
   services.ddclient = {
     enable = true;
     ssl = true;
-    server = "freedns.afraid.org";
-    protocol = "freedns";
-    username = secrets.freedns.username;
-    passwordFile = "${freednspassfile}";
+    server = "dns.eu.ovhapis.com";
+    protocol = "dyndns2";
+    username = secrets.dyndns.username;
+    passwordFile = "${dyndnspassfile}";
     domains = [
-      "hass.ignorelist.com"
+      secrets.dyndns.domain
     ];
     use = ''
       cmd, cmd='${pkgs.nur.livebox-cli}/bin/livebox-cli --password '${secrets.livebox.password}' --query $.data.IPAddress --raw exec --service NMC --method getWANStatus'

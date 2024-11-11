@@ -16,9 +16,12 @@
     ../home
     ../custom-pkgs
     <nixpkgs-unstable/nixos/modules/services/home-automation/home-assistant.nix>
+    ./tv/acme.nix
+    ./tv/nginx.nix
     ./tv/fail2ban.nix
     ./tv/dyndns.nix
     ./tv/hass
+    ./tv/password-manager.nix
     ./tv/vpn.nix
   ];
 
@@ -73,13 +76,13 @@
   networking.interfaces.ethernet.useDHCP = true;
   networking.interfaces.wireless.useDHCP = true;
 
-    services.openvpn.servers = {
-      "home" = {
-        config = ''config /etc/nixos/secrets/home-vpn/openvpn.ovpn'';
-        authUserPass = (import ../secrets.nix).home-vpn;
-        autoStart = false;
-      };
+  services.openvpn.servers = {
+    "home" = {
+      config = ''config /etc/nixos/secrets/home-vpn/openvpn.ovpn'';
+      authUserPass = (import ../secrets.nix).home-vpn;
+      autoStart = false;
     };
+  };
 
   environment.systemPackages = with pkgs; [
     acpitool

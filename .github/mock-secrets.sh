@@ -12,9 +12,13 @@ cat - <<EOF > secrets.nix
   home.longitude = 1.1234567;
   home.latitude = 1.21234567;
   hass.prometheus-token = "secret";
-  freedns.username = "secret";
-  freedns.password = "secret";
+  dyndns.username = "secret";
+  dyndns.password = "secret";
+  dyndns.domain = "secret";
   livebox.password = "secret";
+  acme.contactEmail = "secret";
+  acme.dnsProvider = "secret";
+  acme.credentials."huchet.ovh" = "secret";
   home-automation = {
     winky-password = "secret";
     rika-username = "secret";
@@ -28,6 +32,15 @@ cat - <<EOF > secrets.nix
   home-vpn = {
     username = "secret";
     password = "secret";
+  };
+  vaultwarden.email = "secret";
+  vaultwarden.smtp = {
+    host = "secret";
+    port = 444;
+    from = "secret";
+    security = "secret";
+    password = "secret";
+    username = "secret";
   };
 }
 EOF

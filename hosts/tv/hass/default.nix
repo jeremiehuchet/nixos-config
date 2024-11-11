@@ -6,17 +6,19 @@ in {
 
   imports = import ./entities;
 
-  networking.firewall.allowedTCPPorts = [ 80 1883 ];
+  networking.firewall.allowedTCPPorts = [ 443 ];
 
   services.nginx = {
     enable = true;
-    virtualHosts."hass.ignorelist.com" = {
+    virtualHosts."hass.huchet.ovh" = {
+      serverAliases= ["hass.local.huchet.ovh"];
+      useACMEHost = "huchet.ovh";
+      forceSSL = true;
       locations."/" = {
         proxyPass = "http://127.0.0.1:8123/";
         proxyWebsockets = true;
         extraConfig = ''
-          proxy_set_header Host $host;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_buffering off;
         '';
       };
     };
@@ -69,8 +71,9 @@ in {
         unit_system = "metric";
       };
       http = {
-        use_x_forwarded_for = true;
+        server_host = "127.0.0.1";
         trusted_proxies = [ "127.0.0.1" ];
+        use_x_forwarded_for = true;
         ip_ban_enabled = true;
         login_attempts_threshold = 5;
       };
