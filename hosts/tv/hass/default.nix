@@ -6,7 +6,7 @@ in {
 
   imports = import ./entities;
 
-  networking.firewall.allowedTCPPorts = [ 443 ];
+  networking.firewall.allowedTCPPorts = [ 443 1883 ];
 
   services.nginx = {
     enable = true;
