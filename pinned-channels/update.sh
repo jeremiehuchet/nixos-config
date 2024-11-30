@@ -8,11 +8,12 @@ cd "$(dirname "$0")"
 
 nix_prefetch_github="$(nix-shell -p nix-prefetch-github --run "command -v nix-prefetch-github" 2> /dev/null)"
 
-for lockfile in *.json ; do
-  owner=$(jq -r .owner "$lockfile")
-  repo=$(jq -r .repo "$lockfile")
-  ref=$(jq -r .ref "$lockfile")
-  rev=$(jq -r .rev "$lockfile")
+function update_lockfile() {
+  local lockfile=$1
+  local owner=$(jq -r .owner "$lockfile")
+  local repo=$(jq -r .repo "$lockfile")
+  local ref=$(jq -r .ref "$lockfile")
+  local rev=$(jq -r .rev "$lockfile")
 
   echo -n "$owner/$repo ($ref) "
 
@@ -29,4 +30,13 @@ for lockfile in *.json ; do
   else
     echo "✅"
   fi
-done
+}
+
+if [ $# -eq 1 ] && [ "_$1" == "_nur" ] ; then
+  update_lockfile nur-packages.json
+else
+  for lockfile in *.json ; do
+    update_lockfile "$lockfile"
+  done
+fi
+
