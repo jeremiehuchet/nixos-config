@@ -6,7 +6,6 @@ in {
   services.fail2ban = {
     enable = true;
     banaction = "iptables-allports[blocktype=DROP]";
-    banaction_allports = "iptables-allports[blocktype=DROP]";
     maxretry = 3;
     bantime = "1m";
     bantime-increment = {
