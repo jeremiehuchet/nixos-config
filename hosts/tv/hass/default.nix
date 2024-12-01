@@ -303,7 +303,7 @@ in {
     wants = [ "mosquitto.service" ];
     wantedBy = ["multi-user.target"];
     environment = {
-      RUST_LOG="info";
+      RUST_LOG="info,hass_mqtt_bridge::rika=trace";
       MQTT_USERNAME = "mqtt-bridge";
       MQTT_PASSWORD = "123456";
       RIKA_USERNAME = secrets.home-automation.rika-username;
