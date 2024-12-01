@@ -103,23 +103,24 @@
     SUBSYSTEM=="usb", ATTRS{idVendor}=="0cf3", ATTRS{idProduct}=="e004", ATTR{authorized}="0"
   '';
 
-  sound.enable = true;
-  sound.extraConfig = ''
-    pcm.analog {
-      type hw
-      card 0
-      device 0
-    }
-    pcm.hdmi0 {
-      type hw
-      card 0
-      device 3
-    }
-    pcm.!default {
-      type  plug
-      slave.pcm "hdmi0"
-    }
-  '';
+  # this has been removed in 24.11
+  #sound.enable = true;
+  #sound.extraConfig = ''
+  #  pcm.analog {
+  #    type hw
+  #    card 0
+  #    device 0
+  #  }
+  #  pcm.hdmi0 {
+  #    type hw
+  #    card 0
+  #    device 3
+  #  }
+  #  pcm.!default {
+  #    type  plug
+  #    slave.pcm "hdmi0"
+  #  }
+  #'';
 
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;

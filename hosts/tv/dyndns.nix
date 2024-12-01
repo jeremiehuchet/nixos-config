@@ -14,7 +14,7 @@ in {
     domains = [
       secrets.dyndns.domain
     ];
-    use = ''
+    usev4 = ''
       cmd, cmd='${pkgs.nur.livebox-cli}/bin/livebox-cli --password '${secrets.livebox.password}' --query $.data.IPAddress --raw exec --service NMC --method getWANStatus'
     '';
   };
