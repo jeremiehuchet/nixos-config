@@ -64,6 +64,7 @@ with lib;
       };
     };
 
+    programs.vim.enable = true;
     programs.vim.defaultEditor = true;
     programs.zsh.enable = true;
     programs.zsh.promptInit =
