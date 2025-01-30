@@ -108,6 +108,13 @@
 
   services.dbus.implementation = "broker";
 
+  security.rtkit.enable = true;
+  services.pipewire = {
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
+
   services.libinput.enable = true;
 
   services.logind = {
@@ -122,7 +129,7 @@
 
   users.users.guest = {
     isNormalUser = true;
-    extraGroups = [ "video" "wheel" "tty" "dialout" ];
+    extraGroups = [ "video" "wheel" "tty" "dialout" "pipewire" ];
   };
 
   users.users.git = {
