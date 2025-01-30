@@ -86,6 +86,17 @@ in {
       device_tracker = [
         { platform = "bluetooth_le_tracker"; }
       ];
+      cover = [
+        {
+          platform ="group";
+          name = "Floor covers";
+          entity_id = "floor_covers";
+          entities = [
+            "cover.cover_dining_room_mqtt_cover"
+            "cover.cover_kitchen_mqtt_cover"
+          ];
+        }
+      ];
       sensor = [
         { platform = "linux_battery"; }
         {
@@ -176,10 +187,10 @@ in {
             condition = "time";
             weekday = ["fri" "thu" "wed" "tue" "mon"];
           };
-          action = [{
-            service = "cover.open_cover";
-            entity_id = "cover.cover_ch4";
-          }];
+          action = [
+            { service = "cover.open_cover"; entity_id = "group.floor_covers"; }
+            { service = "cover.open_cover"; entity_id = "cover.cover_ch4"; }
+          ];
         }
         {
           alias = "close covers weekdays";
@@ -192,10 +203,10 @@ in {
             condition = "time";
             weekday = ["fri" "thu" "wed" "tue" "mon"];
           };
-          action = [{
-            service = "cover.close_cover";
-            entity_id = "cover.cover_ch4";
-          }];
+          action = [
+            { service = "cover.open_cover"; entity_id = "group.floor_covers"; }
+            { service = "cover.close_cover"; entity_id = "cover.cover_ch4"; }
+          ];
         }
       ];
       alert = {
