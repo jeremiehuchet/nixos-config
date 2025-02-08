@@ -4,7 +4,7 @@ mkdir secrets
 touch secrets/m0-vpn.p12
 touch secrets/m2-ca.crt
 touch secrets/m2-proxy.pac
- 
+
 cat - <<EOF > secrets.nix
 {
   email = "secret";
@@ -28,6 +28,7 @@ cat - <<EOF > secrets.nix
     somfy-client-id = "secret";
     somfy-client-secret = "secret";
     fuel-stations = [];
+    zigbee.network_key = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
   };
   home-vpn = {
     username = "secret";

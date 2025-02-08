@@ -18,8 +18,8 @@
     <nixpkgs-unstable/nixos/modules/services/home-automation/home-assistant.nix>
     ./tv/acme.nix
     ./tv/nginx.nix
-    ./tv/fail2ban.nix
     ./tv/dyndns.nix
+    ./tv/fail2ban.nix
     ./tv/hass
     ./tv/password-manager.nix
     ./tv/vpn.nix
