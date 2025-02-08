@@ -25,11 +25,15 @@ in {
       final: prev: {
         home-assistant = unstable.home-assistant;
         home-assistant-custom-components = unstable.home-assistant-custom-components // {
-          ecoflowcloud = unstable.python312Packages.callPackage ./ha-custom-component-ecoflowcloud.nix { };
+          ecoflowcloud = unstable.python313Packages.callPackage ./ha-custom-component-ecoflowcloud.nix { };
           livebox = unstable.callPackage ./ha-custom-component-livebox.nix {
-            aiosysbus = unstable.python312Packages.callPackage ./python-lib-aiosysbus.nix { };
+            aiosysbus = unstable.python313Packages.callPackage ./python-lib-aiosysbus.nix { };
           };
           prixcarburant = unstable.callPackage ./ha-custom-component-prixcarburant.nix { };
+          rtetempo = unstable.python313Packages.callPackage ./ha-custom-component-rtetempo.nix { };
+        };
+        home-assistant-themes = {
+          hatempotheme = pkgs.callPackage ./ha-theme-hatempotheme.nix { };
         };
       }
     )
