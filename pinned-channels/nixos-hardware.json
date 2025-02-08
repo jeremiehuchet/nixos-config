@@ -1,7 +1,7 @@
 {
-  "hash": "sha256-ZEbOJ9iT72iwqXsiEMbEa8wWjyFvRA9Ugx8utmYbpz4=",
+  "hash": "sha256-5yRlg48XmpcX5b5HesdGMOte+YuCy9rzQkJz+imcu6I=",
   "owner": "nixos",
   "ref": "master",
   "repo": "nixos-hardware",
-  "rev": "dfad538f751a5aa5d4436d9781ab27a6128ec9d4"
+  "rev": "2eccff41bab80839b1d25b303b53d339fbb07087"
 }
