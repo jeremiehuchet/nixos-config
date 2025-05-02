@@ -52,6 +52,7 @@ in {
         "tasmota"
       ];
       customComponents = with pkgs.home-assistant-custom-components; [
+        cover-rf-time-based
         ecoflowcloud
         livebox
         prixcarburant

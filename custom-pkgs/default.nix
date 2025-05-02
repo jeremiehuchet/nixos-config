@@ -25,6 +25,7 @@ in {
       final: prev: {
         home-assistant = unstable.home-assistant;
         home-assistant-custom-components = unstable.home-assistant-custom-components // {
+          cover-rf-time-based = unstable.python313Packages.callPackage ./ha-custom-component-cover-rf-time-based.nix { };
           ecoflowcloud = unstable.python313Packages.callPackage ./ha-custom-component-ecoflowcloud.nix { };
           livebox = unstable.callPackage ./ha-custom-component-livebox.nix {
             aiosysbus = unstable.python313Packages.callPackage ./python-lib-aiosysbus.nix { };
