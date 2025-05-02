@@ -193,7 +193,7 @@ in {
               {
                 service = "cover.open_cover";
                 entity_id = [
-                  "cover.cover_ch4"
+                  #"cover.cover_ch4"
                   "cover.floor_covers"
                 ];
               }
@@ -214,7 +214,7 @@ in {
               {
                 service = "cover.close_cover";
                 entity_id = [
-                  "cover.cover_ch4"
+                  #"cover.cover_ch4"
                   "cover.floor_covers"
                 ];
               }
