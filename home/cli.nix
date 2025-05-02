@@ -61,6 +61,10 @@
             mj = "!gitmoji -c";
             st = "status";
             glog = "log --graph --oneline --decorate --all";
+            redate = "!f() {
+              export GIT_COMMITTER_DATE=$(date --iso-8601=seconds)
+              git rebase -i $1 --exec 'git commit --amend --date=now --no-edit'
+            }; f";
           };
           extraConfig = {
             credential = { helper = "store"; };
