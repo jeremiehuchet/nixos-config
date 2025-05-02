@@ -94,7 +94,10 @@
     nfs-utils
   ];
 
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    settings.X11Forwarding = true;
+  };
 
   services.udev.extraRules = ''
     # wake on usb
