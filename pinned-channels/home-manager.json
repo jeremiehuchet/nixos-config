@@ -1,7 +1,7 @@
 {
-  "hash": "sha256-dinzAqCjenWDxuy+MqUQq0I4zUSfaCvN9rzuCmgMZJY=",
+  "hash": "sha256-Gs076ot1YuAAsYVcyidLKUMIc4ooOaRGO0PqTY7sBzA=",
   "owner": "rycee",
   "ref": "release-24.11",
   "repo": "home-manager",
-  "rev": "bd65bc3cde04c16755955630b344bc9e35272c56"
+  "rev": "9d3d080aec2a35e05a15cedd281c2384767c2cfe"
 }
