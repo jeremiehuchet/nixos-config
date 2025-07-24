@@ -3,6 +3,7 @@
 , buildPythonPackage
 , fetchFromGitHub
 , buildHomeAssistantComponent
+, setuptools
 }:
 
 let
@@ -16,6 +17,8 @@ let
       hash = "sha256-CGw3ukkXMEhQvYN66rgGZwIk0/A4/igz/1k6Zy7wpfo=";
     };
     propagatedBuildInputs = [ ply ];
+    pyproject = true;
+    build-system = [ setuptools ];
   };
   paho-mqtt = let
     pname = "paho-mqtt";
@@ -26,6 +29,8 @@ let
       inherit pname version;
       hash = "sha256-KoKRyBYjrsADcrWoVVijcsdHy8qOmTTf4hhji47vwm8";
     };
+    pyproject = true;
+    build-system = [ setuptools ];
   };
   ply = let
     pname = "ply";
@@ -36,6 +41,8 @@ let
       inherit pname version;
       hash = "sha256-AMfBqqiDWLnHZbbTAAxu7AukKrylNRsJUyGu9EYIHaM=";
     };
+    pyproject = true;
+    build-system = [ setuptools ];
   };
   protobuf = let
     pname = "protobuf";
@@ -46,6 +53,8 @@ let
       inherit pname version;
       hash = "sha256-WTeWdP8RlxdAT3RUZHkTeHA08D/nBJy+8ddKl7tFk/A=";
     };
+    pyproject = true;
+    build-system = [ setuptools ];
   };
 in buildHomeAssistantComponent rec {
   owner = "tolwi";

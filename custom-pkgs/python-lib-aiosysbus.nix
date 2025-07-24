@@ -3,6 +3,7 @@
 , buildPythonPackage
 , aiohttp
 , yarl
+, setuptools-scm
 }:
 
 let
@@ -14,6 +15,8 @@ in buildPythonPackage {
     inherit pname version;
     hash = "sha256-FNeHM/yTBkOJI4FKeGXfvp12Kq4igtAcqyoU1PS4968=";
   };
+  pyproject = true;
+  build-system = [ setuptools-scm ];
   doCheck = false;
   buildInputs = [];
   checkInputs = [];

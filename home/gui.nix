@@ -30,11 +30,11 @@ in {
         nixpkgs.config.allowUnfree = true;
 
         home.packages = with pkgs; [
-          dolphin
+          kdePackages.dolphin
           firefox
           gimp
           google-chrome
-          kdenlive
+          kdePackages.kdenlive
           libreoffice
           mplayer
           simplescreenrecorder
@@ -283,7 +283,7 @@ in {
           };
           gpg-agent.enable = true;
           gpg-agent.enableScDaemon = false;
-          gpg-agent.pinentryPackage = pkgs.pinentry-qt;
+          gpg-agent.pinentry.package = pkgs.pinentry-qt;
           udiskie.enable = true;
           blueman-applet.enable = true;
           network-manager-applet.enable = true;

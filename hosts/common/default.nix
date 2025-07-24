@@ -76,7 +76,7 @@ with lib;
       any-nix-shell
       gitAndTools.gitFull
       hicolor-icon-theme
-      breeze-icons
+      kdePackages.breeze-icons
       libu2f-host
       lm_sensors
     ];

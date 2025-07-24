@@ -22,6 +22,7 @@ in {
     # RECEIVE:  HTTP/1.1 400 Bad Request
     # RECEIVE:  {"class":"Client::BadRequest","message":"{'myip': ['Invalid ip']}"}
     #usev6 = "cmdv6, cmdv6=${showIpv6}/bin/ip-addr-show-v6";
+    usev6 = "";
     #verbose = true;
   };
 }
