@@ -4,7 +4,9 @@
 
 { config, pkgs, ... }:
 
-{
+let
+  secrets = import ../secrets.nix;
+in {
 
   disabledModules = [
     "services/home-automation/home-assistant.nix"
@@ -20,7 +22,9 @@
     ./tv/nginx.nix
     ./tv/dyndns.nix
     ./tv/fail2ban.nix
+    ./tv/grafana.nix
     ./tv/hass
+    ./tv/influxdb.nix
     ./tv/password-manager.nix
     ./tv/vpn.nix
   ];
@@ -71,15 +75,14 @@
   networking.enableIPv6 = false;
   networking.wireless.enable = true;
   networking.wireless.interfaces = [ "wireless" ];
-  networking.wireless.networks."L'internet de J et S".psk =
-    (import ../secrets.nix).wireless.psk;
+  networking.wireless.networks."${secrets.wireless.ssid}".psk = secrets.wireless.psk;
   networking.interfaces.ethernet.useDHCP = true;
   networking.interfaces.wireless.useDHCP = true;
 
   services.openvpn.servers = {
     "home" = {
       config = ''config /etc/nixos/secrets/home-vpn/openvpn.ovpn'';
-      authUserPass = (import ../secrets.nix).home-vpn;
+      authUserPass = secrets.home-vpn;
       autoStart = false;
     };
   };
@@ -153,7 +156,7 @@
         job_name = "hass";
         scrape_interval = "1m";
         metrics_path =  "/api/prometheus";
-        bearer_token = (import ../secrets.nix).hass.prometheus-token;
+        bearer_token = secrets.hass.prometheus-token;
         static_configs = [
           { targets = [ "localhost:8123" ]; }
         ];

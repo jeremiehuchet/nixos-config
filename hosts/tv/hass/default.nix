@@ -38,6 +38,7 @@ in {
         "bluetooth" # use shelly bluetooth gateway instead?
         "bluetooth_le_tracker"
         "bthome"
+        "influxdb"
         "linux_battery"
         "meteo_france"
         "mobile_app"
@@ -79,6 +80,17 @@ in {
           use_x_forwarded_for = true;
           ip_ban_enabled = true;
           login_attempts_threshold = 5;
+        };
+        influxdb = {
+          api_version = 2;
+          host = "127.0.0.1";
+          port = 8086;
+          ssl = false;
+          token = secrets.influxdb.hass_app_token;
+          organization = "home";
+          bucket = "hass";
+          max_retries = 2;
+          tags_attributes = [ "friendly_name" ];
         };
         prometheus.filter.include_domains = [
           "persistent_notification"

@@ -15,6 +15,8 @@ in {
     certs."huchet.ovh" = {
       domain = "huchet.ovh";
       extraDomainNames = [
+        "grafana.huchet.ovh"
+        "influxdb.huchet.ovh"
         "hass.huchet.ovh"
         "hass.local.huchet.ovh"
         "vwar.huchet.ovh"

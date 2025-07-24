@@ -43,6 +43,12 @@ cat - <<EOF > secrets.nix
     password = "secret";
     username = "secret";
   };
+  influxdb = {
+    admin_user_password = "secret";
+    admin_user_token = "secret";
+    grafana_app_token = "secret";
+    hass_app_token = "secret";
+  };
 }
 EOF
 
