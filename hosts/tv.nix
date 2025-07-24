@@ -165,7 +165,7 @@ in {
   };
 
   custom = {
-    dpi = 128;
+    dpi = 192;
     xserver.autoLogin = "guest";
     xserver.primaryOutput = "HDMI-1";
     home.root.cliTools.enable = true;
