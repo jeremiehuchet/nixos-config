@@ -11,7 +11,7 @@ let
   let suffix_id = lib.toLower (builtins.replaceStrings [" "] ["_"] name);
   in {
     unique_id = "${device_id}_${suffix_id}";
-    object_id = "garage_door_${suffix_id}";
+    default_entity_id = "garage_door_${suffix_id}";
     device = {
       name = "Garage door controller";
       identifiers = [ device_id ];

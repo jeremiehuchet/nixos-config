@@ -21,7 +21,7 @@ in {
       {
         inherit (winky_defaults) device expire_after state_topic;
         unique_id = "${winky_id}_energy_total";
-        object_id = "winky_energy_total";
+        default_entity_id = "winky_energy_total";
         device_class = "energy";
         state_class = "total_increasing";
         value_template = "{{ value_json.BASE | int }}";
@@ -31,7 +31,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Bleu HC";
         unique_id = "${winky_id}_energy_bleu_hc";
-        object_id = "winky_energy_bleu_hc";
+        default_entity_id = "winky_energy_bleu_hc";
         device_class = "energy";
         state_class = "total_increasing";
         value_template = "{{ value_json.BBRHCJB | int }}";
@@ -41,7 +41,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Bleu HP";
         unique_id = "${winky_id}_energy_bleu_hp";
-        object_id = "winky_energy_bleu_hp";
+        default_entity_id = "winky_energy_bleu_hp";
         device_class = "energy";
         state_class = "total_increasing";
         value_template = "{{ value_json.BBRHPJB | int }}";
@@ -51,7 +51,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Blanc HC";
         unique_id = "${winky_id}_energy_blanc_hc";
-        object_id = "winky_energy_blanc_hc";
+        default_entity_id = "winky_energy_blanc_hc";
         device_class = "energy";
         state_class = "total_increasing";
         value_template = "{{ value_json.BBRHCJW | int }}";
@@ -61,7 +61,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Blanc HP";
         unique_id = "${winky_id}_energy_blanc_hp";
-        object_id = "winky_energy_blanc_hp";
+        default_entity_id = "winky_energy_blanc_hp";
         device_class = "energy";
         state_class = "total_increasing";
         value_template = "{{ value_json.BBRHPJW | int }}";
@@ -71,7 +71,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Rouge HC";
         unique_id = "${winky_id}_energy_rouge_hc";
-        object_id = "winky_energy_rouge_hc";
+        default_entity_id = "winky_energy_rouge_hc";
         device_class = "energy";
         state_class = "total_increasing";
         value_template = "{{ value_json.BBRHCJR | int }}";
@@ -81,7 +81,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Rouge HP";
         unique_id = "${winky_id}_energy_rouge_hp";
-        object_id = "winky_energy_rouge_hp";
+        default_entity_id = "winky_energy_rouge_hp";
         device_class = "energy";
         state_class = "total_increasing";
         value_template = "{{ value_json.BBRHPJR | int }}";
@@ -91,7 +91,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Couleur demain";
         unique_id = "${winky_id}_couleur_demain";
-        object_id = "winky_couleur_demain";
+        default_entity_id = "winky_couleur_demain";
         device_class = "enum";
         value_template = ''
           {%- set color = value_json.DEMAIN -%}
@@ -112,7 +112,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Mode";
         unique_id = "${winky_id}_mode";
-        object_id = "winky_mode";
+        default_entity_id = "winky_mode";
         value_template = ''{{ value_json.ModeTic }}'';
         device_class = "enum";
         entity_category = "diagnostic";
@@ -121,7 +121,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Option Tarifaire";
         unique_id = "${winky_id}_optarif";
-        object_id = "winky_optarif";
+        default_entity_id = "winky_optarif";
         value_template = ''{{ value_json.OPTARIF }}'';
         device_class = "enum";
         entity_category = "diagnostic";
@@ -130,7 +130,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Intensité souscrite";
         unique_id = "${winky_id}_isousc";
-        object_id = "winky_isousc";
+        default_entity_id = "winky_isousc";
         state_class = "measurement";
         value_template = ''{{ value_json.ISOUSC | int }}'';
         unit_of_measurement = "A";
@@ -141,7 +141,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Puissance apparente";
         unique_id = "${winky_id}_apower";
-        object_id = "winky_apower";
+        default_entity_id = "winky_apower";
         value_template = ''{{ value_json.PAPP | int }}'';
         unit_of_measurement = "VA";
         device_class = "apparent_power";
@@ -150,7 +150,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Période tarifaire en cours";
         unique_id = "${winky_id}_ptec";
-        object_id = "winky_ptec";
+        default_entity_id = "winky_ptec";
         value_template = ''
           {%- set period = value_json.PTEC -%}
           {%- if period == "HCJB" -%}
@@ -175,7 +175,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Intensité instantanée";
         unique_id = "${winky_id}_iinst";
-        object_id = "winky_iinst";
+        default_entity_id = "winky_iinst";
         state_class = "measurement";
         value_template = ''{{ value_json.IINST | int }}'';
         unit_of_measurement = "A";
@@ -185,7 +185,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Intensité maximale";
         unique_id = "${winky_id}_imax";
-        object_id = "winky_imax";
+        default_entity_id = "winky_imax";
         state_class = "measurement";
         value_template = ''{{ value_json.IMAX | int }}'';
         unit_of_measurement = "A";
@@ -195,7 +195,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Groupe horaire";
         unique_id = "${winky_id}_hhphc";
-        object_id = "winky_hhphc";
+        default_entity_id = "winky_hhphc";
         value_template = ''{{ value_json.HHPHC }}'';
         device_class = "enum";
         entity_category = "diagnostic";
@@ -204,7 +204,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Mot d'état";
         unique_id = "${winky_id}_motdetat";
-        object_id = "winky_motdetat";
+        default_entity_id = "winky_motdetat";
         value_template = ''{{ value_json.MOTDETAT }}'';
         device_class = "enum";
         entity_category = "diagnostic";
@@ -213,7 +213,7 @@ in {
         inherit (winky_defaults) device expire_after state_topic;
         name = "Wifi signal";
         unique_id = "${winky_id}_rssi";
-        object_id = "winky_rssi";
+        default_entity_id = "winky_rssi";
         state_class = "measurement";
         value_template = ''{{ value_json.RSSI | int }}'';
         device_class = "signal_strength";

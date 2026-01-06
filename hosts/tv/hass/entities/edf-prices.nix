@@ -92,7 +92,7 @@ in {
           inherit (entity_defaults) device state_topic;
           name = "Date de début des prix";
           unique_id = "edf_prix_tempo_date_debut";
-          object_id = "edf_prix_tempo_date_debut";
+          default_entity_id = "edf_prix_tempo_date_debut";
           device_class = "date";
           state_class = "measurement";
           value_template = "{{ value_json.date_debut }}";
@@ -101,7 +101,7 @@ in {
           inherit (entity_defaults) device state_topic;
           name = "Prix abonnement annuel";
           unique_id = "edf_prix_tempo_part_fixe";
-          object_id = "edf_prix_tempo_part_fixe";
+          default_entity_id = "edf_prix_tempo_part_fixe";
           device_class = "monetary";
           state_class = "measurement";
           value_template = "{{ value_json.part_fixe | float }}";
@@ -111,7 +111,7 @@ in {
         inherit (entity_defaults) device state_topic;
         unique_id = "edf_prix_tempo_${id}";
         name = "Prix ${label}";
-        object_id = "edf_prix_tempo_${id}";
+        default_entity_id = "edf_prix_tempo_${id}";
         state_class = "measurement";
         value_template = "{{ value_json.${id} | float }}";
         unit_of_measurement = "€/kWh";
