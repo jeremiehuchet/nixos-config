@@ -194,19 +194,17 @@ in {
     startAt = "*-*-* 01:15:00";
   };
 
-  services.borgbackup.jobs = {
-    databases = {
-      doInit = true;
-      paths = [ config.services.postgresqlBackup.location ];
-      repo = "/nas/backup/borg:postgresql";
-      prune.keep = {
-        within = "1d";
-        daily = 7;
-        weekly = 4;
-        monthly = 6;
-      };
-      encryption.mode = "none";
+  services.borgbackup.jobs.postgresql = {
+    paths = [ config.services.postgresqlBackup.location ];
+    repo = "/nas/backup/borg:postgresql";
+    prune.keep = {
+      within = "1d";
+      daily = 7;
+      weekly = 4;
+      monthly = 6;
     };
+    encryption.mode = "none";
+    startAt = "*-*-* 01:30:00";
   };
 
   vpn-gateway.enable = true;

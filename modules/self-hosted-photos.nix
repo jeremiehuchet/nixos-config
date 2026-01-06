@@ -37,5 +37,23 @@ in {
     users.users.immich.extraGroups = [ "video" "render" ];
 
     services.postgresqlBackup.databases = [ config.services.immich.database.name ];
+
+    services.borgbackup.jobs.immich = {
+      startAt = "*-*-* 01:30:00";
+      encryption.mode = "none";
+      paths = [
+        "${config.services.postgresqlBackup.location}/immich.sql.gz"
+        "${config.services.immich.mediaLocation}/library"
+        "${config.services.immich.mediaLocation}/profile"
+        "${config.services.immich.mediaLocation}/upload"
+      ];
+      repo = "/nas/backup/borg:immich";
+      prune.keep = {
+        within = "1d";
+        daily = 7;
+        weekly = 4;
+        monthly = 6;
+      };
+    };
   };
 }
