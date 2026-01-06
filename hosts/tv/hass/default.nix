@@ -332,7 +332,7 @@ in {
           baudrate = 115200;
         };
         advanced = {
-          log_level = "warn";
+          log_level = "warning";
           channel = 11;
           network_key = secrets.home-automation.zigbee.network_key;
           last_seen = "ISO_8601";
@@ -349,7 +349,7 @@ in {
           legacy_action_sensor = false;
         };
         frontend = {
-          enable = true;
+          enable = false;
           host = "0.0.0.0";
           port = 8081;
         };
