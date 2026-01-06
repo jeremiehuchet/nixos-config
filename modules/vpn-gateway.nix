@@ -5,9 +5,25 @@ let
   secrets = import ../secrets.nix;
 in {
 
-  options = { vpn-gateway.enable = lib.mkEnableOption "Proxy to route trafic through VPN"; };
+  options = with lib; {
+    vpn-gateway = {
+      enable = mkEnableOption "Proxy to route trafic through VPN.";
+      isolatedServices = mkOption {
+        description = "Defines the systemd services that should be isolated in gluetun network namespace";
+        type = types.attrsOf (types.listOf types.str);
+        default = {};
+        example = {
+          microsocks = [ "127.0.0.1:1080:1080/tcp" ];
+          bittornado = [ "9091:9091/tcp" ];
+        };
+      };
+    };
+  };
 
-  config = lib.mkIf cfg.enable {
+  config = let
+    isolatedPorts = [ "127.0.0.1:1080:1080/tcp" ] ++ lib.concatLists (builtins.attrValues cfg.isolatedServices);
+    isolatedServicesNames = [ "microsocks" ] ++ builtins.attrNames cfg.isolatedServices;
+  in lib.mkIf cfg.enable {
 
     virtualisation.podman = {
       enable = true;
@@ -18,10 +34,7 @@ in {
       serviceName = "gluetun";
       image = "qmcgaw/gluetun:v3";
       pull = "newer";
-      ports = [
-        "8388:8388/tcp"
-        "9091:9091/tcp"
-      ];
+      ports = isolatedPorts;
       environment = {
         VPN_SERVICE_PROVIDER = secrets.privacy-vpn.provider;
         VPN_TYPE = "openvpn";
@@ -29,11 +42,6 @@ in {
         OPENVPN_PASSWORD = secrets.privacy-vpn.password;
         SERVER_COUNTRIES = secrets.privacy-vpn.countries;
         DNS_UPSTREAM_RESOLVERS = "cloudflare,google,libredns";
-        BLOCK_SURVEILLANCE = "on";
-        BLOCK_ADS = "on";
-        SHADOWSOCKS = "on";
-        SHADOWSOCKS_CIPHER = "AES-128-GCM";
-        SHADOWSOCKS_PASSWORD="trusted";
         UPDATER = "24h";
       };
       capabilities = {
@@ -44,24 +52,27 @@ in {
       volumes = [ "/etc/nixos/secrets/openvpn:/gluetun:ro" ];
     };
 
-    systemd.services."gluetun" = {
-      postStart = ''
-        PID=$(${pkgs.podman}/bin/podman inspect -f '{{.State.Pid}}' gluetun)
-        mkdir -p /run/netns
-        ln -sfT /proc/$PID/ns/net /run/netns/gluetun
-      '';
-      preStop = ''
-        rm -f /run/netns/gluetun
-      '';
-    };
+    services.microsocks.enable = true;
+    services.microsocks.ip = "*";
 
-    systemd.services.socks5-private = {
-      enable = true;
-      description = "A socks5 proxy for private browsing";
-      after = [ "podman-gluetun.service" ];
-      wants = [ "podman-gluetun.service" ];
-      script = "${pkgs.shadowsocks-rust}/bin/sslocal -b 127.0.0.1:1080 -s 127.0.0.1:8388 -m aes-128-gcm -k trusted";
-    };
-
+    systemd.services = {
+      gluetun = {
+        postStart = ''
+          PID=$(${pkgs.podman}/bin/podman inspect -f '{{.State.Pid}}' gluetun)
+          mkdir -p /run/netns
+          ln -sfT /proc/$PID/ns/net /run/netns/gluetun
+        '';
+        preStop = ''
+          rm -f /run/netns/gluetun
+        '';
+      };
+    } // (lib.genAttrs isolatedServicesNames (name: {
+        after = ["gluetun.service"];
+        requires = ["gluetun.service"];
+        serviceConfig = {
+          NetworkNamespacePath = "/run/netns/gluetun";
+          PrivateNetwork = lib.mkForce true;
+        };
+    }));
   };
 }
