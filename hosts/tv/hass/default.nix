@@ -14,7 +14,7 @@ in {
 
   config = {
 
-    networking.firewall.allowedTCPPorts = [ 443 1883 ];
+    networking.firewall.allowedTCPPorts = [ 1883 ];
 
     services.nginx = {
       enable = true;
