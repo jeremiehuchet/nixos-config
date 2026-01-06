@@ -75,7 +75,10 @@ in {
   networking.enableIPv6 = false;
   networking.wireless.enable = true;
   networking.wireless.interfaces = [ "wireless" ];
-  networking.wireless.networks."${secrets.wireless.ssid}".psk = secrets.wireless.psk;
+  networking.wireless.secretsFile = pkgs.writeText "wifi" ''
+    psk_${secrets.wireless.ssid}=${secrets.wireless.psk}
+  '';
+  networking.wireless.networks."${secrets.wireless.ssid}".pskRaw = "ext:psk_${secrets.wireless.ssid}";
   networking.interfaces.ethernet.useDHCP = true;
   networking.interfaces.wireless.useDHCP = true;
 
