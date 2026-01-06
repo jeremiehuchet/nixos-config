@@ -100,8 +100,9 @@ in {
           alias = "Request garage door controller status update on HA statup";
           trigger = [
             {
-              event = "start";
-              platform = "homeassistant";
+              trigger = "state";
+              entity_id = "binary_sensor.mqtt_connector";
+              to = "on";
             }
           ];
           action = [

@@ -3,7 +3,14 @@
 let
   secrets = import ../../../secrets.nix ;
 in {
-  imports = import ./entities;
+  imports = [
+    ./entities/covers.nix
+    ./entities/edf-prices.nix
+    ./entities/garage_door.nix
+    ./entities/homeassistant.nix
+    ./entities/shelly.nix
+    ./entities/winky.nix
+  ];
 
   config = {
 
@@ -12,7 +19,7 @@ in {
     services.nginx = {
       enable = true;
       virtualHosts."hass.huchet.ovh" = {
-        serverAliases= ["hass.local.huchet.ovh"];
+        serverAliases= ["hass.iot"];
         useACMEHost = "huchet.ovh";
         forceSSL = true;
         locations."/" = {
@@ -25,19 +32,28 @@ in {
       };
     };
 
+    systemd.tmpfiles.rules = [
+      "f ${config.services.home-assistant.configDir}/automations.yaml 0755 hass hass"
+    ];
+
     services.home-assistant = {
       enable = true;
       openFirewall = true;
       extraPackages = python3Packages: with python3Packages; [
+        aioesphomeapi
+        universal-silabs-flasher
         psycopg2
       ];
       extraComponents = [
         "default_config"
+        "zha" # unused but required at startup to avoid loading error
 
         "alert"
         "bluetooth" # use shelly bluetooth gateway instead?
         "bluetooth_le_tracker"
         "bthome"
+        "esphome"
+        "homekit_controller"
         "influxdb"
         "linux_battery"
         "meteo_france"
@@ -53,8 +69,7 @@ in {
         "tasmota"
       ];
       customComponents = with pkgs.home-assistant-custom-components; [
-        cover-rf-time-based
-        ecoflowcloud
+        #ecoflowcloud
         livebox
         prixcarburant
         rtetempo
@@ -62,7 +77,11 @@ in {
       config = {
         default_config = {};
         logger.default = "info";
-        recorder.db_url = "postgresql://@/hass";
+        recorder = {
+          db_url = "postgresql://@/hass";
+          commit_interval = 30;
+          purge_keep_days = 10;
+        };
         homeassistant = let
           homeSecrets = (import ../../../secrets.nix).home;
         in {
@@ -81,6 +100,7 @@ in {
           ip_ban_enabled = true;
           login_attempts_threshold = 5;
         };
+        "automation ui" = "!include automations.yaml"; 
         influxdb = {
           api_version = 2;
           host = "127.0.0.1";
@@ -100,61 +120,53 @@ in {
         device_tracker = [
           { platform = "bluetooth_le_tracker"; }
         ];
-        cover = [
-          {
-            platform ="group";
-            name = "Floor covers";
-            unique_id = "floor_covers";
-            entities = [
-              "cover.cover_dining_room_mqtt_cover"
-              "cover.cover_kitchen_mqtt_cover"
-              "cover.cover_living_room_mqtt_cover"
-            ];
-          }
-        ];
         sensor = [
           { platform = "linux_battery"; }
           {
              platform = "prix_carburant";
              stations = secrets.home-automation.fuel-stations;
           }
-          {
-            platform = "rest";
-            #name = "Prix d'une palette de 975kg de pellets";
-            name = "feedufeu_price_975kg"; # unique_id doesn't seem to work properly
-            unique_id = "feedufeu_price_975kg";
-            device_class = "monetary";
-            icon = "mdi:currency-eur";
-            picture = "https://www.feedufeu.com/images/logo.png";
-            unit_of_measurement = "€";
-            resource = "https://www.feedufeu.com/fdf-bo/includes/getPrice.php?dep=35&qte=1";
-            value_template = "{{ value | regex_replace(find='€.*', replace='') }}";
-            scan_interval = 86400; # seconds or 1 day
-            force_update = true;
-          }
         ];
-        template = [
+        rest = [
           {
-            unique_id = "feedufeu_price_";
-            sensor = [
+            resource = "https://www.feedufeu.com/fdf-bo/includes/getPrice.php?dep=35&qte=1";
+            # example response: 396.50€<span>TTC</span><br><span>396.50€/palette</span> 
+            scan_interval = 86400; # seconds or 1 day
+            sensor = [ 
               {
-                unique_id = "15kg";
-                state = "{{ (states.sensor.feedufeu_price_975kg.state | float / 65) | round(2) }}";
-                device_class = "monetary";
+                name = "feedufeu_price_975kg";
+                unique_id = "feedufeu_price_975kg";
+                value_template = "{{ value | regex_replace(find='€.*', replace='') | float }}";
+                state_class = "measurement";
                 icon = "mdi:currency-eur";
-                picture = "https://www.feedufeu.com/images/logo.png";
                 unit_of_measurement = "€";
               }
               {
-                unique_id = "12kg";
-                state = "{{ (states.sensor.feedufeu_price_15kg.state | float / 15 * 12) | round(2) }}";
-                device_class = "monetary";
+                name = "feedufeu_price_15kg";
+                unique_id = "feedufeu_price_15kg";
+                value_template = "
+                  {% set prix_65_sacs_15kg = value | regex_replace(find='€.*', replace='') | float %}
+                  {{ prix_65_sacs_15kg / 65 | round(2) }}
+                ";
+                state_class = "measurement";
                 icon = "mdi:currency-eur";
-                picture = "https://www.feedufeu.com/images/logo.png";
+                unit_of_measurement = "€";
+              }
+              {
+                name = "feedufeu_price_1kg";
+                unique_id = "feedufeu_price_1kg";
+                value_template = "
+                  {% set prix_65_sacs_15kg = value | regex_replace(find='€.*', replace='') | float %}
+                  {{ prix_65_sacs_15kg / 65 / 15 | round(2) }}
+                ";
+                state_class = "measurement";
+                icon = "mdi:currency-eur";
                 unit_of_measurement = "€";
               }
             ];
           }
+        ];
+        template = [
           {
             unique_id = "garage_door_";
             binary_sensor = [
@@ -186,50 +198,6 @@ in {
                     unknown
                   {% endif %}
                 '';
-              }
-            ];
-          }
-        ];
-        "automation manual" = [
-          {
-            alias = "open covers weekdays";
-            trigger = {
-              platform = "sun";
-              event = "sunrise";
-              offset = "01:00:00";
-            };
-            condition = {
-              condition = "time";
-              weekday = ["fri" "thu" "wed" "tue" "mon"];
-            };
-            action = [
-              {
-                service = "cover.open_cover";
-                entity_id = [
-                  #"cover.cover_ch4"
-                  "cover.floor_covers"
-                ];
-              }
-            ];
-          }
-          {
-            alias = "close covers weekdays";
-            trigger = {
-              platform = "sun";
-              event = "sunset";
-              offset = "01:00:00";
-            };
-            condition = {
-              condition = "time";
-              weekday = ["fri" "thu" "wed" "tue" "mon"];
-            };
-            action = [
-              {
-                service = "cover.close_cover";
-                entity_id = [
-                  #"cover.cover_ch4"
-                  "cover.floor_covers"
-                ];
               }
             ];
           }
@@ -274,7 +242,7 @@ in {
 
     services.mosquitto = {
       enable = true;
-      logType = ["information"];
+      #logType = ["debug"];
       listeners = [{
         port = 1883;
         address = "0.0.0.0";
@@ -284,19 +252,21 @@ in {
               "readwrite #"
               "readwrite homeassistant/status"
               "readwrite rika-firenet/#"
+              "readwrite shellies/command"
               "readwrite shelly/#"
               "readwrite somfy-protect/#"
               "readwrite tasmota/#"
             ];
-            password = "123456";
+            password = secrets.home-automation.mosquitto.hass.password;
           };
           shelly = {
             acl = [
               "read homeassistant/status"
+              "read shellies/command"
               "readwrite homeassistant/#"
               "readwrite shelly/#"
             ];
-            password = "123456";
+            password = secrets.home-automation.mosquitto.shelly.password;
           };
           tasmota = {
             acl = [
@@ -304,7 +274,7 @@ in {
               "readwrite homeassistant/#"
               "readwrite tasmota/#"
             ];
-            password = "123456";
+            password = secrets.home-automation.mosquitto.tasmota.password;
           };
           openbk = {
             acl = [
@@ -312,7 +282,7 @@ in {
               "readwrite homeassistant/#"
               "readwrite openbk/#"
             ];
-            password = "123456";
+            password = secrets.home-automation.mosquitto.openbk.password;
           };
           mqtt-bridge = {
             acl = [
@@ -325,7 +295,7 @@ in {
           };
           winky = {
             acl = [
-              "readwrite #"
+              "readwrite energy/xky-8c:aa:b5:7f:93:b4"
             ];
             password = secrets.home-automation.winky-password;
           };

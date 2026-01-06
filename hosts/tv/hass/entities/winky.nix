@@ -7,11 +7,11 @@ let
       name = "Winky";
       identifiers = [ winky_id ];
       connections = [ ["mac" "8c:aa:b5:7f:93:b4"] ];
-      sw_version = "V55";
+      sw_version = "V56";
       hw_version = "ESP8266";
     };
     expire_after = "3600";
-    state_topic = "/xky-8c:aa:b5:7f:93:b4";
+    state_topic = "energy/xky-8c:aa:b5:7f:93:b4";
   };
 in {
 

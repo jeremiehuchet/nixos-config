@@ -28,7 +28,13 @@ cat - <<EOF > secrets.nix
     somfy-client-id = "secret";
     somfy-client-secret = "secret";
     fuel-stations = [];
-    zigbee.network_key = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+    zigbee.network_key = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
+    mosquitto = {
+      hass.password = "secret";
+      openbk.password = "secret";
+      shelly.password = "secret";
+      tasmota.password = "secret";
+    };
   };
   home-vpn = {
     username = "secret";
