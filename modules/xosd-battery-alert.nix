@@ -5,7 +5,7 @@ let
   batteryAlert = pkgs.writeScriptBin "battery-alert" ''
     #!${pkgs.bash}/bin/bash
 
-    PATH="${pkgs.xosd}/bin:${pkgs.utillinux}/bin:${pkgs.systemd}/bin:${pkgs.coreutils}/bin"
+    PATH="${pkgs.xosd}/bin:${pkgs.util-linux}/bin:${pkgs.systemd}/bin:${pkgs.coreutils}/bin"
 
     log() {
       logger -t "$(basename $0)" "$@"

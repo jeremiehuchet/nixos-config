@@ -129,13 +129,13 @@ in {
   services.libinput.enable = true;
 
   services.logind = {
-    lidSwitch = "ignore";
-    lidSwitchDocked = "ignore";
-    lidSwitchExternalPower = "ignore";
-    extraConfig = ''
-      IdleAction=suspend
-      IdleActionSec=60
-    '';
+    settings.Login = {
+      HandleLidSwitch = "ignore";
+      HandleLidSwitchDocked = "ignore";
+      HandleLidSwitchExternalPower = "ignore";
+      IdleAction = "suspend";
+      IdleActionSec = 60;
+    };
   };
 
   users.users.guest = {

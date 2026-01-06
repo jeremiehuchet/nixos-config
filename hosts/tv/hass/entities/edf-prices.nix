@@ -179,17 +179,17 @@ in {
 
     };
 
-    alert = [{
-      edf_prix_tempo_obsoletes = {
-        name = "Tarifs EDF obsolètes";
-        done_message = "Tarifs EDF à jour";
-        entity_id = "binary_sensor.edf_prix_tempo_obsoletes";
-        repeat = 60; # once an hour
-        can_acknowledge = false;
-        skip_first = true;
-        notifiers = ["mobile_app_oneplus_9_pro"];
-      }
-    }];
+    #alert = {
+    #  edf_prix_tempo_obsoletes = {
+    #    name = "Tarifs EDF obsolètes";
+    #    done_message = "Tarifs EDF à jour";
+    #    entity_id = "binary_sensor.edf_prix_tempo_obsoletes";
+    #    repeat = 60; # once an hour
+    #    can_acknowledge = false;
+    #    skip_first = true;
+    #    notifiers = ["mobile_app_oneplus_9_pro"];
+    #  };
+    #};
   };
 
 }

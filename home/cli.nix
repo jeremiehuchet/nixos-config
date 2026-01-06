@@ -52,21 +52,21 @@
 
         programs.git = {
           enable = true;
-          package = pkgs.gitAndTools.gitFull;
-          userName = "Jeremie Huchet";
-          userEmail = "jeremiehuchet@users.noreply.github.com";
-          aliases = {
-            co = "checkout";
-            ci = "commit";
-            mj = "!gitmoji -c";
-            st = "status";
-            glog = "log --graph --oneline --decorate --all";
-            redate = "!f() {
-              export GIT_COMMITTER_DATE=$(date --iso-8601=seconds)
-              git rebase -i $1 --exec 'git commit --amend --date=now --no-edit'
-            }; f";
-          };
-          extraConfig = {
+          package = pkgs.gitFull;
+          settings = {
+            user.name = "Jeremie Huchet";
+            user.email = "jeremiehuchet@users.noreply.github.com";
+            alias = {
+              co = "checkout";
+              ci = "commit";
+              mj = "!gitmoji -c";
+              st = "status";
+              glog = "log --graph --oneline --decorate --all";
+              redate = "!f() {
+                export GIT_COMMITTER_DATE=$(date --iso-8601=seconds)
+                git rebase -i $1 --exec 'git commit --amend --date=now --no-edit'
+              }; f";
+            };
             credential = { helper = "store"; };
             gui = {
               fontui = ''

@@ -42,7 +42,7 @@ with lib;
         emacs-all-the-icons-fonts
         fira-code
         font-awesome
-        noto-fonts-emoji
+        noto-fonts-color-emoji
         noto-fonts
       ];
     };
@@ -74,7 +74,7 @@ with lib;
 
     environment.systemPackages = with pkgs; [
       any-nix-shell
-      gitAndTools.gitFull
+      gitFull
       hicolor-icon-theme
       kdePackages.breeze-icons
       libu2f-host
