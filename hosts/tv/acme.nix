@@ -19,6 +19,7 @@ in {
         "influxdb.huchet.ovh"
         "hass.huchet.ovh"
         "hass.local.huchet.ovh"
+        "photos.huchet.ovh"
         "vwar.huchet.ovh"
         "vwar.local.huchet.ovh"
       ];

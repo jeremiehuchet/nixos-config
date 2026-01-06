@@ -52,6 +52,11 @@
     fsType = "ext4";
   };
 
+  fileSystems."/var/lib/immich" = {
+    device = "/dev/disk/by-label/immich";
+    fsType = "ext4";
+  };
+
   swapDevices = [
    { device = "/dev/disk/by-label/swap"; }
   ];

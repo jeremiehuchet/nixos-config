@@ -47,6 +47,14 @@ in {
     MINSTOP=hwmon1/pwm1=75
   '';
 
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-vaapi-driver
+    ];
+  };
+  environment.sessionVariables = { LIBVA_DRIVER_NAME = "i965"; };
+
   services.autofs = {
     enable = true;
     autoMaster = let
@@ -178,6 +186,10 @@ in {
     home.guest.guiTools.enable = true;
     home.guest.guiTools.autoLock = false;
     home.guest.guiTools.i3statusRustConfig = ./tv/i3status-rust.toml;
+  };
+
+  self-hosted = {
+    photos.enable = true;
   };
 
   services.cron = {
