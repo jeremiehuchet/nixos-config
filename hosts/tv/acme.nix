@@ -19,6 +19,7 @@ in {
         "influxdb.huchet.ovh"
         "hass.huchet.ovh"
         "hass.local.huchet.ovh"
+        "music.huchet.ovh"
         "photos.huchet.ovh"
         "workspace.huchet.ovh"
         "vwar.huchet.ovh"

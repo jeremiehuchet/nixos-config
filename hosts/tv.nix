@@ -190,6 +190,7 @@ in {
 
   smtp-relay.enable = true;
   self-hosted = {
+    music.enable = true;
     photos.enable = true;
     workspace.enable = true;
   };
