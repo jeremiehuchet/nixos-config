@@ -7,7 +7,7 @@ in {
   services.nginx = {
     enable = true;
     virtualHosts."vwar.huchet.ovh" = {
-      serverAliases= ["vwar.local.huchet.ovh"];
+      serverAliases= ["vwar.lan"];
       forceSSL = true;
       useACMEHost = "huchet.ovh";
       locations."/" = {
