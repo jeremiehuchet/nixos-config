@@ -188,6 +188,7 @@ in {
     home.guest.guiTools.i3statusRustConfig = ./tv/i3status-rust.toml;
   };
 
+  smtp-relay.enable = true;
   self-hosted = {
     photos.enable = true;
     workspace.enable = true;

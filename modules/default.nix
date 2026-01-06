@@ -6,4 +6,5 @@
   ./obs-studio.nix
   ./self-hosted-photos.nix
   ./self-hosted-workspace.nix
+  ./smtp-relay.nix
 ]

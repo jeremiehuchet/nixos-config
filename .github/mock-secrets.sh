@@ -57,6 +57,12 @@ cat - <<EOF > secrets.nix
   };
   nextcloud.admin-password = "secret";
   nextcloud.database-password = "secret";
+  smtp = {
+    host = "secret";
+    port = 0;
+    password = "secret";
+    username = "secret";
+  };
 }
 EOF
 
