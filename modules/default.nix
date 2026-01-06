@@ -5,7 +5,6 @@
   ./notracking.nix
   ./xosd-battery-alert.nix
   ./obs-studio.nix
-  ./self-hosted-music.nix
   ./self-hosted-photos.nix
   ./self-hosted-workspace.nix
   ./smtp-relay.nix

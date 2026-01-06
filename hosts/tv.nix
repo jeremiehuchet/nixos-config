@@ -213,7 +213,6 @@ in {
   smtp-relay.enable = true;
   media-library.enable = true;
   self-hosted = {
-    music.enable = true;
     photos.enable = true;
     workspace.enable = true;
   };

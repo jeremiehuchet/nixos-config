@@ -57,11 +57,6 @@
     fsType = "ext4";
   };
 
-  fileSystems."/var/lib/navidrome" = {
-    device = "/dev/disk/by-label/navidrome";
-    fsType = "ext4";
-  };
-
   fileSystems."/var/lib/nextcloud" = {
     device = "/dev/disk/by-label/nextcloud";
     fsType = "ext4";
