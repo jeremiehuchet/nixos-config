@@ -190,6 +190,7 @@ in {
 
   self-hosted = {
     photos.enable = true;
+    workspace.enable = true;
   };
 
   services.cron = {

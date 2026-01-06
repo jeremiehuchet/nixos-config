@@ -55,6 +55,8 @@ cat - <<EOF > secrets.nix
     grafana_app_token = "secret";
     hass_app_token = "secret";
   };
+  nextcloud.admin-password = "secret";
+  nextcloud.database-password = "secret";
 }
 EOF
 

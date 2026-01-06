@@ -20,6 +20,7 @@ in {
         "hass.huchet.ovh"
         "hass.local.huchet.ovh"
         "photos.huchet.ovh"
+        "workspace.huchet.ovh"
         "vwar.huchet.ovh"
         "vwar.local.huchet.ovh"
       ];

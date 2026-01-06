@@ -5,4 +5,5 @@
   ./xosd-battery-alert.nix
   ./obs-studio.nix
   ./self-hosted-photos.nix
+  ./self-hosted-workspace.nix
 ]

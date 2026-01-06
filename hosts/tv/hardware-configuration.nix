@@ -57,6 +57,11 @@
     fsType = "ext4";
   };
 
+  fileSystems."/var/lib/nextcloud" = {
+    device = "/dev/disk/by-label/nextcloud";
+    fsType = "ext4";
+  };
+
   swapDevices = [
    { device = "/dev/disk/by-label/swap"; }
   ];
