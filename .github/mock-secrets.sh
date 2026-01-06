@@ -36,9 +36,11 @@ cat - <<EOF > secrets.nix
       tasmota.password = "secret";
     };
   };
-  home-vpn = {
+  privacy-vpn = {
+    provider = "secret";
     username = "secret";
     password = "secret";
+    countries = "secret";
   };
   vaultwarden.email = "secret";
   vaultwarden.smtp = {

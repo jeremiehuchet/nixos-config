@@ -8,4 +8,5 @@
   ./self-hosted-photos.nix
   ./self-hosted-workspace.nix
   ./smtp-relay.nix
+  ./vpn-gateway.nix
 ]

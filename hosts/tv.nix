@@ -92,14 +92,6 @@ in {
 
   services.avahi.enable = true;
 
-  services.openvpn.servers = {
-    "home" = {
-      config = ''config /etc/nixos/secrets/home-vpn/openvpn.ovpn'';
-      authUserPass = secrets.home-vpn;
-      autoStart = false;
-    };
-  };
-
   environment.systemPackages = with pkgs; [
     acpitool
     gnupg
@@ -208,6 +200,7 @@ in {
     };
   };
 
+  vpn-gateway.enable = true;
   smtp-relay.enable = true;
   self-hosted = {
     music.enable = true;
