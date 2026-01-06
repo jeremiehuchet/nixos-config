@@ -42,7 +42,6 @@ in {
       repository = "/nas/backup/borg-immich";
       database.postgresql.name = "immich";
       paths = [
-        "${config.services.postgresqlBackup.location}/immich.sql.gz"
         "${config.services.immich.mediaLocation}/library"
         "${config.services.immich.mediaLocation}/profile"
         "${config.services.immich.mediaLocation}/upload"

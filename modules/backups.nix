@@ -43,6 +43,8 @@ in {
 
   config = lib.mkIf (cfg != {}) {
 
+    environment.systemPackages = [ pkgs.borgbackup ];
+
     services.borgmatic = {
       enable = true;
       configurations = lib.mapAttrs (name: opts: {

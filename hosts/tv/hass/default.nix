@@ -379,5 +379,12 @@ in {
       };
     };
 
+    services.backups.hass = {
+      repository = "/nas/backup/borg-hass";
+      database.postgresql.name = "hass";
+      paths = [
+        config.services.home-assistant.configDir
+      ];
+    };
   };
 }

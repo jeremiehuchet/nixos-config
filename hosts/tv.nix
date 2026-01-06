@@ -189,17 +189,6 @@ in {
     home.guest.guiTools.i3statusRustConfig = ./tv/i3status-rust.toml;
   };
 
-  services.borgmatic = {
-    enable = true;
-    settings = {
-      progress = true;
-      keep_within = "1d";
-      keep_daily = 7;
-      keep_weekly = 4;
-      keep_monthly = 6;
-    };
-  };
-
   vpn-gateway.enable = true;
   smtp-relay.enable = true;
   media-library.enable = true;
