@@ -70,13 +70,25 @@ in {
     '';
   };
 
+  systemd.network.enable = true;
+  systemd.network.wait-online.anyInterface = true;
+
   systemd.network.links."10-wireless" = {
     matchConfig.MACAddress = "28:87:ba:cc:d8:e8";
     linkConfig.Name = "wireless";
   };
+
   systemd.network.links."10-ethernet" = {
     matchConfig.MACAddress = "b8:ca:3a:c8:30:f1";
     linkConfig.Name = "ethernet";
+  };
+
+  systemd.network.networks."40-wireless" = {
+    matchConfig.Name = "wireless";
+    dhcpV4Config.UseDomains = true;
+    networkConfig = {
+      MulticastDNS = true;
+    };
   };
 
   networking.hostName = "tv";
@@ -89,6 +101,14 @@ in {
   networking.wireless.networks."${secrets.wireless.ssid}".pskRaw = "ext:psk_${secrets.wireless.ssid}";
   networking.interfaces.ethernet.useDHCP = true;
   networking.interfaces.wireless.useDHCP = true;
+
+  services.resolved = {
+    enable = true;
+    extraConfig = ''
+      MulticastDNS=resolve
+    '';
+    llmnr = "resolve";
+  };
 
   services.avahi.enable = true;
 
