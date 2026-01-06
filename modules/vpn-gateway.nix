@@ -11,13 +11,17 @@ in {
 
     virtualisation.podman = {
       enable = true;
-      dockerCompat = true;
+      autoPrune.enable = true;
     };
 
     virtualisation.oci-containers.containers."gluetun" = {
+      serviceName = "gluetun";
       image = "qmcgaw/gluetun:v3";
       pull = "newer";
-      ports = [ "8388:8388/tcp" ];
+      ports = [
+        "8388:8388/tcp"
+        "9091:9091/tcp"
+      ];
       environment = {
         VPN_SERVICE_PROVIDER = secrets.privacy-vpn.provider;
         VPN_TYPE = "openvpn";
@@ -38,6 +42,17 @@ in {
       };
       devices = [ "/dev/net/tun:/dev/net/tun" ];
       volumes = [ "/etc/nixos/secrets/openvpn:/gluetun:ro" ];
+    };
+
+    systemd.services."gluetun" = {
+      postStart = ''
+        PID=$(${pkgs.podman}/bin/podman inspect -f '{{.State.Pid}}' gluetun)
+        mkdir -p /run/netns
+        ln -sfT /proc/$PID/ns/net /run/netns/gluetun
+      '';
+      preStop = ''
+        rm -f /run/netns/gluetun
+      '';
     };
 
     systemd.services.socks5-private = {

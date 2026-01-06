@@ -42,7 +42,15 @@ in {
           };
         };
       };
+    };
 
+    systemd.services.qbittorrent = {
+      after = ["gluetun.service"];
+      requires = ["gluetun.service"];
+      serviceConfig = {
+        NetworkNamespacePath = "/run/netns/gluetun";
+        PrivateNetwork = lib.mkForce true;
+      };
     };
 
     services.prowlarr.enable = true;
