@@ -6,13 +6,13 @@
 buildHomeAssistantComponent rec {
   owner = "aohzan";
   domain = "prix_carburant";
-  version = "3.7.0";
+  version = "3.16.0";
 
   src = fetchFromGitHub {
     inherit owner;
     repo = "hass-prixcarburant";
     rev = "refs/tags/${version}";
-    hash = "sha256-peIRWatsDIbP+7FkzZBjAdYCKdhTKVnHwCTI0Jbtfq4=";
+    hash = "sha256-GsueGefbX1NyvFtmajWADHxIUlek4qrEYOxe1haaxkY=";
   };
 
   meta = with lib; {
