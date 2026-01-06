@@ -23,7 +23,6 @@ in {
   nixpkgs.overlays = [
     (
       final: prev: {
-        caesiumclt = pkgs.callPackage ./caesium-clt.nix { };
         home-assistant = unstable.home-assistant;
         home-assistant-custom-components = unstable.home-assistant-custom-components // {
           cover-rf-time-based = unstable.python313Packages.callPackage ./ha-custom-component-cover-rf-time-based.nix { };
@@ -38,7 +37,6 @@ in {
         home-assistant-themes = {
           hatempotheme = pkgs.callPackage ./ha-theme-hatempotheme.nix { };
         };
-        immich-upload-optimizer = pkgs.callPackage ./immich-upload-optimizer.nix { };
       }
     )
   ];
