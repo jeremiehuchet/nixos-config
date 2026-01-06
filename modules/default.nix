@@ -1,6 +1,7 @@
 [
   ./m0.nix
   ./m2.nix
+  ./media-library.nix
   ./notracking.nix
   ./xosd-battery-alert.nix
   ./obs-studio.nix

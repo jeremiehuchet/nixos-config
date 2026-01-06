@@ -65,6 +65,8 @@ cat - <<EOF > secrets.nix
     password = "secret";
     username = "secret";
   };
+  qbittorrent.username = "secret";
+  qbittorrent.password = "secret";
 }
 EOF
 
