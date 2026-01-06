@@ -46,9 +46,26 @@ in {
           "OC\\Preview\\PDF"
           "OC\\Preview\\SVG"
         ];
-        mail_domain = "nextcloud@noreply.huchet.ovh";
         mail_sendmailmode = "pipe";
+        maintenance_window_start = "3";
       };
+    };
+
+    services.nginx.virtualHosts."office.huchet.ovh" = {
+      forceSSL = true;
+      useACMEHost = "huchet.ovh";
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:${toString config.services.collabora-online.port}";
+        proxyWebsockets = true;
+        recommendedProxySettings = true;
+      };
+     };
+
+    services.collabora-online = {
+      enable = true;
+      aliasGroups = [ { host = "https://workspace.huchet.ovh:443"; } ];
+      settings.net.post_allow.host = [ "127\\.0\\.0\\.1" ];
+      settings.net.lok_allow.host = [ "127\\.0\\.0\\.1" ];
     };
 
     services.postgresql = {
