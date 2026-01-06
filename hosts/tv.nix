@@ -188,6 +188,26 @@ in {
     home.guest.guiTools.i3statusRustConfig = ./tv/i3status-rust.toml;
   };
 
+  services.postgresqlBackup = {
+    enable = true;
+    startAt = "*-*-* 01:15:00";
+  };
+
+  services.borgbackup.jobs = {
+    databases = {
+      doInit = true;
+      paths = [ config.services.postgresqlBackup.location ];
+      repo = "/nas/backup/borg:postgresql";
+      prune.keep = {
+        within = "1d";
+        daily = 7;
+        weekly = 4;
+        monthly = 6;
+      };
+      encryption.mode = "none";
+    };
+  };
+
   smtp-relay.enable = true;
   self-hosted = {
     music.enable = true;

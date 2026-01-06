@@ -240,6 +240,8 @@ in {
       }];
     };
 
+    services.postgresqlBackup.databases = [ "hass" ];
+
     services.mosquitto = {
       enable = true;
       #logType = ["debug"];

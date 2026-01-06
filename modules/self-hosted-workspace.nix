@@ -61,5 +61,7 @@ in {
       ];
     };
 
+    services.postgresqlBackup.databases = [ "nextcloud" ];
+
   };
 }

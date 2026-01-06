@@ -35,5 +35,7 @@ in {
 
     # for hardware acceleration
     users.users.immich.extraGroups = [ "video" "render" ];
+
+    services.postgresqlBackup.databases = [ config.services.immich.database.name ];
   };
 }
