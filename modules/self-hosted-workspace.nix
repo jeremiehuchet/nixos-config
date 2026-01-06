@@ -78,23 +78,13 @@ in {
       ];
     };
 
-    services.postgresqlBackup.databases = [ "nextcloud" ];
-
-    services.borgbackup.jobs.nextcloud = {
-      startAt = "*-*-* 01:30:00";
-      encryption.mode = "none";
+    services.backups.nextcloud = {
+      repository = "/nas/backup/borg-nextcloud";
+      database.postgresql.name = "nextcloud";
       paths = [
-        "${config.services.postgresqlBackup.location}/nextcloud.sql.gz"
         "${config.services.nextcloud.datadir}/config"
         "${config.services.nextcloud.datadir}/data"
       ];
-      repo = "/nas/backup/borg:nextcloud";
-      prune.keep = {
-        within = "1d";
-        daily = 7;
-        weekly = 4;
-        monthly = 6;
-      };
     };
   };
 }

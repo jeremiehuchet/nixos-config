@@ -1,4 +1,5 @@
 [
+  ./backups.nix
   ./m0.nix
   ./m2.nix
   ./media-library.nix
