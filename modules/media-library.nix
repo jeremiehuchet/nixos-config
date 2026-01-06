@@ -31,6 +31,10 @@ in {
       };
     }) mediaServices;
 
+    vpn-gateway.isolatedServices = builtins.mapAttrs (name: port:
+      [ "127.0.0.1:${toString port}:${toString port}/tcp" ]
+    ) mediaServices;
+
     services.qbittorrent = {
       enable = true;
       webuiPort = 9091;
@@ -41,15 +45,6 @@ in {
             Password_PBKDF2 = secrets.qbittorrent.password;
           };
         };
-      };
-    };
-
-    systemd.services.qbittorrent = {
-      after = ["gluetun.service"];
-      requires = ["gluetun.service"];
-      serviceConfig = {
-        NetworkNamespacePath = "/run/netns/gluetun";
-        PrivateNetwork = lib.mkForce true;
       };
     };
 
