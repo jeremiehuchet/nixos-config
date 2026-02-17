@@ -349,8 +349,8 @@ in {
           legacy_action_sensor = false;
         };
         frontend = {
-          enable = false;
-          host = "0.0.0.0";
+          enabled = true;
+          host = "127.0.0.1";
           port = 8081;
         };
       };
