@@ -6,6 +6,7 @@
   ./notracking.nix
   ./xosd-battery-alert.nix
   ./obs-studio.nix
+  ./postgres-cluster-upgrade.nix
   ./self-hosted-photos.nix
   ./self-hosted-workspace.nix
   ./smtp-relay.nix

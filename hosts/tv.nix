@@ -101,6 +101,21 @@ in {
 
   services.avahi.enable = true;
 
+  services.postgresql = {
+    enable = true;
+    package = pkgs.postgresql_16;
+  };
+
+  programs.upgrade-pg-cluster = {
+    enable = true;
+    newPostgres = pkgs.postgresql_16.withPackages (p: [
+      p.pgvecto-rs
+      p.pgvector
+      p.vectorchord
+    ]);
+    shared_preload_libraries = ["vectors.so" "vchord.so"];
+  };
+
   environment.systemPackages = with pkgs; [
     acpitool
     gnupg
