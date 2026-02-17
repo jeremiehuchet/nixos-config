@@ -3,14 +3,13 @@
 let
   secrets = import ../../secrets.nix ;
   dyndnspassfile = pkgs.writeText "dyndnspassfile" ''${secrets.dyndns.password}'';
-  showIpv4 = pkgs.writeScriptBin "ip-addr-show-v4" "${pkgs.nur.livebox-cli}/bin/livebox-cli --base-url http://livebox.wan --password '${secrets.livebox.password}' --query $.data.IPAddress --raw exec --service NMC --method getWANStatus";
-  showIpv6 = pkgs.writeScriptBin "ip-addr-show-v6" "${pkgs.nur.livebox-cli}/bin/livebox-cli --base-url http://livebox.wan --password '${secrets.livebox.password}' --query $.data.IPv6Address --raw exec --service NMC --method getWANStatus";
+  showIpv4 = pkgs.writeScriptBin "ip-addr-show-v4" "${pkgs.nur.livebox-cli}/bin/livebox-cli --base-url http://192.168.1.1 --password '${secrets.livebox.password}' --query $.data.IPAddress --raw exec --service NMC --method getWANStatus";
+  showIpv6 = pkgs.writeScriptBin "ip-addr-show-v6" "${pkgs.nur.livebox-cli}/bin/livebox-cli --base-url http://192.168.1.1 --password '${secrets.livebox.password}' --query $.data.IPv6Address --raw exec --service NMC --method getWANStatus";
 in {
   services.ddclient = {
     enable = true;
     ssl = true;
-    server = "dns.eu.ovhapis.com";
-    protocol = "dyndns2";
+    protocol = "ovh";
     username = secrets.dyndns.username;
     passwordFile = "${dyndnspassfile}";
     domains = [
@@ -23,6 +22,6 @@ in {
     # RECEIVE:  {"class":"Client::BadRequest","message":"{'myip': ['Invalid ip']}"}
     #usev6 = "cmdv6, cmdv6=${showIpv6}/bin/ip-addr-show-v6";
     usev6 = "";
-    #verbose = true;
+    verbose = false;
   };
 }
