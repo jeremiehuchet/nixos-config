@@ -6,7 +6,7 @@
 buildHomeAssistantComponent rec {
   owner = "aohzan";
   domain = "prix_carburant";
-  version = "3.16.0";
+  version = "3.17.0";
 
   src = fetchFromGitHub {
     inherit owner;
