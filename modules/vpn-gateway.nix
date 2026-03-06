@@ -74,5 +74,18 @@ in {
           PrivateNetwork = lib.mkForce true;
         };
     }));
+
+    environment.systemPackages = [
+      (pkgs.writeShellApplication {
+        name = "gluetunify";
+        text = ''
+          # PULSE_* env variables allows to keep current user pulseaudio context across sudo commands
+
+          sudo \
+            ip netns exec gluetun \
+            sh -c "sudo -u $USER PULSE_SERVER=/run/user/$UID/pulse/native PULSE_COOKIE=$HOME/.config/pulse/cookie $*"
+        '';
+      })
+    ];
   };
 }
