@@ -37,6 +37,7 @@ in {
         home-assistant-themes = {
           hatempotheme = pkgs.callPackage ./ha-theme-hatempotheme.nix { };
         };
+        immich-upload-optimizer = pkgs.callPackage ./immich-upload-optimizer.nix { };
       }
     )
   ];
