@@ -9,7 +9,7 @@
           name = "all covers";
           unique_id = "all";
           entities = [
-            "cover.dining_room_shelly"
+            #"cover.dining_room_shelly"
             "cover.kitchen_shelly"
             "cover.living_room_shelly"
             "cover.ch4_shelly"
@@ -23,7 +23,7 @@
           name = "Ground floor covers";
           unique_id = "ground_floor";
           entities = [
-            "cover.dining_room_shelly"
+            #"cover.dining_room_shelly"
             "cover.kitchen_shelly"
             "cover.living_room_shelly"
           ];
