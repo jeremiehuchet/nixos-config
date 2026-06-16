@@ -31,6 +31,9 @@ in {
           livebox = unstable.callPackage ./ha-custom-component-livebox.nix {
             aiosysbus = unstable.python313Packages.callPackage ./python-lib-aiosysbus.nix { };
           };
+          navimow = unstable.python313Packages.callPackage ./ha-custom-component-navimow.nix {
+            navimow-sdk = unstable.python314Packages.callPackage ./python-lib-navimow-sdk.nix { };
+          };
           prixcarburant = unstable.callPackage ./ha-custom-component-prixcarburant.nix { };
           rtetempo = unstable.python313Packages.callPackage ./ha-custom-component-rtetempo.nix { };
         };

@@ -71,6 +71,7 @@ in {
       customComponents = with pkgs.home-assistant-custom-components; [
         #ecoflowcloud
         livebox
+        navimow
         prixcarburant
         rtetempo
       ];
