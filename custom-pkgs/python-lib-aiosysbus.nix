@@ -8,12 +8,12 @@
 
 let
   pname = "aiosysbus";
-  version = "1.1.3";
+  version = "1.2.4";
 in buildPythonPackage {
   inherit pname version;
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-FNeHM/yTBkOJI4FKeGXfvp12Kq4igtAcqyoU1PS4968=";
+    hash = "sha256-+sBJwqhxez5DCNwKXrO6+qtSFbWq0ll0x3qr46TkyHg=";
   };
   pyproject = true;
   build-system = [ setuptools-scm ];
