@@ -16,7 +16,6 @@ in {
       domain = "huchet.ovh";
       extraDomainNames = [
         "grafana.huchet.ovh"
-        "influxdb.huchet.ovh"
         "hass.huchet.ovh"
         "hass.local.huchet.ovh"
         "music.huchet.ovh"

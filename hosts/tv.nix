@@ -24,7 +24,6 @@ in {
     ./tv/fail2ban.nix
     ./tv/grafana.nix
     ./tv/hass
-    ./tv/influxdb.nix
     ./tv/password-manager.nix
     ./tv/vpn.nix
   ];

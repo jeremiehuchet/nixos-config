@@ -4,7 +4,6 @@ let secrets = import ../../secrets.nix;
 in {
   systemd.tmpfiles.rules = [
     "f+ /run/secrets/grafana--admin-password 0600 grafana grafana - ${secrets.grafana.admin_password}"
-    "f+ /run/secrets/grafana--influxbd-access-token 0600 grafana grafana - ${secrets.influxdb.grafana_app_token}"
   ];
 
   services.nginx = {
@@ -42,23 +41,6 @@ in {
     };
     provision = {
       enable = true;
-      datasources.settings.datasources = [
-        {
-          name = "influxdb";
-          type = "influxdb";
-          uid = "influxdb";
-          access = "proxy";
-          url = "http://127.0.0.1:8086";
-          secureJsonData = {
-            token = "$__file{/run/secrets/grafana--influxbd-access-token}";
-          };
-          jsonData = {
-            version = "Flux";
-            organization = "home";
-          };
-          editable = false;
-        }
-      ];
     };
   };
 }
