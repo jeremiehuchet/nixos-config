@@ -62,7 +62,7 @@ in {
   systemd.network.wait-online.anyInterface = true;
 
   systemd.network.links."10-wireless" = {
-    matchConfig.MACAddress = "28:87:ba:cc:d8:e8";
+    matchConfig.MACAddress = "6c:29:95:4e:5d:31";
     linkConfig.Name = "wireless";
   };
 
@@ -135,6 +135,8 @@ in {
     ACTION=="add", SUBSYSTEM=="usb", DRIVERS=="usbhid", ATTR{../power/wakeup}="enabled"
     # disable internal bluetooth usb controller
     SUBSYSTEM=="usb", ATTRS{idVendor}=="0cf3", ATTRS{idProduct}=="e004", ATTR{authorized}="0"
+    # disable wireless powersaving
+    ACTION=="add|change", SUBSYSTEM=="net", NAME=="wireless", RUN+="${pkgs.iw}/bin/iw dev %k set power_save off"
   '';
 
   hardware.bluetooth.enable = true;
