@@ -60,6 +60,7 @@ in {
         "mqtt"
         "open_meteo"
         "prometheus"
+        "reolink"
         "rest"
         "roborock"
         "shelly"
