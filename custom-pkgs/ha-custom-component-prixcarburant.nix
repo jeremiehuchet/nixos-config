@@ -12,8 +12,12 @@ buildHomeAssistantComponent rec {
     inherit owner;
     repo = "hass-prixcarburant";
     rev = "refs/tags/${version}";
-    hash = "sha256-GsueGefbX1NyvFtmajWADHxIUlek4qrEYOxe1haaxkY=";
+    hash = "sha256-xRSBKoPIgTQKfjKaflo+2hRqT8zeZU9/m53ATZPQeho=";
   };
+
+  patches = [
+    ./ha-custom-component-prixcarburant--dont-use-device-class-monetary.diff
+  ];
 
   meta = with lib; {
     changelog = "https://github.com/aohzan/hass-prixcarburant/releases/tag/${version}";

@@ -1,0 +1,10 @@
+--- a/custom_components/prix_carburant/sensor.py
++++ b/custom_components/prix_carburant/sensor.py
+@@ -103,7 +103,6 @@
+     """Representation of a Sensor."""
+ 
+     _attr_icon = "mdi:gas-station"
+-    _attr_device_class = SensorDeviceClass.MONETARY
+     _attr_native_unit_of_measurement = CURRENCY_EURO
+ 
+     def __init__(
