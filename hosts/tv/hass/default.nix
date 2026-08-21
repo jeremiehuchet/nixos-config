@@ -38,7 +38,6 @@ in {
 
     services.home-assistant = {
       enable = true;
-      openFirewall = true;
       extraPackages = python3Packages: with python3Packages; [
         aioesphomeapi
         universal-silabs-flasher
@@ -93,13 +92,6 @@ in {
           temperature_unit = "C";
           time_zone = "Europe/Paris";
           unit_system = "metric";
-        };
-        http = {
-          server_host = "127.0.0.1";
-          trusted_proxies = [ "127.0.0.1" ];
-          use_x_forwarded_for = true;
-          ip_ban_enabled = true;
-          login_attempts_threshold = 5;
         };
         "automation ui" = "!include automations.yaml"; 
         prometheus.filter.include_domains = [

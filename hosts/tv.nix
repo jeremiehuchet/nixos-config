@@ -92,10 +92,7 @@ in {
 
   services.resolved = {
     enable = true;
-    extraConfig = ''
-      MulticastDNS=resolve
-    '';
-    llmnr = "resolve";
+    settings.Resolve.LLMNR = "resolve";
   };
 
   services.avahi.enable = true;
@@ -108,11 +105,9 @@ in {
   programs.upgrade-pg-cluster = {
     enable = true;
     newPostgres = pkgs.postgresql_16.withPackages (p: [
-      p.pgvecto-rs
-      p.pgvector
       p.vectorchord
     ]);
-    shared_preload_libraries = ["vectors.so" "vchord.so"];
+    shared_preload_libraries = [ "vchord.so"];
   };
 
   environment.systemPackages = with pkgs; [

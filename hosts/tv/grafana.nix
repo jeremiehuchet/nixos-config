@@ -4,6 +4,7 @@ let secrets = import ../../secrets.nix;
 in {
   systemd.tmpfiles.rules = [
     "f+ /run/secrets/grafana--admin-password 0600 grafana grafana - ${secrets.grafana.admin_password}"
+    "f+ /run/secrets/grafana--secret-key 0600 grafana grafana - ${secrets.grafana.secret_key}"
   ];
 
   services.nginx = {
@@ -32,6 +33,7 @@ in {
         admin_user = "admin";
         admin_password = "$__file{/run/secrets/grafana--admin-password}";
         admin_email = secrets.email;
+        secret_key = "$__file{/run/secrets/grafana--secret-key}";
       };
       server = {
         enforce_domain = true;

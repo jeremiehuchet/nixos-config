@@ -21,11 +21,10 @@
           dnsutils
           nur.ccat
           dfc
-          nur.gitmoji-cli
           gnupg
           httpie
           jq
-          nixfmt-rfc-style
+          nixfmt
           p7zip
           (pass.withExtensions (exts: [ exts.pass-update ]))
           pdftk
@@ -34,8 +33,6 @@
           tree
           wget
         ];
-
-        xdg.configFile."gitmoji-nodejs/config.json".source = ./gitmoji.json;
 
         programs.broot.enable = true;
 
@@ -59,7 +56,6 @@
             alias = {
               co = "checkout";
               ci = "commit";
-              mj = "!gitmoji -c";
               st = "status";
               glog = "log --graph --oneline --decorate --all";
               redate = "!f() {

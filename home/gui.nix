@@ -18,7 +18,7 @@ in {
       let
         xlock = pkgs.writeScriptBin "xlock" ''
           #!${pkgs.bash}/bin/bash
-          PATH="${pkgs.xorg.xbacklight}/bin:${pkgs.i3lock}/bin:${pkgs.coreutils}/bin"
+          PATH="${pkgs.xbacklight}/bin:${pkgs.i3lock}/bin:${pkgs.coreutils}/bin"
           xbacklight -get > /home/${name}/.config/i3/backlight.state
           xbacklight -set 10
           i3lock --nofork --show-failed-attempts --ignore-empty-password --color ffffff || exit 1
@@ -62,9 +62,9 @@ in {
         xsession = {
           enable = true;
           initExtra = ''
-            ${pkgs.xorg.xrandr}/bin/xrandr --dpi ${toString cfg.dpi} --output ${cfg.primaryOutput} --primary
+            ${pkgs.xrandr}/bin/xrandr --dpi ${toString cfg.dpi} --output ${cfg.primaryOutput} --primary
             ${pkgs.nur.pyrandr}/bin/pyrandr --laptop-only
-            ${pkgs.xorg.xbacklight}/bin/xbacklight -set $(cat ~/.config/i3/backlight.state)
+            ${pkgs.xbacklight}/bin/xbacklight -set $(cat ~/.config/i3/backlight.state)
           '';
           profileExtra = ''
             export GDK_SCALE=2
@@ -159,9 +159,9 @@ in {
                   "exec --no-startup-id amixer -q sset Capture toggle";
                 # screen backlight
                 XF86MonBrightnessUp =
-                  "exec --no-startup-id ${pkgs.xorg.xbacklight}/bin/xbacklight -inc 5 && ${pkgs.xorg.xbacklight}/bin/xbacklight -get > ~/.config/i3/backlight.state";
+                  "exec --no-startup-id ${pkgs.xbacklight}/bin/xbacklight -inc 5 && ${pkgs.xbacklight}/bin/xbacklight -get > ~/.config/i3/backlight.state";
                 XF86MonBrightnessDown =
-                  "exec --no-startup-id ${pkgs.xorg.xbacklight}/bin/xbacklight -dec 5 && ${pkgs.xorg.xbacklight}/bin/xbacklight -get > ~/.config/i3/backlight.state";
+                  "exec --no-startup-id ${pkgs.xbacklight}/bin/xbacklight -dec 5 && ${pkgs.xbacklight}/bin/xbacklight -get > ~/.config/i3/backlight.state";
               };
               modes = {
                 "${output}" = {
