@@ -1,8 +1,8 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, inputs, ... }:
 
 let
-  channels = import ../pinned-channels;
-  unstable = import channels.nixpkgs-unstable {
+  unstable = import inputs.nixpkgs-unstable {
+    system = pkgs.stdenv.hostPlatform.system;
     config = {
       allowUnfree = true;
       permittedInsecurePackages = [
@@ -10,7 +10,7 @@ let
       ];
     };
   };
-  nur = import channels.nur-packages { inherit pkgs; };
+  nur = import inputs.nur-packages { inherit pkgs; };
 in {
 
   nixpkgs.config.allowUnfree = true;

@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 let
   secrets = import ../secrets.nix;
@@ -17,7 +17,7 @@ in {
     ./common
     ../home
     ../custom-pkgs
-    <nixpkgs-unstable/nixos/modules/services/home-automation/home-assistant.nix>
+    "${inputs.nixpkgs-unstable}/nixos/modules/services/home-automation/home-assistant.nix"
     ./tv/acme.nix
     ./tv/nginx.nix
     ./tv/dyndns.nix
@@ -215,8 +215,12 @@ in {
     ];
   };
 
-  system.autoUpgrade.enable = true;
-  system.autoUpgrade.allowReboot = true;
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+    flake = "/etc/nixos#tv";
+    flags = [ "--impure" ];
+  };
 
   system.stateVersion = "22.05";
 }

@@ -16,7 +16,6 @@ let
     config.custom.home;
   requireV4l2loopback = lib.foldr (x: y: x || y) false someoneWantsObsStudio;
 in {
-  imports = [ <home-manager/nixos> ];
 
   config = {
 

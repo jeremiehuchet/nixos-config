@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 with lib;
 
@@ -88,7 +88,10 @@ with lib;
     '';
 
     nix = {
-      nixPath = (import ../../pinned-channels).nixPath;
+      settings.experimental-features = [ "nix-command" "flakes" ];
+      # keep legacy nix-* tools and `nix shell nixpkgs#...` aligned with the flake's nixpkgs
+      registry.nixpkgs.flake = inputs.nixpkgs;
+      nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
       gc.automatic = true;
       gc.dates = "weekly";
       gc.options = "--delete-older-than 30d";

@@ -4,7 +4,6 @@ let
   cfg.dpi = config.custom.dpi;
   cfg.primaryOutput = config.custom.xserver.primaryOutput;
 in {
-  imports = [ <home-manager/nixos> ];
 
   options = with lib; {
     custom.xserver = { primaryOutput = mkOption { type = types.str; }; };
@@ -306,7 +305,7 @@ in {
         programs.rbw = {
           enable = true;
           settings = {
-            email = (import ../secrets.nix).vaultwarden.email;
+            email = (import /etc/nixos/secrets.nix).vaultwarden.email;
             base_url = "http://127.0.0.1:8222";
             lock_timeout = 900;
             pinentry = pkgs.pinentry-qt;
