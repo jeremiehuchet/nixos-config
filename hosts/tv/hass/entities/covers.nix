@@ -40,45 +40,38 @@
           ];
         }
       ];
-      "automation manual" = [
+      template = [
         {
-          alias = "open covers weekdays";
-          trigger = {
-            platform = "sun";
-            event = "sunrise";
-            offset = "01:00:00";
-          };
-          condition = {
-            condition = "time";
-            weekday = ["fri" "thu" "wed" "tue" "mon"];
-          };
-          action = [
+          trigger = [
+            { trigger = "time"; at = "sensor.prochaine_ouverture_des_volets"; }
+            { trigger = "homeassistant"; event = "start"; }
+          ];
+          sensor = [
             {
-              service = "cover.open_cover";
-              entity_id = [
-                "cover.ground_floor"
-                "cover.first_floor"
-              ];
+              name = "Prochaine ouverture des volets";
+              device_class = "timestamp";
+              state = ''
+                {% set offset = timedelta(minutes=range(-15, 10) | random, seconds=range(-30, 30) | random) %}
+                {% set next_opening = today_at("09:00") + offset %}
+                {{ next_opening + timedelta(days=1 if next_opening < now() else 0) }}
+              '';
             }
           ];
         }
         {
-          alias = "close covers weekdays";
-          trigger = {
-            platform = "sun";
-            event = "sunset";
-            offset = "01:00:00";
-          };
-          condition = {
-            condition = "time";
-            weekday = ["fri" "thu" "wed" "tue" "mon"];
-          };
-          action = [
+          trigger = [
+            { trigger = "time"; at = "sensor.prochaine_fermeture_des_volets"; }
+            { trigger = "homeassistant"; event = "start"; }
+          ];
+          sensor = [
             {
-              service = "cover.close_cover";
-              entity_id = [
-                "cover.all"
-              ];
+              name = "Prochaine fermeture des volets";
+              device_class = "timestamp";
+              state = ''
+                {% set offset = timedelta(minutes=range(-30, 30) | random, seconds=range(-30, 30) | random) %}
+                {% set next_closing = today_at("22:30") + offset %}
+                {{ next_closing + timedelta(days=1 if next_closing < now() else 0) }}
+              '';
             }
           ];
         }

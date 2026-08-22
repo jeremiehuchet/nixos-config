@@ -95,7 +95,7 @@ in {
           })
         ];
       };
-      "automation manual" = [
+      "automation nixos" = [
         {
           alias = "Request garage door controller status update on HA statup";
           trigger = [

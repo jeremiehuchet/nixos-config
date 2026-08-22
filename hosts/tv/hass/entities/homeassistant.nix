@@ -26,6 +26,10 @@
       }];
       template = [
         {
+          triggers = [{
+            trigger = "state";
+            entity_id = "sensor.homeassistant_mqtt_ping";
+          }];
           binary_sensor = [{
             unique_id = "homeassistant_mqtt_connector";
             name = "MQTT connector";
@@ -39,7 +43,7 @@
           }];
         }
       ];
-      "automation manual" = [
+      "automation nixos" = [
         {
           alias = "Ping MQTT broker";
           mode = "restart";

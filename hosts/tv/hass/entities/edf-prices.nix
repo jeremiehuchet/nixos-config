@@ -116,8 +116,8 @@ in {
         } // entity_defaults)
       ] ++ lib.mapAttrsToList (id: label:
         ({
-          unique_id = "edf_prix_tempo_${id}";
           name = "Prix ${label}";
+          unique_id = "edf_prix_tempo_${id}";
           default_entity_id = "edf_prix_tempo_${id}";
           #device_class = "monetary";
           state_class = "measurement";
@@ -139,7 +139,15 @@ in {
           unique_id = "edf_prix_tempo_obsoletes";
           default_entity_id = "edf_prix_tempo_obsoletes";
           device_class = "problem";
-          value_template = ''{% if as_datetime(value_json.date_fin).date() < now().date() %}ON{% else %}OFF{% endif %}'';
+          value_template = ''
+            {% if value_json.date_fin is none %}
+              ON
+            {% elif as_datetime(value_json.date_fin | default()).date() < now().date() %}
+              ON
+            {% else %}
+              OFF
+            {% endif %}
+          '';
           } // entity_defaults)
         ];
 

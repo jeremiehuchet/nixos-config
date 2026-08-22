@@ -34,6 +34,8 @@ in {
 
     systemd.tmpfiles.rules = [
       "f ${config.services.home-assistant.configDir}/automations.yaml 0755 hass hass"
+      "f ${config.services.home-assistant.configDir}/scenes.yaml 0755 hass hass"
+      "f ${config.services.home-assistant.configDir}/scripts.yaml 0755 hass hass"
     ];
 
     services.home-assistant = {
@@ -45,6 +47,7 @@ in {
       ];
       extraComponents = [
         "default_config"
+        "isal"
         "zha" # unused but required at startup to avoid loading error
 
         "alert"
@@ -94,6 +97,8 @@ in {
           unit_system = "metric";
         };
         "automation ui" = "!include automations.yaml"; 
+        "scene ui" = "!include scenes.yaml";
+        "script ui" = "!include scripts.yaml";
         prometheus.filter.include_domains = [
           "persistent_notification"
           "sensor"
@@ -107,45 +112,6 @@ in {
           {
              platform = "prix_carburant";
              stations = secrets.home-automation.fuel-stations;
-          }
-        ];
-        rest = [
-          {
-            resource = "https://www.feedufeu.com/fdf-bo/includes/getPrice.php?dep=35&qte=1";
-            # example response: 396.50€<span>TTC</span><br><span>396.50€/palette</span> 
-            scan_interval = 86400; # seconds or 1 day
-            sensor = [ 
-              {
-                name = "feedufeu_price_975kg";
-                unique_id = "feedufeu_price_975kg";
-                value_template = "{{ value | regex_replace(find='€.*', replace='') | float }}";
-                state_class = "measurement";
-                icon = "mdi:currency-eur";
-                unit_of_measurement = "€";
-              }
-              {
-                name = "feedufeu_price_15kg";
-                unique_id = "feedufeu_price_15kg";
-                value_template = "
-                  {% set prix_65_sacs_15kg = value | regex_replace(find='€.*', replace='') | float %}
-                  {{ prix_65_sacs_15kg / 65 | round(2) }}
-                ";
-                state_class = "measurement";
-                icon = "mdi:currency-eur";
-                unit_of_measurement = "€";
-              }
-              {
-                name = "feedufeu_price_1kg";
-                unique_id = "feedufeu_price_1kg";
-                value_template = "
-                  {% set prix_65_sacs_15kg = value | regex_replace(find='€.*', replace='') | float %}
-                  {{ prix_65_sacs_15kg / 65 / 15 | round(2) }}
-                ";
-                state_class = "measurement";
-                icon = "mdi:currency-eur";
-                unit_of_measurement = "€";
-              }
-            ];
           }
         ];
         template = [

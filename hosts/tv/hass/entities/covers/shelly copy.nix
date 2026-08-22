@@ -197,7 +197,7 @@ in {
           }) [ "fs_free" "fs_size" "ram_free" "ram_min_free" "ram_size" ]);
         };
       };
-      "automation manual" = [
+      "automation nixos" = [
         {
           alias = "Shelly broadcast 'announce' on start and once a day";
           triggers = [

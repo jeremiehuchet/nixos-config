@@ -259,7 +259,7 @@ in {
           );
         };
       };
-      "automation manual" = [
+      "automation nixos" = [
         {
           alias = "Shelly broadcast 'announce' on start and once a day";
           triggers = [
