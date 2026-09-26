@@ -5,6 +5,7 @@ let
 in {
   imports = [
     ./entities/covers.nix
+    ./entities/feedufeu-prices.nix
     ./entities/edf-prices.nix
     ./entities/garage_door.nix
     ./entities/homeassistant.nix

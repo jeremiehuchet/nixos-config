@@ -7,6 +7,14 @@
         {
           method = "POST";
           resource = "https://feedufeu.com/wp-admin/admin-ajax.php";
+          payload = "action=wdr_ajax"
+            + "&method=get_price_html"
+            + "&product_id=356"
+            + "&awdr_nonce=ac714edf33";
+          headers = {
+            Referer = "https://feedufeu.com/produit/granules-de-bois-palettes/";
+            User-Agent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0";
+          };
           # example response:
           # {
           #  "price_html": "<span class=\"woocommerce-Price-amount amount\"><bdi>425,00&nbsp;<span class=\"woocommerce-Price-currencySymbol\">&euro;<\/span><\/bdi><\/span>",
@@ -14,8 +22,8 @@
           # }
           scan_interval = 86400; # seconds or 1 day
           sensor = let
-            extract_price = "value_json | price_html | regex_replace(find='.*([0-9]+),([0-9]+).*', replace='\\1.\\2') | float";
-          in = [ 
+            extract_price = "value_json.price_html | regex_replace('.*([0-9]+),([0-9]+).*', '\\1.\\2') | float";
+          in [ 
             {
               name = "feedufeu_price_975kg";
               unique_id = "feedufeu_price_975kg";
