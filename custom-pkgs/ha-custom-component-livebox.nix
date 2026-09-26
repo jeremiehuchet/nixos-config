@@ -7,13 +7,13 @@
 buildHomeAssistantComponent rec {
   owner = "cyr-ius";
   domain = "livebox";
-  version = "2.5.3";
+  version = "2.5.6";
 
   src = fetchFromGitHub {
     owner = "cyr-ius";
     repo = "hass-livebox-component";
     rev = "refs/tags/${version}";
-    hash = "sha256-39ZkkalXy9z4ERiCqAOg7K1Tg/Su4UAPewof4ilDW5M=";
+    hash = "sha256-TrGcq5btYaxpePWDw5hUv3tcPADkWDHaXp1AqGXJrHU=";
   };
 
   propagatedBuildInputs = [

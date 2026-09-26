@@ -71,7 +71,7 @@ in {
         "tasmota"
       ];
       customComponents = with pkgs.home-assistant-custom-components; [
-        #ecoflowcloud
+        ecoflowcloud
         livebox
         navimow
         prixcarburant

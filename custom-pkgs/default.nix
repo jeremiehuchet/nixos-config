@@ -27,11 +27,11 @@ in {
         home-assistant-custom-components = unstable.home-assistant-custom-components // {
           cover-rf-time-based = unstable.python314Packages.callPackage ./ha-custom-component-cover-rf-time-based.nix { };
           cover-time-based-synced = unstable.python314Packages.callPackage ./ha-custom-component-cover-time-based-synced.nix { };
-          ecoflowcloud = unstable.python313Packages.callPackage ./ha-custom-component-ecoflowcloud.nix { };
+          ecoflowcloud = unstable.python314Packages.callPackage ./ha-custom-component-ecoflowcloud.nix { };
           livebox = unstable.callPackage ./ha-custom-component-livebox.nix {
             aiosysbus = unstable.python314Packages.callPackage ./python-lib-aiosysbus.nix { };
           };
-          navimow = unstable.python313Packages.callPackage ./ha-custom-component-navimow.nix {
+          navimow = unstable.python314Packages.callPackage ./ha-custom-component-navimow.nix {
             navimow-sdk = unstable.python314Packages.callPackage ./python-lib-navimow-sdk.nix { };
           };
           prixcarburant = unstable.callPackage ./ha-custom-component-prixcarburant.nix { };

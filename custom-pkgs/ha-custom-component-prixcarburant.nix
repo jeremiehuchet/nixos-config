@@ -6,18 +6,14 @@
 buildHomeAssistantComponent rec {
   owner = "aohzan";
   domain = "prix_carburant";
-  version = "3.17.0";
+  version = "3.26.4";
 
   src = fetchFromGitHub {
     inherit owner;
     repo = "hass-prixcarburant";
     rev = "refs/tags/${version}";
-    hash = "sha256-xRSBKoPIgTQKfjKaflo+2hRqT8zeZU9/m53ATZPQeho=";
+    hash = "sha256-ya8ZGeU8uPjwtQbm9+uZDDjsLictxPvy/qH0BlLEID8=";
   };
-
-  patches = [
-    ./ha-custom-component-prixcarburant--dont-use-device-class-monetary.diff
-  ];
 
   meta = with lib; {
     changelog = "https://github.com/aohzan/hass-prixcarburant/releases/tag/${version}";
