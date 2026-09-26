@@ -132,8 +132,10 @@ in {
                 position_closed = 0;
                 position_open = 100;
                 position_template =
-                  rawTemplate "{{ value_json.current_pos | int }}";
+                  rawTemplate "{{ value_json | int }}";
                 position_topic = "${baseTopic}/status/position";
+                set_position_topic = "${baseTopic}/command/cover:0";
+                set_position_template = rawTemplate "pos,{{ position }}";
                 state_closed = "closed";
                 state_closing = "closing";
                 state_open = "open";
@@ -141,6 +143,20 @@ in {
                 state_stopped = "stopped";
                 state_topic = "${baseTopic}/status/cover:0";
                 value_template = rawTemplate "{{ value_json.state }}";
+              };
+            }
+            {
+              platform = "sensor";
+              topic-suffix = "-temp";
+              attributes = {
+                name = "Temperature";
+                unique_id = "{{ id }}-temp";
+                default_entity_id = "${device_name_slug}_temperature";
+                device_class = "temperature";
+                entity_category = "diagnostic";
+                state_class = "measurement";
+                state_topic = "${baseTopic}/status/cover:0";
+                value_template = rawTemplate "{{ value_json.temperature.tC }}";
               };
             }
             {
@@ -170,21 +186,6 @@ in {
                 state_topic = "${baseTopic}/status/wifi";
                 value_template = rawTemplate "{{ value_json.rssi | int }}";
                 unit_of_measurement = "dBm";
-              };
-            }
-            {
-              platform = "sensor";
-              topic-suffix = "-uptime";
-              attributes = {
-                unique_id = "{{ id }}-uptime";
-                default_entity_id = "${device_name_slug}_uptime";
-                device_class = "duration";
-                name = "Uptime";
-                entity_category = "diagnostic";
-                state_class = "total_increasing";
-                state_topic = "${baseTopic}/status/sys";
-                value_template = rawTemplate "{{ value_json.uptime | int(0) }}";
-                unit_of_measurement = "s";
               };
             }
           ]

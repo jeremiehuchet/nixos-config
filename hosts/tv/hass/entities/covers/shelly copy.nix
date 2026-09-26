@@ -134,6 +134,8 @@ in {
                 position_template =
                   rawTemplate "{{ value_json.current_pos | int }}";
                 position_topic = "~/status/position";
+                set_position_topic = "~/command/cover:0";
+                set_position_template = rawTemplate "pos,{{ position }}";
                 state_closed = "closed";
                 state_closing = "closing";
                 state_open = "open";

@@ -43,7 +43,13 @@
       template = [
         {
           trigger = [
-            { trigger = "time"; at = "sensor.prochaine_ouverture_des_volets"; }
+            {
+              trigger = "time";
+              at = {
+                entity_id = "sensor.prochaine_ouverture_des_volets";
+                offset = "00:05:00";
+              };
+            }
             { trigger = "homeassistant"; event = "start"; }
           ];
           sensor = [
@@ -60,7 +66,13 @@
         }
         {
           trigger = [
-            { trigger = "time"; at = "sensor.prochaine_fermeture_des_volets"; }
+            {
+              trigger = "time";
+              at = {
+               entity_id = "sensor.prochaine_fermeture_des_volets";
+                offset = "00:05:00";
+              };
+            }
             { trigger = "homeassistant"; event = "start"; }
           ];
           sensor = [
