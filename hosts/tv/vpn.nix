@@ -28,6 +28,11 @@ in {
             PresharedKeyFile = "/etc/nixos/secrets/wireguard-presharedkey-op6t";
             AllowedIPs = ["10.0.0.2/32"];
           }
+          {
+            PublicKey = "mI9vVvCWuHnBj5oD0vqUrG9XI2qTRoqVYdfRCdymb0U=";
+            PresharedKeyFile = "/etc/nixos/secrets/wireguard-presharedkey-dp5570";
+            AllowedIPs = ["10.0.0.3/32"];
+          }
         ];
       };
     };
