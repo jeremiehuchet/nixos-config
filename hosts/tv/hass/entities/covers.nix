@@ -81,7 +81,7 @@
               device_class = "timestamp";
               state = ''
                 {% set offset = timedelta(minutes=range(-30, 30) | random, seconds=range(-30, 30) | random) %}
-                {% set next_closing = today_at("22:30") + offset %}
+                {% set next_closing = today_at("20:00") + offset %}
                 {{ next_closing + timedelta(days=1 if next_closing < now() else 0) }}
               '';
             }
