@@ -25,9 +25,7 @@ in {
         "vwar.huchet.ovh"
         "vwar.local.huchet.ovh"
       ];
-      credentialFiles = {
-        ACME_CREDENTIALS_HUCHET_OVH_FILE = pkgs.writeText "acme-credentials-huchet.ovh" secrets.acme.credentials."huchet.ovh";
-      };
+      environmentFile = pkgs.writeText "acme-credentials-huchet.ovh" secrets.acme.credentials."huchet.ovh";
     };
   };
 }
