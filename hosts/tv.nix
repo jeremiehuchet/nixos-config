@@ -47,11 +47,11 @@ in {
     enable = true;
     autoMaster = let
       nasMapConf = pkgs.writeText "nas-auto" ''
-        films  -rw,soft,intr,sync nas:/mnt/md1/films
-        music  -rw,soft,intr,sync nas:/mnt/md1/music
-        series -rw,soft,intr,sync nas:/mnt/md1/series
-        photos -rw,soft,intr,sync nas:/mnt/md1/photos
-        backup -rw,soft,intr,sync nas:/mnt/md1/backup
+        films  -rw,soft,sync nas:/mnt/md1/films
+        music  -rw,soft,sync nas:/mnt/md1/music
+        series -rw,soft,sync nas:/mnt/md1/series
+        photos -rw,soft,sync nas:/mnt/md1/photos
+        backup -rw,soft,sync nas:/mnt/md1/backup
       '';
     in ''
       /nas file:${nasMapConf} --timeout 30
